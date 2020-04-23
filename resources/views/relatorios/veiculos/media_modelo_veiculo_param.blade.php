@@ -117,7 +117,7 @@
 
                             $('#modelo_veiculo_id').append($('<option>', { 
                                 value: -1,
-                                text : 'Nada Selecionado'
+                                text : 'Nada Selecionado' 
                         }));
 
 
