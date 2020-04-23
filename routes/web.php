@@ -71,7 +71,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/importacao', 'IntegracaoAutomacaoController@ImportarAbastecimentos')->name('importacao');
 
     Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModelosJson')->name('modelo_veiculos.json');
-    Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
+    Route::post('modelo_veiculo_marca/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
     Route::post('bico/json', 'BicoController@getBicoJson')->name('bico.json');

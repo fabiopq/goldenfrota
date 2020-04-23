@@ -50,7 +50,8 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 5
+                            'inputSize' => 5,
+                            'searchById' => false
                         ]
                     ]
                 ])  
