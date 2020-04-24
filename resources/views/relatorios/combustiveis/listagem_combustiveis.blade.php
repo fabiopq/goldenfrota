@@ -25,7 +25,7 @@
                 {{$combustivel->descricao}}
             </td>
             <td>
-                {{$combustivel->valor}}
+                {{number_format($combustivel->valor, 3, ',', '.')}}
             </td>
         </tr>
         @endforeach
