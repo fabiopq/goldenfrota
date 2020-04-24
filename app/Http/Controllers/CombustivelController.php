@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Combustivel;
+use App\Parametro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use \Illuminate\Support\Facades\Session;
@@ -199,5 +200,10 @@ class CombustivelController extends Controller
     public function apiCombustivel($id)
     {
         return response()->json(Combustivel::ativo()->where('id', $id)->get());
+    }
+
+    public function listagemCombustiveis()
+    {
+        return View('relatorios.combustiveis.listagem_combustiveis')->withCombustiveis(Combustivel::all())->withTitulo('Listagem de Combustíveis')->withParametro(Parametro::first());
     }
 }
