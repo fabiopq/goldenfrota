@@ -788,6 +788,7 @@ class AbastecimentoController extends Controller
                 Log::error($e);
                 //throw new \Exception('Não foi possível localizar o último abastecimento deste veículo para cálculo de média...');
                 return null;
+                
             }
         }  else {
             try {
