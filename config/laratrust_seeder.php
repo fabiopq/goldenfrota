@@ -55,7 +55,8 @@ return [
             'importar_abastecimentos' => 'a',
             'exportar_exportar_dados_cadastrais' => 'a',
             'relatorio_listagem_grupo_produto' => 'a',
-            'relatorio_afericoes' => 'a'
+            'relatorio_afericoes' => 'a',
+            'relatorio-listagem-combustivel' => 'a'
         ],
         'administrador' => [
             'user' => 'c,r,u,d',
