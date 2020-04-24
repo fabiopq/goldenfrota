@@ -215,6 +215,9 @@
                     @permission('acesso-relatorio-listagem-grupo-produto')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_grupo_produto')}}">Listagem de Grupo de Produtos</a></li>
                     @endpermission
+                    @permission('acesso-relatorio-listagem-combustivel')
+                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_combustiveis')}}" target="_blank">Listagem de Combustíveis</a></li>
+                    @endpermission
                     @permission('acesso-listagem-veiculos')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_veiculos')}}">Listagem de Veículos</a></li>
                     @endpermission
