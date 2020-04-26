@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Servico;
+use App\Parametro;
 use App\GrupoServico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -239,5 +240,13 @@ class ServicoController extends Controller
 
     public function apiServico($id) {
         return response()->json(Servico::ativo()->where('id', $id)->get());
+    }
+
+    public function listagemServicos() {
+        $servicos = DB::table('servicos')
+        ->select('servicos.*')
+        ->orderBy('servico', 'desc')
+        ->get();
+        return View('relatorios.servicos.listagem_servicos')->withservicos($servicos)->withTitulo('Listagem de Serviços')->withParametro(Parametro::first());
     }
 }

@@ -107,6 +107,8 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('relatorios/grupo_produto', 'GrupoProdutoController@listagemGrupoProduto')->name('relatorio_listagem_grupo_produto');
     Route::get('relatorios/afericoes', 'AfericaoController@relatorioAfericaoParam')->name('param_relatorio_afericoes');
     Route::post('relatorios/afericoes', 'AfericaoController@relatorioAfericao')->name('relatorio_afericoes');
+    
+    Route::get('relatorios/servicos', 'ServicoController@listagemServicos')->name('relatorio_listagem_servicos');
 
 
     Route::get('setting', 'SettingController@index')->name('setting.index');

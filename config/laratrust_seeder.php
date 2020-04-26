@@ -56,7 +56,8 @@ return [
             'exportar_exportar_dados_cadastrais' => 'a',
             'relatorio_listagem_grupo_produto' => 'a',
             'relatorio_afericoes' => 'a',
-            'relatorio-listagem-combustivel' => 'a'
+            'relatorio-listagem-combustivel' => 'a',
+            'listagem-servicos' => 'a'
         ],
         'administrador' => [
             'user' => 'c,r,u,d',
