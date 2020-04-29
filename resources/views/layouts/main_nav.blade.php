@@ -218,6 +218,9 @@
                     @permission('acesso-relatorio-listagem-combustivel')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_combustiveis')}}" target="_blank">Listagem de Combustíveis</a></li>
                     @endpermission
+                    @permission('acesso-relatorio-listagem-produtos')
+                    <li><a class="dropdown-item" href="{{route('param_relatorio_listagem_produtos')}}" target="_blank">Listagem de Produtos</a></li>
+                    @endpermission
                     @permission('acesso-listagem-servicos')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_servicos')}}" target="_blank">Listagem de Servicos</a></li>
                     @endpermission

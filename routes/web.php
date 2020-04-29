@@ -109,8 +109,8 @@ Route::middleware(['auth:web'])->group(function() {
     Route::post('relatorios/afericoes', 'AfericaoController@relatorioAfericao')->name('relatorio_afericoes');
     
     Route::get('relatorios/servicos', 'ServicoController@listagemServicos')->name('relatorio_listagem_servicos');
-
-
+    Route::get('relatorios/produtos', 'ProdutoController@paramlistagemprodutos')->name('param_relatorio_listagem_produtos');
+    Route::post('relatorios/produtos', 'ProdutoController@relatoriolistagemprodutos')->name('relatorio_listagem_produtos');
     Route::get('setting', 'SettingController@index')->name('setting.index');
     Route::put('setting', 'SettingController@update')->name('setting.update');
     Route::get('afericao/{abastecimento}', 'AfericaoController@create')->name('afericao.create');

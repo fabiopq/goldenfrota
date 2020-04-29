@@ -642,10 +642,11 @@ class AbastecimentoController extends Controller
                             ->groupBy('veiculos.placa')
                             ->get();
                             //->toSql();
+                            
                     $departamento->abastecimentos = $abastecimentos;
                 }
             }
-            return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
+           // return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else {
             /* relatório Analítico */
             foreach($clientes as $cliente) {

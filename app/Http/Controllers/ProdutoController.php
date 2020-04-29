@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Estoque;
+use App\Parametro;
 use App\Produto;
 use App\Unidade;
 use App\Fornecedor;
@@ -282,9 +283,10 @@ class ProdutoController extends Controller
     }
 
     public function obterProdutosPeloGrupo(Request $request) {
-        $grupoProduto = GrupoProduto::find($request->id);
-        
-        return response()->json($grupoProduto->produtos()->get());
+        //$grupoProduto = GrupoProduto::find($request->id);
+             
+        //return response()->json($grupoProduto->produtos()->get());
+        return response()->json(Produto::ativo()->where('grupo_produto_id', $request->id)->tosql());
     }
 
     public function apiProdutos() {
@@ -294,4 +296,84 @@ class ProdutoController extends Controller
     public function apiProduto($id) {
         return response()->json(Produto::ativo()->where('id', $id)->get());
     }
+
+    public function paramlistagemprodutos(){
+       // $produtos = Produto::where('ativo', true)->get();
+        return View('relatorios.produtos.param_listagem_produtos', [
+            'estoques' => Estoque::where('ativo', true)->get(),
+            'grupo_produtos' => GrupoProduto::where('ativo', true)->get(),
+            'produtos' => Produto::where('ativo', true)->get() 
+        ]);
+    }
+
+    public function relatoriolistagemprodutos(Request $request){
+        $parametros = array();
+        $whereData = '1 = 1';
+
+        if ($request->estoque_id > 0) {
+            $whereData = 'produtos.estoque_id = '.$request->estoque_id;
+            array_push($parametros, 'Estoque: '.(Estoque::find($request->estoque_id)->estoque)); 
+        }
+        if (($request->grupo_produto_id > 0) && ($request->produto_id < 0)) {
+            $whereData = 'produtos.grupo_produto_id = '.$request->grupo_produto_id;
+            array_push($parametros, 'Grupo de Produto: '.(GrupoProduto::find($request->grupo_produto_id)->grupo_produto)); 
+        } else {
+            if ($request->produto_id > 0) {
+                $whereData = 'produtos.id = '.$request->produto_id;
+                array_push($parametros, 'Produto: '.(Produto::find($request->produto_id)->produto_descricao));
+            }
+        }
+
+        
+        $estoques = DB ::table('estoque_produto')
+        ->select('estoques.*')
+        ->leftJoin('estoques', 'estoques.id', 'estoque_produto.estoque_id')
+        ->whereRaw($whereData)
+        //->whereRaw($whereParam)
+        ->distinct()
+        ->get();
+
+        foreach($estoques as $estoque) {
+            $grupos = DB::table('estoque_produto')
+            ->select('grupo_produtos.id')
+            ->leftJoin('estoques', 'estoques.id', 'estoque_produto.estoque_id')
+            ->leftJoin('produtos', 'produtos.id', 'estoque_produto.produto_id')
+            ->leftJoin('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
+            ->whereRaw($whereData)
+            ->distinct()
+            ->get();
+            $estoques->grupoprodutos = $grupos;
+        }
+        
+            foreach($estoques->grupoprodutos as $grupoproduto) {
+                $produto = DB::table('estoque_produto')
+                ->select('produtos.id','produtos.produto_descricao')
+                ->leftJoin('estoques', 'estoques.id', 'estoque_produto.estoque_id')
+                ->leftJoin('produtos', 'produtos.id', 'estoque_produto.produto_id')
+                ->leftJoin('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
+                ->whereRaw('produtos.grupo_produto_id',$estoques->grupoprodutos->id)
+                //->whereRaw($whereData)
+                ->toSql();
+
+                echo('grupo');
+                echo($grupoproduto->id);
+                echo('produtos=');
+                echo($produto);
+                $grupoproduto->produtos = $produto;
+              
+            }  
+            
+            //dd($grupoproduto->produtos);
+      
+        
+        dd($estoques);
+       /* return View('relatorios.produtos.relatorio_listagem_produtos')
+                    ->withestoques($estoques)
+                    ->withTitulo('Listagem de Produto')
+                    ->withParametros($parametros)
+                    ->withParametro(Parametro::first());
+        */
+      }
+
+    
 }

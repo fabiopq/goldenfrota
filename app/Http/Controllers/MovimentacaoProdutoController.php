@@ -428,6 +428,7 @@ class MovimentacaoProdutoController extends Controller
                                 ->whereRaw($whereEstoque)
                                 ->orderBy('estoques.estoque', 'asc')
                                 ->get();
+                               
 
         if ($request->tipo_relatorio == 1) {
             /* relatório sintetico */
