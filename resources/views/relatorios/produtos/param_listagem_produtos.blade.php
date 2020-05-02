@@ -16,19 +16,6 @@
                     'inputs' => [
                         [
                             'type' => 'select',
-                            'field' => 'estoque_id',
-                            'label' => 'Estoque',
-                            'required' => true,
-                            'items' => $estoques,
-                            'autofocus' => true,
-                            'displayField' => 'estoque',
-                            'liveSearch' => true,
-                            'keyField' => 'id',
-                            'defaultNone' => true,
-                            'inputSize' => 4
-                        ],
-                        [
-                            'type' => 'select',
                             'field' => 'grupo_produto_id',
                             'label' => 'Grupo de Produto',
                             'items' => $grupo_produtos,

@@ -11,19 +11,14 @@
     
 @endphp
 {{--  {{dd($clientes)}}  --}}
-@foreach($estoques as $estoque) 
-@php
-    
-    $clienteVolume = 0;
-    $clienteDistancia = 0;
-@endphp
+
 <div class="panel-sm">
     <div class="panel-sm">
         <div class="card-header report-subtitle-1">
-            <h4> Estoque: {{$estoque->estoque}} </h4>
+            
         </div>    
         <div class="card-body">
-            @foreach($estoque->grupoprodutos as $grupoproduto)
+            @foreach($grupoprodutos as $grupoproduto)
             @php
                 $departamentoVolume = 0;
                 $departamentoDistancia = 0; 
@@ -36,12 +31,11 @@
                 <div class="card-body">
                     <table class="table table-sm report-table">
                         <thead>
-                            <td>Veículo</td>
-                            <td align="right">KM Inicial</td>
-                            <td align="right">KM Final</td>
-                            <td align="right">Distância Percorrida</td>
-                            <td align="right">Consumo Médio/KM</td>
-                            <td align="right">Consumo Total</td>
+                            <td>Codigo</td>
+                            
+                            <td align="lefth">Produto</td>
+                            <td align="right">Custo R$</td>
+                            <td align="right">Preço R$</td>
                         </thead>
                         <tbody>
                             @foreach($grupoproduto->produtos as $produto)
@@ -55,8 +49,10 @@
                                 
                             @endphp
                             <tr> 
-                                <td> {{$produto->produto_descricao}} </td>
-                                                           
+                                <td> {{$produto->id}} </td>
+                                <td align="lefth"> {{$produto->produto_descricao}} </td>
+                                <td align="right"> {{number_format($produto->valor_custo, 2, ',', '.')}} </td>
+                                <td align="right"> {{number_format($produto->valor_venda, 2, ',', '.')}} </td>                           
                                </tr>
                             @endforeach
                             <tr class="success"> 
@@ -74,7 +70,7 @@
         </div>
     </div>
 </div>
-@endforeach
+
 <table class="table table-sm report-table">
     <tbody>
         <tr class="default">

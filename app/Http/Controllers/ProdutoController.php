@@ -325,54 +325,37 @@ class ProdutoController extends Controller
         }
 
         
-        $estoques = DB ::table('estoque_produto')
-        ->select('estoques.*')
-        ->leftJoin('estoques', 'estoques.id', 'estoque_produto.estoque_id')
-        ->whereRaw($whereData)
-        //->whereRaw($whereParam)
-        ->distinct()
-        ->get();
 
-        foreach($estoques as $estoque) {
-            $grupos = DB::table('estoque_produto')
-            ->select('grupo_produtos.id')
-            ->leftJoin('estoques', 'estoques.id', 'estoque_produto.estoque_id')
-            ->leftJoin('produtos', 'produtos.id', 'estoque_produto.produto_id')
-            ->leftJoin('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
+        
+            $grupos = DB::table('grupo_produtos')
+            ->select('grupo_produtos.id','grupo_produtos.grupo_produto')
+            ->leftJoin('produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
             ->whereRaw($whereData)
             ->distinct()
             ->get();
-            $estoques->grupoprodutos = $grupos;
-        }
+            
+          
         
-            foreach($estoques->grupoprodutos as $grupoproduto) {
-                $produto = DB::table('estoque_produto')
-                ->select('produtos.id','produtos.produto_descricao')
-                ->leftJoin('estoques', 'estoques.id', 'estoque_produto.estoque_id')
-                ->leftJoin('produtos', 'produtos.id', 'estoque_produto.produto_id')
+            foreach($grupos as $grupoproduto) {
+                
+                $produto = DB::table('produtos')
+                ->select('produtos.id','produtos.produto_descricao','produtos.valor_custo',
+                'produtos.valor_venda')
                 ->leftJoin('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
-                ->whereRaw('produtos.grupo_produto_id',$estoques->grupoprodutos->id)
+                ->where('produtos.grupo_produto_id',$grupoproduto->id)
                 //->whereRaw($whereData)
-                ->toSql();
-
-                echo('grupo');
-                echo($grupoproduto->id);
-                echo('produtos=');
-                echo($produto);
+                ->get();
+                
                 $grupoproduto->produtos = $produto;
               
             }  
             
-            //dd($grupoproduto->produtos);
-      
-        
-        dd($estoques);
-       /* return View('relatorios.produtos.relatorio_listagem_produtos')
-                    ->withestoques($estoques)
+        return View('relatorios.produtos.relatorio_listagem_produtos')
+                    ->withgrupoprodutos($grupos)
                     ->withTitulo('Listagem de Produto')
                     ->withParametros($parametros)
                     ->withParametro(Parametro::first());
-        */
+        
       }
 
     
