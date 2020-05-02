@@ -19,8 +19,8 @@
         <div class="card-body">
             @foreach($modeloVeiculos as $modeloVeiculo)
             @php
-                $departamentoVolume = 0;
-                $departamentoDistancia = 0; 
+                $modeloVolume = 0;
+                $modeloDistancia = 0; 
                 //dd($modeloVeiculos);    
             @endphp
             <div class="panel-sm">
@@ -40,11 +40,12 @@
                         <tbody>
                             @foreach($modeloVeiculo->abastecimentos as $abastecimento)
                             @php
+                               $modeloVolumeTotal = 0;
                                // $clienteVolume += $abastecimento->consumo;
                                // $clienteDistancia += $abastecimento->km_final - $abastecimento->km_inicial;
-                               // $departamentoVolume += $abastecimento->consumo; 
-                               $modeloVolumeTotal += $abastecimento->consumo;  
-                               // $distanciaTotal += $abastecimento->km_final - $abastecimento->km_inicial;  
+                               $modeloVolume += $abastecimento->consumo; 
+                               $modeloDistancia += $abastecimento->km_final - $abastecimento->km_inicial;  
+                               $distanciaTotal += $abastecimento->km_final - $abastecimento->km_inicial;  
                                // $volumeTotal += $abastecimento->consumo;
                             @endphp
                             <tr> 
@@ -60,9 +61,8 @@
                             <tr class="success"> 
                                 <td colspan=2>Total do Modelo</td>
                                 <td align="right"></td>
-                                <td align="right">{{number_format($modeloVolumeTotal, 1, ',', '.')}} </td>
-                                <td align="right"> </td>
-                               
+                                <td align="right">{{number_format($modeloDistancia, 1, ',', '.')}} </td>
+                                <td align="right">{{number_format($modeloVolume, 1, ',', '.')}} </td>
                             </tr>
                         </tbody>
                     </table>
