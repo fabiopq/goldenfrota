@@ -13,10 +13,8 @@
 {{--  {{dd($clientes)}}  --}}
 
 <div class="panel-sm">
-    <div class="panel-sm">
-        <div class="card-header report-subtitle-1">
-            
-        </div>    
+    
+        
         <div class="card-body">
             @foreach($grupoprodutos as $grupoproduto)
             @php
@@ -32,9 +30,8 @@
                     <table class="table table-sm report-table">
                         <thead>
                             <td>Codigo</td>
-                            
-                            <td align="lefth">Produto</td>
-                            <td align="right">Custo R$</td>
+                            <td>Produto</td>
+                            <td>Custo R$</td>
                             <td align="right">Preço R$</td>
                         </thead>
                         <tbody>
@@ -50,25 +47,24 @@
                             @endphp
                             <tr> 
                                 <td> {{$produto->id}} </td>
-                                <td align="lefth"> {{$produto->produto_descricao}} </td>
-                                <td align="right"> {{number_format($produto->valor_custo, 2, ',', '.')}} </td>
+                                <td> {{$produto->produto_descricao}} </td>
+                                <td> {{number_format($produto->valor_custo, 2, ',', '.')}} </td>
                                 <td align="right"> {{number_format($produto->valor_venda, 2, ',', '.')}} </td>                           
-                               </tr>
+                            </tr>
                             @endforeach
                             <tr class="success"> 
                                 <td colspan=2>Total do Departamento</td>
-                                <td align="right"></td>
+                                <td></td>
+                                <td> </td>
+                                <td align="right"> </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            @php
-            
-            @endphp
             @endforeach
         </div>
-    </div>
+    
 </div>
 
 <table class="table table-sm report-table">

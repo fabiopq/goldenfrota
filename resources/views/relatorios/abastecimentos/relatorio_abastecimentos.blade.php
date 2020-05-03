@@ -67,6 +67,7 @@
                                 <td align="right">{{number_format($departamentoDistancia, 1, ',', '.')}} </td>
                                 <td align="right"> </td>
                                 <td align="right">{{number_format($departamentoVolume, 3, ',', '.')}}</td>
+                                
                             </tr>
                         </tbody>
                     </table>
