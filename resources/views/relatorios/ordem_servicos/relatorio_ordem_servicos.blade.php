@@ -54,7 +54,7 @@
                             @endphp
                             <tr> 
                                 <td align="left">{{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</td>
-                                <td align="right"> {{$ordemservico->id}} </td>
+                                <td align="left"> {{$ordemservico->id}} </td>
                                 <td align="right"> {{number_format($ordemservico->valor_total,2, ',', '.')}} </td>
                                 <td align="right"> {{$ordemservico->placa}} </td>
                                 <td></td>
