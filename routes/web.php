@@ -74,6 +74,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::post('modelo_veiculo_marca/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
+    Route::post('veiculo/jsonComponent', 'VeiculoController@getVeiculosComponentJson')->name('veiculosComponent.json');
     Route::post('bico/json', 'BicoController@getBicoJson')->name('bico.json');
     Route::post('veiculo_departamento/json', 'VeiculoController@getVeiculosDepartamentoJson')->name('veiculos_departamento.json');
     Route::post('tanques/json', 'TanqueController@getTanquesJson')->name('tanques.json');
@@ -107,7 +108,10 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('relatorios/grupo_produto', 'GrupoProdutoController@listagemGrupoProduto')->name('relatorio_listagem_grupo_produto');
     Route::get('relatorios/afericoes', 'AfericaoController@relatorioAfericaoParam')->name('param_relatorio_afericoes');
     Route::post('relatorios/afericoes', 'AfericaoController@relatorioAfericao')->name('relatorio_afericoes');
-    
+    Route::get('relatorios/ordem_servicos', 'OrdemServicoController@paramRelatorioOrdemServicos')->name('param_relatorio_ordem_servicos');
+    Route::post('relatorios/ordem_servicos', 'OrdemServicoController@RelatorioOrdemServicos')->name('relatorio_ordem_servicos');
+
+
     Route::get('relatorios/servicos', 'ServicoController@listagemServicos')->name('relatorio_listagem_servicos');
     Route::get('relatorios/produtos', 'ProdutoController@paramlistagemprodutos')->name('param_relatorio_listagem_produtos');
     Route::post('relatorios/produtos', 'ProdutoController@relatoriolistagemprodutos')->name('relatorio_listagem_produtos');
