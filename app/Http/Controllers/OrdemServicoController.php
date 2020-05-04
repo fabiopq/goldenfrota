@@ -481,6 +481,7 @@ class OrdemServicoController extends Controller
                         ->whereRaw($whereParam)
                         //->whereRaw($whereTipoAbastecimento)
                         ->where('departamentos.id', $departamento->id)
+                        ->orderby('ordem_servicos.created_at')
                         //->groupBy('veiculos.placa')
                         ->get();
                         //->toSql();
