@@ -46,7 +46,7 @@
                                $modeloVolume += $abastecimento->consumo; 
                                $modeloDistancia += $abastecimento->km_final - $abastecimento->km_inicial;  
                                $distanciaTotal += $abastecimento->km_final - $abastecimento->km_inicial;  
-                               // $volumeTotal += $abastecimento->consumo;
+                               $volumeTotal += $abastecimento->consumo;
                             @endphp
                             <tr> 
                                 <td> {{$abastecimento->placa}} </td>
@@ -62,7 +62,7 @@
                                 <td colspan=2>Total do Modelo</td>
                                 <td align="right"></td>
                                 <td align="right">{{number_format($modeloDistancia, 1, ',', '.')}} </td>
-                                <td align="right">{{number_format($modeloVolume, 1, ',', '.')}} </td>
+                                <td align="right">{{number_format($modeloVolume, 2, ',', '.')}} </td>
                             </tr>
                         </tbody>
                     </table>
@@ -77,7 +77,7 @@
         <tr class="default">
             <td><h5>Total Geral</h5></td>
             <td align="right"><h5>Distância Percorrida: {{number_format($distanciaTotal, 1, ',', '.')}}</h5></td>
-            <td align="right"><h5>Consumo Total: {{number_format($volumeTotal, 3, ',', '.')}}</h5></td>
+            <td align="right"><h5>Consumo Total: {{number_format($volumeTotal, 2, ',', '.')}}</h5></td>
         </tr>
     </tbody>
 </table>

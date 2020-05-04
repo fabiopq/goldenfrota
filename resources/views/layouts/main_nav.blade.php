@@ -230,6 +230,9 @@
                     @permission('acesso-listagem-tanques')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_tanques')}}" target="_blank">Listagem de Tanques</a></li>
                     @endpermission
+                    @permission('acesso-relatorio-ordem-servicos')
+                    <li><a class="dropdown-item" href="{{route('param_relatorio_ordem_servicos')}}" target="_blank">Relatorio de Ordem de Serviços</a></li>
+                    @endpermission
 
                     <a class="dropdown-item dropdown-toggle" href="#">Abastecimentos</a>
                     <ul class="dropdown-menu">
