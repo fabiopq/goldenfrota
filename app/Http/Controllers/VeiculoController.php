@@ -276,6 +276,25 @@ class VeiculoController extends Controller
         return response()->json($veiculos);
     }
 
+    public function getVeiculosComponenteJson(Request $request) {
+        if ($request->id > 0) {
+            $whereCliente = 'cliente_id = '.$request->id;
+        } else {
+            $whereCliente = '1 = 1';
+        }
+
+       
+         $veiculos = $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
+                                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                                ->where('veiculos.ativo', true)
+                                ->get();
+
+
+        return response()->json($veiculos);
+    }
+
+
     public function getVeiculosDepartamentoJson(Request $request) {
         if ($request->id > 0) {
             $whereDepartamento = 'departamento_id = '.$request->id;
