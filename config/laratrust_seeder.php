@@ -59,7 +59,8 @@ return [
             'relatorio-listagem-combustivel' => 'a',
             'listagem-servicos' => 'a',
             'listagem-produtos' => 'a',
-            'relatorio-listagem-produtos' => 'a'
+            'relatorio-listagem-produtos' => 'a',
+            'relatorio-ordem-servicos' => 'a'
         ],
         'administrador' => [
             'user' => 'c,r,u,d',
