@@ -9,6 +9,9 @@
         'displayField' => 'id',
         'actions' => [
             [
+                'action' => 'show', 'target' => '_blank'
+            ],
+            [
                 'custom_action' => 'components.customActions.AfericaoAbastecimento'
             ],
             'edit', 

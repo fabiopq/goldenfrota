@@ -42,7 +42,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::resource('/veiculo', 'VeiculoController')->except('show');
     Route::resource('/grupo_veiculo', 'GrupoVeiculoController')->except('show');
     Route::resource('/atendente', 'AtendenteController')->except('show');
-    Route::resource('/abastecimento', 'AbastecimentoController')->except('show');
+    Route::resource('/abastecimento', 'AbastecimentoController');
     Route::resource('/tanque_movimentacao', 'TanqueMovimentacaoController')->except('show');
     Route::resource('/departamento', 'DepartamentoController')->except('show');
     Route::resource('/fornecedor', 'FornecedorController')->except('show');

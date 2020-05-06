@@ -5,7 +5,7 @@
     $clienteVolume = 0;
     $clienteDistancia = 0;
     $departamentoVolume = 0;
-    $departamentoDistancia = 0;
+    $valorDepartamento = 0;
     $distanciaTotal = 0;
     $valortotal = 0;
 @endphp
@@ -26,6 +26,7 @@
             @php
                 $departamentoVolume = 0;
                 $departamentoDistancia = 0; 
+                $valorDepartamento = 0;
                     
             @endphp
             <div class="panel-sm">
@@ -45,7 +46,8 @@
                         <tbody>
                             @foreach($departamento->ordemservicos as $ordemservico)
                             @php
-                                //$clienteVolume += $abastecimento->consumo;
+                                
+                                $valorDepartamento += $ordemservico->valor_total;
                                // $clienteDistancia += $abastecimento->km_final - $abastecimento->km_inicial;
                                 //$departamentoVolume += $abastecimento->consumo; 
                                 //$departamentoDistancia += $abastecimento->km_final - $abastecimento->km_inicial;  
@@ -55,18 +57,20 @@
                             <tr> 
                                 <td align="left">{{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</td>
                                 <td align="left"> {{$ordemservico->id}} </td>
-                                <td align="right"> {{number_format($ordemservico->valor_total,2, ',', '.')}} </td>
+                                <td align="right">R$ {{number_format($ordemservico->valor_total,2, ',', '.')}} </td>
                                 <td align="right"> {{$ordemservico->placa}} </td>
-                                <td></td>
-                                <td></td>
+                                <td align="right"></td>
+                                <td align="right"></td>
+                                
                             </tr>
                             @endforeach
                             <tr class="success"> 
-                                <td colspan=2>Total do Departamento</td>
+                                <td align="left"><h6>Total do Departamento</h6></td>
                                 <td align="right"></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td align="right"><h6>R$ {{number_format($valorDepartamento,2, ',', '.')}}</h6> </td>
+                                <td align="right"></td>
+                                <td align="right"></td>
+                                <td align="right"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -82,7 +86,8 @@
         <tr class="default">
             <td><h5>Total Geral</h5></td>
             <td align="right"><h5></h5></td>
-            <td align="right"><h5>Consumo Total: {{number_format($valortotal, 2, ',', '.')}}</h5></td>
+            <td align="right"><h5>Valor Total R$: {{number_format($valortotal, 2, ',', '.')}}</h5></td>
+
         </tr>
     </tbody>
 </table>

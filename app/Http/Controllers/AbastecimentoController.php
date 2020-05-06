@@ -67,7 +67,7 @@ class AbastecimentoController extends Controller
 
             if (isset($request->searchField)) {
                 $abastecimentos = DB::table('abastecimentos')
-                                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente')
+                                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente','combustiveis.descricao')
                                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
@@ -797,6 +797,24 @@ class AbastecimentoController extends Controller
             } catch (ModelNotFoundException $e) {
                 return null;
             }
+        }
+    }
+
+    public function show(Abastecimento $abastecimento)
+    {
+        if (Auth::user()->canListarOrdemServico()) {
+            $combustivel = DB::table('combustiveis')
+            ->select('combustiveis.*')
+            ->join('tanques', 'tanques.combustivel_id', 'combustiveis.id')
+            ->join('bicos', 'bicos.tanque_id', 'tanques.id')
+            ->where('bicos.id', '=', $abastecimento->bico_id)
+            ->get();
+            return View('abastecimento.show')
+                    ->withabastecimento($abastecimento)
+                    ->withCombustivel($combustivel)
+                    ->withTitulo('Abastecimento')
+                    //->withParametros($parametros)
+                    ->withParametro(Parametro::first());
         }
     }
 }

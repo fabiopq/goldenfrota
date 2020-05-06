@@ -41,16 +41,16 @@
                         ],
                         [
                             'type' => 'btn-group',
-                            'field' => 'tipo_abastecimento',
-                            'label' => 'Tipo de Abastecimento',
+                            'field' => 'ordem_servico_status_id',
+                            'label' => 'Status',
                             'radioButtons' => [
                                 [
-                                    'label' => 'Local',
+                                    'label' => 'Aberto',
                                     'value' => 1
                                 ],
                                 [
-                                    'label' => 'Externo',
-                                    'value' => 0
+                                    'label' => 'Fechado',
+                                    'value' => 2
                                 ],
                                 [
                                     'label' => 'Todos',

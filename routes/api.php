@@ -30,6 +30,7 @@ Route::middleware('auth:api')->group(function(){
 
     Route::get('clientes', 'ClienteController@apiClientes');
     Route::get('cliente/{id}', 'ClienteController@apiCliente');
+    
 
     Route::get('combustiveis', 'CombustivelController@apiCombustiveis');
     Route::get('combustivel/{id}', 'CombustivelController@apiCombustivel');
