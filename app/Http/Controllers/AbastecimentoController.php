@@ -67,7 +67,7 @@ class AbastecimentoController extends Controller
 
             if (isset($request->searchField)) {
                 $abastecimentos = DB::table('abastecimentos')
-                                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente','combustiveis.descricao')
+                                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente')
                                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')

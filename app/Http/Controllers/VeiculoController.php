@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Veiculo;
 use App\Cliente;
 use App\Parametro;
@@ -347,6 +348,8 @@ class VeiculoController extends Controller
     }
 
     public function listagemVeiculos(Request $request) {
+        
+
         $parametros = array();        
 
         if ($request->cliente_id > 0) {

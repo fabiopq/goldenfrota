@@ -133,6 +133,7 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente)
     {
+        //dd($cliente);
         if (Auth::user()->canAlterarCliente()) {
             return View('cliente.edit', [
                 'ufs' => Uf::all(),

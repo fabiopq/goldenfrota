@@ -160,6 +160,9 @@
                     @permission('listar-departamento')
                     <li><a class="dropdown-item" href="{{route('departamento.index')}}">Departamentos</a></li>
                     @endpermission
+                    @permission('listar-motorista')
+                    <li><a class="dropdown-item" href="{{route('motorista.index')}}">Motoristas</a></li>
+                    @endpermission
                 </ul>
             </li>
             {{--  Movimentacao  --}}

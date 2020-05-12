@@ -58,7 +58,11 @@ Route::middleware(['auth:web'])->group(function() {
     Route::resource('/ordem_servico', 'OrdemServicoController');
     Route::resource('/ajuste_tanque', 'AjusteTanqueController')->except(['show', 'edit']);
     Route::resource('/ordem_servico_status', 'OrdemServicoStatusController')->except(['show']);
-
+    Route::resource('/motorista', 'MotoristaController')->except(['show', 'edit', 'update', 'delete']);
+    Route::get('/motorista/{motorista}/edit', 'MotoristaController@edit')->name('motorista.edit');
+    Route::put('/motorista/{motorista}', 'MotoristaController@update')->name('motorista.update');
+    Route::delete('/motorista/{motorista}', 'MotoristaController@destroy')->name('motorista.destroy');
+    
     Route::resource('/role_user', 'RoleUsersController')->except('show');
     Route::resource('/role', 'RolesController')->except('show');
 

@@ -60,7 +60,8 @@ return [
             'listagem-servicos' => 'a',
             'listagem-produtos' => 'a',
             'relatorio-listagem-produtos' => 'a',
-            'relatorio-ordem-servicos' => 'a'
+            'relatorio-ordem-servicos' => 'a',
+            'motorista' => 'c,r,u,d'
         ],
         'administrador' => [
             'user' => 'c,r,u,d',

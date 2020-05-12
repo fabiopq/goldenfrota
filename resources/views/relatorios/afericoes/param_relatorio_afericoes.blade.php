@@ -5,6 +5,7 @@
 @endphp
 @extends('layouts.app')
 
+
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
@@ -51,7 +52,7 @@
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'inputSize' => 5,
-                            'searchById' => false
+                            'searchById' => true
                         ]
                     ]
                 ])  
@@ -61,3 +62,4 @@
     </div>
     
 @endsection
+

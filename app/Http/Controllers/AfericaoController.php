@@ -137,7 +137,14 @@ class AfericaoController extends Controller
     }
 
     public function relatorioAfericaoParam() {
-       $bicos = Bico::where('ativo', true)->get();
+        $bicos = DB::table('bicos')
+            ->select('bicos.id', 'combustiveis.descricao as num_bico')
+            ->join('tanques','bicos.tanque_id','tanques.id')
+            ->join('combustiveis','tanques.combustivel_id','combustiveis.id')
+            ->get();
+       //$bicos = Bico::where('ativo', true)->get();
+      // dd($bicos);
+      
        return View('relatorios.afericoes.param_relatorio_afericoes')->withBicos($bicos);
     }
 
