@@ -48,8 +48,13 @@
                                 $valortotal += $ordemservico->valor_total;
                             @endphp
                             <thead> 
-                                <td align="left"><b>Data/Hora: {{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</b></td>
-                                <td align="left"><b>Ordem de Serviço: {{$ordemservico->id}} </b></td>
+                                <td align="left"><b>Data/Hora Abertura: {{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</b></td>
+                                @if ($ordemservico->ordem_servico_status_id == 2)
+                                <td align="left"><b>Data/Hora Fechamento: {{ date('d/m/Y H:i:s', strtotime($ordemservico->data_fechamento)) }}</b></td>
+                                @else
+                                <td align="left"></td>
+                                @endif
+                                <td align="left"><b>Número da O.S: {{$ordemservico->id}} </b></td>
                                 <td align="right"></td>
                                 <td align="right"><b>Placa: {{$ordemservico->placa}} </b></td>
                                 <td align="right"></td>
@@ -106,12 +111,13 @@
                             @endforeach
                             
                             <tr class="success"> 
-                                <td align="left"><h6>Total do Departamento</h6></td>
-                                <td align="right"></td>
-                                <td align="right"><h6>R$ {{number_format($valorDepartamento,2, ',', '.')}}</h6> </td>
+                                <td align="left"><h6><b>Total do Departamento</b></h6></td>
                                 <td align="right"></td>
                                 <td align="right"></td>
                                 <td align="right"></td>
+                                <td align="right"></td>
+                                <td align="right"><h6><b>R$ {{number_format($valorDepartamento,2, ',', '.')}}</b></h6> </td>
+                                
                             </tr>
                         </tbody>
                     </table>

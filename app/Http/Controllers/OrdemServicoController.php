@@ -387,15 +387,15 @@ class OrdemServicoController extends Controller
     switch ($request->tipo_abastecimento) {
         case 0:
             $whereTipoAbastecimento = ('abastecimentos.abastecimento_local = 0');
-            array_push($parametros, 'Tipo de Abastecimento: Externo');
+            array_push($parametros, 'Status da O.S: Aberto');
             break;
         case 1:
             $whereTipoAbastecimento = ('abastecimentos.abastecimento_local = 1');
-            array_push($parametros, 'Tipo de Abastecimento: Local');
+            array_push($parametros, 'Status da O.S: Fechado');
             break;
         default:
             $whereTipoAbastecimento = ('1 = 1');
-            array_push($parametros, 'Tipo de Abastecimento: Todos');
+            array_push($parametros, 'Status da O.S: Todos');
             break;
     }
 

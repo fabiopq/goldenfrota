@@ -36,7 +36,8 @@
                 <div class="card-body">
                     <table class="table table-sm report-table">
                         <thead>
-                            <td>Data/Hora</td>
+                            <td>Data/Hora Abertura</td>
+                            <td>Data/Hora Fechamento</td>
                             <td align="left">Número</td>
                             <td align="right">Valor</td>
                             <td align="right">Placa/Veículo</td>
@@ -46,16 +47,17 @@
                         <tbody>
                             @foreach($departamento->ordemservicos as $ordemservico)
                             @php
-                                
+                             
                                 $valorDepartamento += $ordemservico->valor_total;
-                               // $clienteDistancia += $abastecimento->km_final - $abastecimento->km_inicial;
-                                //$departamentoVolume += $abastecimento->consumo; 
-                                //$departamentoDistancia += $abastecimento->km_final - $abastecimento->km_inicial;  
-                                //$distanciaTotal += $abastecimento->km_final - $abastecimento->km_inicial;  
                                 $valortotal += $ordemservico->valor_total;
                             @endphp
                             <tr> 
-                                <td align="left">{{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</td>
+                              <td align="left">{{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</td>
+                              @if ($ordemservico->ordem_servico_status_id == 2)
+                              <td align="left">{{ date('d/m/Y H:i:s', strtotime($ordemservico->data_fechamento)) }}</td>
+                              @else
+                              <td align="left"></td>
+                              @endif
                                 <td align="left"> {{$ordemservico->id}} </td>
                                 <td align="right">R$ {{number_format($ordemservico->valor_total,2, ',', '.')}} </td>
                                 <td align="right"> {{$ordemservico->placa}} </td>
@@ -65,12 +67,13 @@
                             </tr>
                             @endforeach
                             <tr class="success"> 
-                                <td align="left"><h6>Total do Departamento</h6></td>
-                                <td align="right"></td>
-                                <td align="right"><h6>R$ {{number_format($valorDepartamento,2, ',', '.')}}</h6> </td>
+                                <td align="left"><h6><b>Total do Departamento</b></h6></td>
                                 <td align="right"></td>
                                 <td align="right"></td>
                                 <td align="right"></td>
+                                <td align="right"></td>
+                                <td align="right"><h6><b>R$ {{number_format($valorDepartamento,2, ',', '.')}}</b></h6> </td>
+                                
                             </tr>
                         </tbody>
                     </table>
