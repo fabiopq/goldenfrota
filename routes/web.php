@@ -73,6 +73,9 @@ Route::middleware(['auth:web'])->group(function() {
 
     Route::get('/exportacao', 'IntegracaoAutomacaoController@Exportar')->name('exportacao');
     Route::get('/importacao', 'IntegracaoAutomacaoController@ImportarAbastecimentos')->name('importacao');
+   // Route::view('/param_teste_exportar_hiro', 'integracao_hiro.index');
+  //Route::get('/param_teste_exportar_hiro', 'IntegracaoAutomacaoController@ParamTesteExportarHiro')->name('param_teste_exportar_hiro');
+   // Route::post('/teste_hiro_exportacao', 'IntegracaoAutomacaoController@TesteExportarHiro')->name('teste_exportar_hiro');
 
     Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModelosJson')->name('modelo_veiculos.json');
     Route::post('modelo_veiculo_marca/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
@@ -133,8 +136,8 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/dashboard/os_em_aberto', 'DashboardController@osEmAberto');
 });
 
-/* Route::get('teste', function() {
-    return View('teste');
+ /*Route::get('/param_teste_exportar_hiro', function() {
+    return View('integracao_hiro.index');
 });
  */
 /* Route::get('relatorios/abastecimentos/imprimir', 'AbastecimentoController@gerarPdfRelatorioAbastecimentos')->name('imprimir_relatorio_abastecimentos'); */

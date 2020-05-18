@@ -316,7 +316,7 @@ class IntegracaoAutomacaoController extends Controller
                                 DB::beginTransaction();
                                 
                                 if($abastecimento->save()) {
-                                    /* Movimenta o estoque do tanque */
+                                    // Movimenta o estoque do tanque */
                                     if (MovimentacaoCombustivelController::saidaAbastecimento($abastecimento)) {
                                         DB::commit();
                                         Log::info('Novo abastecimento: '.$abastecimento.' importado da Automação.');
@@ -340,7 +340,7 @@ class IntegracaoAutomacaoController extends Controller
                         }
                     }
                 } finally {
-                    /* Elimina o arquivo do servidor apenas se conseguir importar todos os abastecimentos */
+                    // Elimina o arquivo do servidor apenas se conseguir importar todos os abastecimentos */
                     if (!$errosImportacao) {
                         $this->limparArquivoAbastecimentosServidor();
                     }
@@ -359,7 +359,24 @@ class IntegracaoAutomacaoController extends Controller
 
             return redirect()->back();
         }
+
+        }
+    public function ParamTesteExportarHiro() {
+
+        
+        return View('integracao_hiro.index');
+    
     }
+
+    public function TesteExportarHiro(Request $request) {
+
+        $arquivoEntrada = $request->entrada;
+        $arquivosaida = $this->cryptAPI($request->entrada);
+        return View('integracao_hiro.index')->witharquivoEntrada($arquivoEntrada);
+    
+    }
+
+
 
     protected function limparArquivoAbastecimentosServidor() {
         if (App::environment('local')) {
@@ -382,7 +399,9 @@ class IntegracaoAutomacaoController extends Controller
             $result .= pack('C*', $byte ^ $key);
         }
 
+        
         return $result;
+
     }
 
     protected function configFTP() {

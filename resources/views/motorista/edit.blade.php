@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
@@ -73,9 +72,10 @@
                             'field' => 'data_nascimento',
                             'label' => 'Data Nascimento',
                             'inputSize' => 2,
-                            'inputValue' => date('d/m/Y H:i:s'),
-                            //'dateTimeFormat' => 'DD/MM/YYYY',
-                            'picker_begin' => 'data_nascimento',
+                            'sideBySide' => true,
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $motorista->data_nascimento)->format('d/m/Y H:i:s'),
+                           
                             
                         ],
                         [
@@ -83,9 +83,10 @@
                             'field' => 'data_admissao',
                             'label' => 'Data Admissão',
                             'inputSize' => 2,
-                            'inputValue' => date('d/m/Y H:i:s'),
-                            //'dateTimeFormat' => 'DD/MM/YYYY',
-                            'picker_begin' => 'data_admissao',
+                            'sideBySide' => true,
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $motorista->data_admissao)->format('d/m/Y H:i:s'),
+                          
                             
                         ],
                         
@@ -126,9 +127,9 @@
                             'field' => 'data_validade_habilitacao',
                             'label' => 'Validade',
                             'inputSize' => 2,
-                            'inputValue' => date('d/m/Y H:i:s'),
-                            //'dateTimeFormat' => 'DD/MM/YYYY',
-                            'picker_begin' => 'data_validade_habilitacao',
+                            'sideBySide' => true,
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $motorista->data_validade_habilitacao)->format('d/m/Y H:i:s'),
                             
                         ],
                         [

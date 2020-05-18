@@ -22,7 +22,7 @@ class MotoristaController extends Controller
         'nome' => 'Nome',
         'cpf' => 'CPF',
         'fone' => 'Fone',
-        'data_validade_habilitacao' => ['label' => 'Validade Habilitação', 'type' => 'datetime'],
+        'data_validade_habilitacao' => ['label' => 'Validade Habilitação', 'type' => 'date'],
         'ativo' => ['label' => 'Ativo', 'type' => 'bool']
 
     );
@@ -34,6 +34,8 @@ class MotoristaController extends Controller
      */
     public function index(Request $request)
     {
+        
+        
     if (Auth::user()->canListarMotorista()) {
         if ($request->searchField) {
             $motoristas = Motorista::where('nome', 'like', '%' . $request->searchField . '%')
@@ -89,7 +91,7 @@ class MotoristaController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request);
+        
         if (Auth::user()->canCadastrarMotorista()) {
             $this->validate($request, [
                 'nome' => 'required|string|unique:motoristas',
@@ -115,20 +117,15 @@ class MotoristaController extends Controller
                 'estado_civil' => 'nullable|estado_civil',
                 'tipo_sanguineo' => 'nullable|string',
                 'veiculo_padrao_id' => 'nullable|numeric'
-                
-
-
+    
             ]);
 
             try {
                 $motorista = new Motorista($request->all());
-                $data_nascimento = \DateTime::createFromFormat('d/m/Y H:i', $request->data_nascimento);
-                $data_admissao = \DateTime::createFromFormat('d/m/Y H:i', $request->data_admissao);
-                $data_validade_habilitacao = \DateTime::createFromFormat('d/m/Y H:i', $request->data_validade_habilitacao);
-
-                $motorista->data_nascimento = $data_nascimento->format('Y-m-d H:i:s');
-                $motorista->data_admissao = $data_admissao->format('Y-m-d H:i:s');
-                $motorista->data_validade_habilitacao = $data_validade_habilitacao->format('Y-m-d H:i:s');
+                dd($motorista);
+                $motorista->data_nascimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_nascimento)->format('Y-m-d H:i:s');
+                $motorista->data_admissao = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_admissao)->format('Y-m-d H:i:s');
+                $motorista->data_validade_habilitacao =  \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_validade_habilitacao)->format('Y-m-d H:i:s');
 
 
                 if ($motorista->save()) {
@@ -189,12 +186,14 @@ class MotoristaController extends Controller
         if (Auth::user()->canAlterarMotorista()) {
             $this->validate($request, [
                 'nome' => 'required|string|unique:motoristas,id,' . $motorista->id,
-               'apelido' => 'nullable|string',
+                'apelido' => 'nullable|string',
                 'cpf' => ['required', new cpfCnpj],
                 'rg' => 'required',
                 'habilitacao' => 'required|string',
                 'categoria' => 'required',
-               // 'data_validade_habilitacao' => 'required|date_format:d/m/Y H:i:s',
+                'data_validade_habilitacao' => 'required|date_format:d/m/Y H:i:s',
+                'data_nascimento' => 'required|date_format:d/m/Y H:i:s',
+                'data_admissao' => 'required|date_format:d/m/Y H:i:s',
                 'pontos_habilitacao' => 'nullable|string',
                 'observacoes' => 'nullable|string',
                 'endereco' => 'required|string|min:3|max:200',
@@ -206,8 +205,7 @@ class MotoristaController extends Controller
                 'fone' => 'nullable|string',
                 //'fone' =>  ['required', new telefoneComDDD],
                 'email' => 'nullable|string',
-               // 'data_nascimento' => 'required|date_format:d/m/Y H:i:s',
-               // 'data_admissao' => 'required|date_format:d/m/Y H:i:s',
+
                 'estado_civil' => 'nullable|estado_civil',
                 'tipo_sanguineo' => 'nullable|string',
                 'veiculo_padrao_id' => 'nullable|numeric'
@@ -215,15 +213,11 @@ class MotoristaController extends Controller
             ]);
 
             try {
-
-
-                $data_nascimento = \DateTime::createFromFormat('d/m/Y H:i', $request->data_nascimento);
-                $data_admissao = \DateTime::createFromFormat('d/m/Y H:i', $request->data_admissao);
-                $data_validade_habilitacao = \DateTime::createFromFormat('d/m/Y H:i', $request->data_validade_habilitacao);
-
-                $motorista->data_nascimento = $data_nascimento->format('Y-m-d H:i:s');
-                $motorista->data_admissao = $data_admissao->format('Y-m-d H:i:s');
-                $motorista->data_validade_habilitacao = $data_validade_habilitacao->format('Y-m-d H:i:s');
+                
+               
+                $motorista->data_nascimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_nascimento)->format('Y-m-d H:i:s');
+                $motorista->data_admissao = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_admissao)->format('Y-m-d H:i:s');
+                $motorista->data_validade_habilitacao =  \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_validade_habilitacao)->format('Y-m-d H:i:s');
 
                 $motorista->nome = $request->nome;
                 $motorista->apelido = $request->apelido;
@@ -254,16 +248,19 @@ class MotoristaController extends Controller
                     ]));
                     return redirect()->action('MotoristaController@index');
                 }
+                
             } catch (\Exception $e) {
                 Session::flash('error', __('messages.exception', [
                     'exception' => $e->getMessage()
                 ]));
                 return redirect()->back()->withInput();
             }
+          
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
+        
     }
 
     public function destroy(Motorista $motorista)

@@ -59,9 +59,9 @@
                             'field' => 'data_nascimento',
                             'label' => 'Data Nascimento',
                             'inputSize' => 2,
-                            'inputValue' => date('d/m/Y H:i:s'),
-                            //'dateTimeFormat' => 'DD/MM/YYYY',
-                            'picker_begin' => 'data_nascimento',
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                            'sideBySide' => true,
+                            'inputValue' => date('d/m/Y H:i:s')
                             
                         ],
                         [
@@ -69,9 +69,9 @@
                             'field' => 'data_admissao',
                             'label' => 'Data Admissão',
                             'inputSize' => 2,
-                            'inputValue' => date('d/m/Y H:i:s'),
-                            //'dateTimeFormat' => 'DD/MM/YYYY',
-                            'picker_begin' => 'data_admissao',
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                            'sideBySide' => true,
+                            'inputValue' => date('d/m/Y H:i:s')
                             
                         ],
                         
@@ -108,9 +108,9 @@
                             'field' => 'data_validade_habilitacao',
                             'label' => 'Validade',
                             'inputSize' => 2,
-                            'inputValue' => date('d/m/Y H:i:s'),
-                            //'dateTimeFormat' => 'DD/MM/YYYY',
-                            'picker_begin' => 'data_validade_habilitacao',
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                            'sideBySide' => true,
+                            'inputValue' => date('d/m/Y H:i:s')
                             
                         ],
                         [

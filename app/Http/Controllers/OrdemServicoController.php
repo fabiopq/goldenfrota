@@ -495,47 +495,93 @@ class OrdemServicoController extends Controller
     } else {
         /* relatório Analítico */
         foreach($clientes as $cliente) {
-            $departamentos = DB::table('abastecimentos')
+            $departamentos = DB::table('ordem_servicos')
                     ->select('departamentos.*')
-                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
-                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
-                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
-                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
+                    ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-                    ->whereRaw('clientes.id is not null')
-                    ->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+                    ->where('clientes.id',$cliente->id)
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
                     ->whereRaw($whereData)
                     ->whereRaw($whereParam)
-                    ->whereRaw($whereTipoAbastecimento)
-                    ->where('clientes.id', $cliente->id)
+                    //->whereRaw($whereTipoAbastecimento)
                     ->orderBy('departamentos.departamento', 'asc')
                     ->distinct()
                     ->get();
             $cliente->departamentos = $departamentos;
+           //dd($cliente->departamentos);
             foreach($cliente->departamentos as $departamento) {
-                $ordemservicos = DB::table('abastecimentos')
-                        ->select('abastecimentos.*', 'veiculos.placa')
-                        ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
-                        ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
-                        ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                $ordemservicos = DB::table('ordem_servicos')
+                        ->select('veiculos.placa','ordem_servicos.*')
+                        ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
                         ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                         ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                         ->whereRaw('clientes.id is not null')
-                        ->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+                        ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
                         ->whereRaw($whereData)
                         ->whereRaw($whereParam)
-                        ->whereRaw($whereTipoAbastecimento)
+                        //->whereRaw($whereTipoAbastecimento)
                         ->where('departamentos.id', $departamento->id)
-                        ->orderBy('veiculos.placa', 'asc')
-                        ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
-                        /* ->orderBy('abastecimentos.id', 'desc') */
-                        ->distinct()
+                        ->orderby('ordem_servicos.created_at')
+                        //->groupBy('veiculos.placa')
                         ->get();
-                $departamento->ordemservicos = $abastecimentos;
+                        //->toSql();
+                        
+                $departamento->ordemservicos = $ordemservicos;
             }
+            foreach($departamento->ordemservicos as $ordemservicos) {
+                $produtos = DB::table('ordem_servico_produto')
+                        ->select('produtos.id','produtos.produto_descricao','ordem_servico_produto.quantidade',
+                                'ordem_servico_produto.valor_produto',
+                                'ordem_servico_produto.valor_desconto','ordem_servico_produto.valor_acrescimo','ordem_servico_produto.valor_cobrado')
+                        ->leftJoin('produtos', 'produtos.id', 'ordem_servico_produto.produto_id')
+                        ->leftJoin('ordem_servicos', 'ordem_servicos.id', 'ordem_servico_produto.ordem_servico_id')
+                        ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
+                        ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                        ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+
+                        //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                       // ->whereRaw('clientes.id is not null')
+                        ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+                        ->whereRaw($whereData)
+                        ->whereRaw($whereParam)
+                        //->whereRaw($whereTipoAbastecimento)
+                        ->where('ordem_servico_produto.ordem_servico_id', $ordemservicos->id)
+                        //->orderby('ordem_servicos.created_at')
+                        //->groupBy('veiculos.placa')
+                        ->get();
+                        //->toSql();
+                        
+                $ordemservicos->produtos = $produtos;
+                foreach($departamento->ordemservicos as $ordemservicos) {
+                    $servicos = DB::table('ordem_servico_servico')
+                            ->select('servicos.id','servicos.descricao',
+                                    'ordem_servico_servico.valor_servico',
+                                    'ordem_servico_servico.valor_desconto','ordem_servico_servico.valor_acrescimo','ordem_servico_servico.valor_cobrado')
+                            ->leftJoin('servicos', 'servicos.id', 'ordem_servico_servico.servico_id')
+                            ->leftJoin('ordem_servicos', 'ordem_servicos.id', 'ordem_servico_servico.ordem_servico_id')
+                            ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
+                            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+    
+                            //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                           // ->whereRaw('clientes.id is not null')
+                            ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+                            ->whereRaw($whereData)
+                            ->whereRaw($whereParam)
+                            //->whereRaw($whereTipoAbastecimento)
+                            ->where('ordem_servico_servico.ordem_servico_id', $ordemservicos->id)
+                            //->orderby('ordem_servicos.created_at')
+                            //->groupBy('veiculos.placa')
+                            ->get();
+                            //->toSql();
+                            
+                    $ordemservicos->servicos = $servicos;
+                }
+            }
+           // dd($clientes);
         }
-         return View('relatorios.abastecimentos.relatorio_abastecimentos_analitico')->withClientes($clientes)->withTitulo('Relatório de Abastecimentos - Analítico')->withParametros($parametros)->withParametro(Parametro::first());
-    }
+        return View('relatorios.ordem_servicos.relatorio_ordem_servicos_analitico')->withClientes($clientes)->withTitulo('Relatório de Ordem de Serviços - Analítico')->withParametros($parametros)->withParametro(Parametro::first());    }
 }
 
 }
