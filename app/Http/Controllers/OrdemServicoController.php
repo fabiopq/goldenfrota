@@ -554,6 +554,8 @@ class OrdemServicoController extends Controller
                         
                 $ordemservicos->produtos = $produtos;
                 foreach($departamento->ordemservicos as $ordemservicos) {
+
+                    
                     $servicos = DB::table('ordem_servico_servico')
                             ->select('servicos.id','servicos.descricao',
                                     'ordem_servico_servico.valor_servico',
