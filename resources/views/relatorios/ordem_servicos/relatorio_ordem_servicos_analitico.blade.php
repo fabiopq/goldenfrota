@@ -66,7 +66,8 @@
                                 <td align="right">Valor Total</td>
                                 
                             </thead>
-                            @foreach($ordemservico->produtos as $produto)
+                            
+                            @foreach($ordemservico->produtos ?? [] as $produto)
                             
                             <tr> 
                                 <td align="left"> {{$produto->id}} - {{$produto->produto_descricao}} </td>
@@ -81,7 +82,7 @@
                             </tr>
                             @endforeach
                             
-                            @foreach($ordemservico->servicos as $servico)
+                            @foreach($ordemservico->servicos ?? [] as $servico)
                             
                             <tr> 
                                 <td align="left"> {{$servico->id}} - {{$servico->descricao}} </td>
