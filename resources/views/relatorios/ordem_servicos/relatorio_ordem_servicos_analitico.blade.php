@@ -66,35 +66,7 @@
                                 <td align="right">Valor Total</td>
                                 
                             </thead>
-                            @foreach($ordemservico->produtos as $produto)
                             
-                            <tr> 
-                                
-                                
-                                <td align="left"> {{$produto->id}} - {{$produto->produto_descricao}} </td>
-                                <td align="right"> {{number_format($produto->quantidade,0, ',', '.')}} </td>
-                                <td align="right"> {{number_format($produto->valor_produto,2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($produto->valor_desconto,2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($produto->valor_acrescimo,2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($produto->valor_cobrado,2, ',', '.')}} </td>
-                                
-                                
-                                
-                            </tr>
-                            @endforeach
-                            
-                            @foreach($ordemservico->servicos as $servico)
-                            
-                            <tr> 
-                                <td align="left"> {{$servico->id}} - {{$servico->descricao}} </td>
-                                <td align="right"> 1 </td>
-                                <td align="right"> {{number_format($servico->valor_servico,2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($servico->valor_desconto,2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($servico->valor_acrescimo,2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($servico->valor_cobrado,2, ',', '.')}} </td>
-                                
-                            </tr>
-                            @endforeach
                             <tr class="success"> 
                                 <td align="left"><h6><b>Total da Ordem de Serviço</b></h6></td>
                                 <td align="right"></td>
