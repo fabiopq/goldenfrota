@@ -49,7 +49,7 @@
                             @endphp
                             <thead> 
                                 <td align="left"><b>Data/Hora Abertura: {{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</b></td>
-                                @if ($ordemservico->ordem_servico_status_id == 2)
+                                @if ($ordemservico->data_fechamento <> "")
                                 <td align="left"><b>Data/Hora Fechamento: {{ date('d/m/Y H:i:s', strtotime($ordemservico->data_fechamento)) }}</b></td>
                                 @else
                                 <td align="left"></td>

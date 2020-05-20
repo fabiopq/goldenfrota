@@ -16,7 +16,7 @@
             ],
             'edit', 
             'destroy'],
-        'colorLineCondition' => [
+            'colorLineCondition' => [
             'field' => 'inconsistencias_importacao',
             'value' => '1',
             'class' => 'danger'

@@ -16,7 +16,7 @@
                     </div>
                     <div class="float-right" style="margin-left: 25px">
                         <label for="#data_os" class="nf-label">Data Fechamento:</label>
-                        <div id="data_os">{{ ($ordemServico->fechada) ? date_format(date_create($ordemServico->data_fechamento), 'd/m/Y - H:i:s') : '___/___/______ - ___:___:___   ' }}</div>
+                        <div id="data_fechamento_os">{{ ($ordemServico->fechada) ? date_format(date_create($ordemServico->data_fechamento), 'd/m/Y - H:i:s') : '___/___/______ - ___:___:___   ' }}</div>
                     </div>
                     <div class="float-right" style="margin-left: 25px">
                         <label for="#data_os" class="nf-label">Data Abertura:</label>

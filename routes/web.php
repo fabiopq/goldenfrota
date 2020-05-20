@@ -72,6 +72,10 @@ Route::middleware(['auth:web'])->group(function() {
 
 
     Route::get('/exportacao', 'IntegracaoAutomacaoController@Exportar')->name('exportacao');
+    Route::get('/exportacao_atendentes', 'IntegracaoAutomacaoController@ExportarAtendentes')->name('exportacao_atendentes');
+    Route::get('/exportacao_veiculos', 'IntegracaoAutomacaoController@ExportarVeiculos')->name('exportacao_veiculos');
+    Route::get('/exportacao_produtos', 'IntegracaoAutomacaoController@ExportarProdutos')->name('exportacao_produtos');
+    
     Route::get('/importacao', 'IntegracaoAutomacaoController@ImportarAbastecimentos')->name('importacao');
    // Route::view('/param_teste_exportar_hiro', 'integracao_hiro.index');
   //Route::get('/param_teste_exportar_hiro', 'IntegracaoAutomacaoController@ParamTesteExportarHiro')->name('param_teste_exportar_hiro');

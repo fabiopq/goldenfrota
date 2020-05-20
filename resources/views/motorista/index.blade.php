@@ -7,7 +7,8 @@
         'model' => 'motorista',
         'tableTitle' => 'Mostoristas',
         'displayField' => 'nome',
-        'actions' => ['edit', 'destroy']
+        'actions' => ['edit', 'destroy'],
+        'searchParms' => 'abastecimento.search_parms'
         ]);
     @endcomponent
 @endsection

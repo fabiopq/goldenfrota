@@ -281,18 +281,40 @@
             </li>
             {{--  Automacao  --}}
             <li class="nav-item dropdown">
+                
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAutomacao" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Automação
                 </a>
+                
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutomacao">
-                    @permission('acesso-exportar-exportar-dados-cadastrais')
-                    <li><a class="dropdown-item" href="{{route('exportacao')}}">Exportar Dados Cadastrais</a></li>
-                    @endpermission
+                    
                     @permission('acesso-importar-abastecimentos')
                     <li><a class="dropdown-item" href="{{route('importacao')}}">Importar Abastecimentos</a></li>
                     @endpermission
+                    <a class="dropdown-item dropdown-toggle" href="#">Exportar Dados Para Console</a>
+                    <ul class="dropdown-menu">
+                    <li class="dropdown-submenu">
+                        @permission('acesso-exportar-exportar-dados-cadastrais')
+                            <li><a class="dropdown-item" href="{{route('exportacao')}}">Exportar - Todos</a></li>
+                        @endpermission
+                        @permission('acesso-exportar-exportar-dados-cadastrais')
+                            <li><a class="dropdown-item" href="{{route('exportacao_atendentes')}}">Exportar - Atendentes</a></li>
+                        @endpermission
+                        @permission('acesso-exportar-exportar-dados-cadastrais')
+                        <li><a class="dropdown-item" href="{{route('exportacao_produtos')}}">Exportar - Produtos</a></li>
+                        @endpermission
+                        @permission('acesso-exportar-exportar-dados-cadastrais')
+                        <li><a class="dropdown-item" href="{{route('exportacao_veiculos')}}">Exportar - Veículos</a></li>
+                        @endpermission
+                       
+                        
+                    </li>
+                    </ul>
+
                     
                 </ul>
+                
+                
             </li>
         </ul>
         {{--  Left Align End  --}}

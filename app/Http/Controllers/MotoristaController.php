@@ -37,15 +37,37 @@ class MotoristaController extends Controller
         
         
     if (Auth::user()->canListarMotorista()) {
+        $data_inicial = $request->data_inicial;
+            $data_final = $request->data_final;
+
+            if($data_inicial && $data_final) {
+                $whereData = 'motoristas.data_validade_habilitacao between \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\' and \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+            } elseif ($data_inicial) {
+                $whereData = 'motoristas.data_validade_habilitacao >= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\'';
+            } elseif ($data_final) {
+                $whereData = 'motoristas.data_validade_habilitacao <= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+            } else {
+                $whereData = '1 = 1'; //busca qualquer coisa
+            }
         if ($request->searchField) {
-            $motoristas = Motorista::where('nome', 'like', '%' . $request->searchField . '%')
-                ->orWhere('apelido', 'like', '%' . $request->searchField . '%')
-                ->orWhere('cpf', 'like', '%' . $request->searchField . '%')
-                ->orWhere('rg', 'like', '%' . $request->searchField . '%')
-                ->orWhere('endereco', 'like', '%' . $request->searchField . '%')
-                ->orWhere('fone', 'like', '%' . $request->searchField . '%')
-                ->orWhere('habilitacao', 'like', '%' . $request->searchField . '%')
+            
+            $motoristas = DB::table('motoristas')
+            ->select('motoristas.*')
+            //->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+            ->whereRaw($whereData)
+            ->where('nome', 'like', '%'.$request->searchField.'%')
+            ->orWhere('cpf', 'like', '%'.$request->searchField.'%')
+            /* ->orderBy('abastecimentos.id', 'desc') */
+            ->orderBy('nome', 'desc')
+            ->paginate();
+        }else if ($request->data_inicial){
+                $motoristas = DB::table('motoristas')
+                ->select('motoristas.*')
+                //->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+                ->whereRaw($whereData)
+                ->orderBy('nome', 'desc')
                 ->paginate();
+                //dd($motoristas);
         } else {
             $motoristas = Motorista::paginate();
         }
@@ -122,7 +144,7 @@ class MotoristaController extends Controller
 
             try {
                 $motorista = new Motorista($request->all());
-                dd($motorista);
+                
                 $motorista->data_nascimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_nascimento)->format('Y-m-d H:i:s');
                 $motorista->data_admissao = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_admissao)->format('Y-m-d H:i:s');
                 $motorista->data_validade_habilitacao =  \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_validade_habilitacao)->format('Y-m-d H:i:s');

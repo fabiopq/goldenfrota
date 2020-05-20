@@ -55,12 +55,16 @@ class IntegracaoAutomacaoController extends Controller
             $this->configFTP();
 
             Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
+        
+            Session::flash('success', 'Dados Exportados com sucesso!');
+            return redirect()->action('HomeController@index');
+        
         } catch (\Exception $e) {
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
 
-            return redirect()->back();
+            
         }
     }
 
@@ -94,6 +98,9 @@ class IntegracaoAutomacaoController extends Controller
             $this->configFTP();
 
             Storage::disk($this->disk())->put('produtos.hir', $conteudo);
+            Session::flash('success', 'Dados Exportados com sucesso!');
+            return redirect()->action('HomeController@index');
+
         } catch (\Exception $e) {
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
@@ -134,6 +141,9 @@ class IntegracaoAutomacaoController extends Controller
             $this->configFTP();
 
             Storage::disk($this->disk())->put('veiculos.hir', $conteudo);
+            Session::flash('success', 'Dados Exportados com sucesso!');
+            return redirect()->action('HomeController@index');
+
         } catch(\Exception $e) {
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()

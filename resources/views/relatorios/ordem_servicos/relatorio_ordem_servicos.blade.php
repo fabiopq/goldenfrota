@@ -39,10 +39,11 @@
                             <td>Data/Hora Abertura</td>
                             <td>Data/Hora Fechamento</td>
                             <td align="left">Número</td>
-                            <td align="right">Valor</td>
+                            <td align="right"></td>
                             <td align="right">Placa/Veículo</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
+                            <td align="right">Valor</td>
+                                                   
+                            
                         </thead>
                         <tbody>
                             @foreach($departamento->ordemservicos as $ordemservico)
@@ -53,16 +54,15 @@
                             @endphp
                             <tr> 
                               <td align="left">{{ date('d/m/Y H:i:s', strtotime($ordemservico->created_at)) }}</td>
-                              @if ($ordemservico->ordem_servico_status_id == 2)
+                              @if ($ordemservico->data_fechamento <> "")
                               <td align="left">{{ date('d/m/Y H:i:s', strtotime($ordemservico->data_fechamento)) }}</td>
                               @else
                               <td align="left"></td>
                               @endif
                                 <td align="left"> {{$ordemservico->id}} </td>
-                                <td align="right">R$ {{number_format($ordemservico->valor_total,2, ',', '.')}} </td>
+                                <td align="right"></td>
                                 <td align="right"> {{$ordemservico->placa}} </td>
-                                <td align="right"></td>
-                                <td align="right"></td>
+                                <td align="right">R$ {{number_format($ordemservico->valor_total,2, ',', '.')}} </td>
                                 
                             </tr>
                             @endforeach
