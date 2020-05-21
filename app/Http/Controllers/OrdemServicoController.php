@@ -355,6 +355,7 @@ class OrdemServicoController extends Controller
         }
     }
 
+    // parametros do relatorio de ordem de servicos
     public function paramRelatorioOrdemServicos() {
         $clientes = Cliente::all();
         $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
@@ -362,7 +363,7 @@ class OrdemServicoController extends Controller
                                 ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
                                 ->where('veiculos.ativo', true)
                                 ->get();
-        //dd($veiculos);
+        
         return View('relatorios.ordem_servicos.param_relatorio_ordem_servicos')->withClientes($clientes)->withVeiculos($veiculos);
     }
 
@@ -580,7 +581,7 @@ class OrdemServicoController extends Controller
                     $ordemservicos->servicos = $servicos;
                 }
             }
-           // dd($clientes);
+           
         }
         return View('relatorios.ordem_servicos.relatorio_ordem_servicos_analitico')->withClientes($clientes)->withTitulo('Relatório de Ordem de Serviços - Analítico')->withParametros($parametros)->withParametro(Parametro::first());    }
 }
