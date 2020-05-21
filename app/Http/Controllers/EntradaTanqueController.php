@@ -15,7 +15,7 @@ use App\Http\Controllers\MovimentacaoCombustivelController;
 class EntradaTanqueController extends Controller
 {
     public $fields = [
-        'id' => 'ID',
+        
         'nr_docto' => 'Nr. Doc.',
         'serie' => 'Série',
         'data_entrada' => ['label' => 'Data Entrada', 'type' => 'datetime'],
@@ -36,11 +36,13 @@ class EntradaTanqueController extends Controller
                                 ->join('fornecedores', 'entrada_tanques.fornecedor_id', 'fornecedores.id')
                                 ->where('nr_docto', $request->searchField)
                                 ->orWhere('fornecedores.nome_razao', 'like', '%'.$request->searchField.'%')
+                                ->orderBy('entrada_tanques.data_entrada', 'desc')
                                 ->paginate();
             } else {
                 $entradas = DB::table('entrada_tanques')
                                 ->select('entrada_tanques.*', 'fornecedores.nome_razao as nome_razao')
                                 ->join('fornecedores', 'entrada_tanques.fornecedor_id', 'fornecedores.id')
+                                ->orderBy('entrada_tanques.data_entrada', 'desc')
                                 ->paginate();
             }
 
