@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Cliente;
 use App\Estoque;
 use App\Produto;
+use App\Departamento;
 use App\Parametro;
 use App\SaidaEstoque;
 use Illuminate\Http\Request;
@@ -198,6 +199,200 @@ class SaidaEstoqueController extends Controller
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
+        }
+    }
+
+    //Parametro relatorio de saida de estoque
+    public function paramRelatorioSaidaEstoque() {
+        $clientes = Cliente::all();
+       
+        return View('relatorios.estoque.param_relatorio_saida_estoque')->withClientes($clientes);
+    }
+
+    public function RelatorioSaidaEstoque(Request $request) {
+        $data_inicial = $request->data_inicial;
+        $data_final = $request->data_final;
+        $parametros = array();
+  
+      if($data_inicial && $data_final) {
+          $whereData = 'saida_estoques.data_saida between \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\' and \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+          array_push($parametros, 'Período de '.$data_inicial.' até '.$data_final);
+      } elseif ($data_inicial) {
+          $whereData = 'saida_estoques.data_saida >= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\'';
+          array_push($parametros, 'A partir de '.$data_inicial);
+      } elseif ($data_final) {
+          $whereData = 'saida_estoques.data_saida <= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+          array_push($parametros, 'Até '.$data_final);
+      } else {
+          $whereData = '1 = 1'; //busca qualquer coisa
+      }
+  
+      switch ($request->tipo_abastecimento) {
+          case 0:
+              $whereTipoAbastecimento = ('abastecimentos.abastecimento_local = 0');
+              array_push($parametros, 'Status da O.S: Aberto');
+              break;
+          case 1:
+              $whereTipoAbastecimento = ('abastecimentos.abastecimento_local = 1');
+              array_push($parametros, 'Status da O.S: Fechado');
+              break;
+          default:
+              $whereTipoAbastecimento = ('1 = 1');
+              array_push($parametros, 'Status da O.S: Todos');
+              break;
+      }
+  
+      $cliente_id = $request->cliente_id;
+      $departamento_id = $request->departamento_id;
+      
+      
+      if ($cliente_id > 0) {
+          array_push($parametros, 'Cliente: ' . Cliente::find($cliente_id)->nome_razao);
+      }
+  
+      if ($departamento_id > 0) {
+          array_push($parametros, 'Departamento: ' . Departamento::find($departamento_id)->departamento);
+      }
+  
+     
+  
+      $clientes = DB::table('saida_estoques')
+              ->select('clientes.*')
+              ->leftJoin('roles', 'roles.id', 'saida_estoques.user_id')
+              ->leftJoin('clientes', 'clientes.id', 'saida_estoques.cliente_id')
+              ->leftJoin('departamentos', 'departamentos.id', 'saida_estoques.departamento_id')
+              ->whereRaw('clientes.id is not null')
+              //->whereRaw('((saida_estoques.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+              ->whereRaw($whereData)
+              //->whereRaw($whereParam)
+              //->whereRaw($whereTipoAbastecimento)
+              ->orderBy('clientes.nome_razao', 'asc')
+              ->distinct()
+              ->get();
+              
+      if ($request->tipo_relatorio == 1) {
+          /* relatório Sintético */
+  
+          foreach($clientes as $cliente) {
+              $departamentos = DB::table('saida_estoques')
+                      ->select('departamentos.*')
+                      ->leftJoin('clientes', 'clientes.id', 'saida_estoques.cliente_id')
+                      ->leftJoin('departamentos', 'departamentos.id', 'saida_estoques.departamento_id')
+                      ->where('clientes.id',$cliente->id)
+                     // ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+                      ->whereRaw($whereData)
+                      //->whereRaw($whereParam)
+                      //->whereRaw($whereTipoAbastecimento)
+                      ->orderBy('departamentos.departamento', 'asc')
+                      ->distinct()
+                      ->get();
+              $cliente->departamentos = $departamentos;
+             //dd($cliente->departamentos);
+              
+            }
+            foreach($cliente->departamentos as $departamento) {
+                $saidaestoques = DB::table('saida_estoques')
+                ->select(
+                    'produtos.id','produtos.produto_descricao',
+                    DB::raw(
+                        'SUM(saida_estoque_items.quantidade
+                            
+                        ) as quantidade'
+                    ),
+                    DB::raw(
+                        'AVG(saida_estoque_items.valor_unitario
+                            
+                        ) as valor_unitario'
+                    )
+                )
+                ->groupBy('produtos.id','produtos.produto_descricao')
+             //->select('saida_estoques.*','produtos.*','saida_estoque_items.*')
+             ->leftJoin('saida_estoque_items', 'saida_estoque_items.saida_estoque_id', 'saida_estoques.id')
+             ->leftJoin('produtos', 'produtos.id', 'saida_estoque_items.produto_id')
+             ->leftJoin('clientes', 'clientes.id', 'saida_estoques.cliente_id')
+             ->leftJoin('departamentos', 'departamentos.id', 'saida_estoques.departamento_id')
+             ->whereRaw('clientes.id is not null')
+             //->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+             ->whereRaw($whereData)
+             //->whereRaw($whereParam)
+             //->whereRaw($whereTipoAbastecimento)
+             ->where('departamentos.id', $departamento->id)
+            // ->groupBy('saida_estoque_items.produto_id')
+             ->orderby('produtos.id')
+             //->groupBy('veiculos.placa')
+             ->get();
+             //->toSql();
+             $departamento->saidaestoques = $saidaestoques;
+            
+            } 
+    // dd($departamento);
+                  
+         return View('relatorios.estoque.relatorio_saida_estoque')->withClientes($clientes)->withTitulo('Relatório de Saida de Estoque - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
+      } else {
+          /* relatório Analítico */
+          $clientes = DB::table('saida_estoques')
+              ->select('clientes.*')
+              ->leftJoin('roles', 'roles.id', 'saida_estoques.user_id')
+              ->leftJoin('clientes', 'clientes.id', 'saida_estoques.cliente_id')
+              ->leftJoin('departamentos', 'departamentos.id', 'saida_estoques.departamento_id')
+              ->whereRaw('clientes.id is not null')
+              //->whereRaw('((saida_estoques.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+              ->whereRaw($whereData)
+              //->whereRaw($whereParam)
+              //->whereRaw($whereTipoAbastecimento)
+              ->orderBy('clientes.nome_razao', 'asc')
+              ->distinct()
+              ->get();
+              
+      if ($request->tipo_relatorio == 1) {
+          /* relatório Sintético */
+  
+          foreach($clientes as $cliente) {
+              $departamentos = DB::table('saida_estoques')
+                      ->select('departamentos.*')
+                      ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
+                      ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                      ->where('clientes.id',$cliente->id)
+                     // ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+                      ->whereRaw($whereData)
+                      //->whereRaw($whereParam)
+                      //->whereRaw($whereTipoAbastecimento)
+                      ->orderBy('departamentos.departamento', 'asc')
+                      ->distinct()
+                      ->get();
+              $cliente->departamentos = $departamentos;
+             //dd($cliente->departamentos);
+              foreach($cliente->departamentos as $departamento) {
+                             $saidaestoques = DB::table('saida_estoques')
+                         ->select(
+                            'produtos.produto_descricao',
+                           
+                            DB::raw('SUM(saida_estoques_items.quantidade) AS quantidade'),
+                            )
+                          ->select('saida_estoques.*','produtos.*','saida_estoques_items.*')
+                          ->leftJoin('saida_estoques_items', 'saida_estoques_items.id_saida_estoques', 'saida_estoques.id')
+                          ->leftJoin('produtos', 'produtos.id', 'saida_estoques_items.produto_id')
+                          ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                          ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                          ->whereRaw('clientes.id is not null')
+                          //->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+                          ->whereRaw($whereData)
+                          //->whereRaw($whereParam)
+                          //->whereRaw($whereTipoAbastecimento)
+                          ->where('departamentos.id', $departamento->id)
+                          ->groupBy('saida_estoques_items.produto_id')
+                          //->orderby('saida_estoques.data_saida')
+                          //->groupBy('veiculos.placa')
+                          ->get();
+                          //->toSql();
+                          
+                  $departamento->saidaestoques = $saidaestoques;
+                 dd($departamento->saidaestoques);
+              }
+          }
+          
+         return View('relatorios.ordem_servicos.relatorio_saida_estoque')->withClientes($clientes)->withTitulo('Relatório de Saida de Estoque - Sintético')->withParametros($parametros)->withParametro(Parametro::first());}
+  
         }
     }
 }

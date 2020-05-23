@@ -2,6 +2,8 @@
     $abast_local = isset($_GET['abast_local']) ? $_GET['abast_local'] : -1;
     $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : null;
     $data_final = isset($_GET['data_final']) ? $_GET['data_final'] : null;
+    $data_incio = mktime(0, 0, 0, date('m') , 1 , date('Y'));
+    $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
 @endphp
 @extends('layouts.app')
 
@@ -30,6 +32,7 @@
                             'dateTimeFormat' => 'DD/MM/YYYY',
                             'picker_begin' => 'data_inicial',
                             'picker_end' => 'data_final',
+                            'inputValue' => date('dd/mm/yyyy',$data_incio)
                         ],
                         [
                             'type' => 'datetime',
@@ -39,6 +42,7 @@
                             'dateTimeFormat' => 'DD/MM/YYYY',
                             'picker_begin' => 'data_inicial',
                             'picker_end' => 'data_final',
+                            'inputValue' => date('dd/mm/yyyy',$data_fim)
                         ],
                         [
                             'type' => 'select',

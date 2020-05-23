@@ -268,6 +268,9 @@
                         @permission('acesso-relatorio-movimentacao-estoque')
                         <li><a class="dropdown-item" href="{{route('param_relatorio_movimentacao_estoque')}}">Relatório de Movimentação de Estoque - Produtos</a></li>
                         @endpermission
+                        @permission('acesso-relatorio-saida-estoque')
+                        <li><a class="dropdown-item" href="{{route('param_relatorio_saida_estoque')}}">Relatório de Saida de Estoque - Produtos</a></li>
+                        @endpermission
 
                     </li>
                     </ul>

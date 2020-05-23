@@ -10,8 +10,8 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Relatório de Ordem de Serviços', 
-            'routeUrl' => route('param_relatorio_ordem_servicos'), 
+            'title' => 'Relatório de Saida de Estoque', 
+            'routeUrl' => route('param_relatorio_saida_estoque'), 
             'formTarget' => '_blank',
             'method' => 'POST',
             'cancelRoute' => 'home',
@@ -43,27 +43,7 @@
                             'picker_end' => 'data_final',
                             'inputValue' => date('dd/mm/yyyy',$data_fim)
                         ],
-                        [
-                            'type' => 'btn-group',
-                            'field' => 'ordem_servico_status_id',
-                            'label' => 'Status',
-                            'radioButtons' => [
-                                [
-                                    'label' => 'Aberto',
-                                    'value' => 1
-                                ],
-                                [
-                                    'label' => 'Fechado',
-                                    'value' => 2
-                                ],
-                                [
-                                    'label' => 'Todos',
-                                    'value' => -1
-                                ],
-                            ],
-                            'inputSize' => 3,
-                            'defaultValue' => -1
-                        ],
+                        
                         [
                             'type' => 'btn-group',
                             'field' => 'tipo_relatorio',
@@ -111,18 +91,6 @@
                             'defaultNone' => true,
                             'inputSize' => 3,
                             'disabled' => false,
-                        ],
-                        [
-                            'type' => 'select',
-                            'field' => 'veiculo_id',
-                            'label' => 'Veículo',
-                            'required' => true,
-                            'items' => $veiculos,
-                            'displayField' => 'veiculo',
-                            'liveSearch' => true,
-                            'keyField' => 'id',
-                            'defaultNone' => true,
-                            'inputSize' => 3,
                         ]
                     ]
                 ])

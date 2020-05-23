@@ -121,6 +121,9 @@ Route::middleware(['auth:web'])->group(function() {
     Route::post('relatorios/afericoes', 'AfericaoController@relatorioAfericao')->name('relatorio_afericoes');
     Route::get('relatorios/ordem_servicos', 'OrdemServicoController@paramRelatorioOrdemServicos')->name('param_relatorio_ordem_servicos');
     Route::post('relatorios/ordem_servicos', 'OrdemServicoController@RelatorioOrdemServicos')->name('relatorio_ordem_servicos');
+    Route::get('relatorios/saida_estoque', 'SaidaEstoqueController@paramRelatorioSaidaEstoque')->name('param_relatorio_saida_estoque');
+    Route::post('relatorios/saida_estoque', 'SaidaEstoqueController@RelatorioSaidaEstoque')->name('relatorio_saida_estoque');
+
 
 
     Route::get('relatorios/servicos', 'ServicoController@listagemServicos')->name('relatorio_listagem_servicos');

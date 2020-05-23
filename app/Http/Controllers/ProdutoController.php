@@ -331,6 +331,7 @@ class ProdutoController extends Controller
             ->select('grupo_produtos.id','grupo_produtos.grupo_produto')
             ->leftJoin('produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
             ->whereRaw($whereData)
+            ->orderBy('grupo_produtos.grupo_produto')
             ->distinct()
             ->get();
             
@@ -344,6 +345,7 @@ class ProdutoController extends Controller
                 ->leftJoin('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
                 ->where('produtos.grupo_produto_id',$grupoproduto->id)
                 //->whereRaw($whereData)
+                ->orderBy('produtos.produto_descricao')
                 ->get();
                 
                 $grupoproduto->produtos = $produto;
