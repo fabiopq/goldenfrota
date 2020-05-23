@@ -5,6 +5,7 @@
    
     $departamentoVolume = 0;
     $valorDepartamento = 0;
+    $departamentoVolume = 0;
     $distanciaTotal = 0;
     $valortotal = 0;
 @endphp
@@ -18,10 +19,9 @@
         <div class="card-body">
             @foreach($cliente->departamentos as $departamento)
             @php
-                $departamentoVolume = 0;
-                $valorDepartamento = 0; 
                 $quantidadeDepartamento = 0;
-                   
+                $valorDepartamento = 0;
+                  
             @endphp
             <div class="panel-sm">
                 <div class="card-header report-subtitle-1">
@@ -41,11 +41,13 @@
                         <tbody>
                             @foreach($departamento->saidaestoques as $saidaestoque)
                             @php
+                                
                                 $valorTotalItem = 0;
                                 $valorTotalItem = $saidaestoque->quantidade * $saidaestoque->valor_unitario;
                                 $valorDepartamento += $valorTotalItem;
                                 $quantidadeDepartamento += $saidaestoque->quantidade;
-                                $valortotal += $valorDepartamento;
+                                $valortotal += $saidaestoque->quantidade * $saidaestoque->valor_unitario; 
+                                
                             @endphp
                             <tr> 
                             <td align="left">{{ $saidaestoque->id}}</td>
