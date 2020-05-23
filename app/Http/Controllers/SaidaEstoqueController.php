@@ -274,8 +274,6 @@ class SaidaEstoqueController extends Controller
                       ->distinct()
                       ->get();
               $cliente->departamentos = $departamentos;
-                         
-            }
             
             foreach($cliente->departamentos as $departamento) {
                 $saidaestoques = DB::table('saida_estoques')
@@ -311,11 +309,11 @@ class SaidaEstoqueController extends Controller
              //->toSql();
              $departamento->saidaestoques = $saidaestoques;
             
-            } 
-    
+             } 
+            }
                   
              return View('relatorios.estoque.relatorio_saida_estoque')->withClientes($clientes)->withTitulo('Relatório de Saida de Estoque - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
-        } 
+          } 
       
     }
 }
