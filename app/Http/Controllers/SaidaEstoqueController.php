@@ -233,15 +233,29 @@ class SaidaEstoqueController extends Controller
       $departamento_id = $request->departamento_id;
       
       
-      if ($cliente_id > 0) {
-          array_push($parametros, 'Cliente: ' . Cliente::find($cliente_id)->nome_razao);
-      }
+
+    if ($departamento_id > 0) {
+            $whereParam = 'saida_estoques.departamento_id = '. $departamento_id;
+    } else {
+         if ($cliente_id > 0) {
+                $whereParam = 'saida_estoques.cliente_id = '. $cliente_id;
+        } else {
+                $whereParam = '1 = 1';
+        }
   
-      if ($departamento_id > 0) {
-          array_push($parametros, 'Departamento: ' . Departamento::find($departamento_id)->departamento);
-      }
-  
-     
+    }
+
+    if ($cliente_id > 0) {
+        array_push($parametros, 'Cliente: ' . Cliente::find($cliente_id)->nome_razao);
+    }
+
+    if ($departamento_id > 0) {
+        array_push($parametros, 'Departamento: ' . Departamento::find($departamento_id)->departamento);
+    }
+
+    
+
+     //dd();
   
       $clientes = DB::table('saida_estoques')
               ->select('clientes.*')
@@ -251,7 +265,7 @@ class SaidaEstoqueController extends Controller
               ->whereRaw('clientes.id is not null')
               //->whereRaw('((saida_estoques.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
               ->whereRaw($whereData)
-              //->whereRaw($whereParam)
+              ->whereRaw($whereParam)
               //->whereRaw($whereTipoAbastecimento)
               ->orderBy('clientes.nome_razao', 'asc')
               ->distinct()

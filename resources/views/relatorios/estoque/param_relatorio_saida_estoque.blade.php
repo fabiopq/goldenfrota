@@ -43,7 +43,27 @@
                             'picker_end' => 'data_final',
                             'inputValue' => date('dd/mm/yyyy',$data_fim)
                         ],
-                        
+                        [
+                            'type' => 'btn-group',
+                            'field' => 'ordem_servico_status_id',
+                            'label' => 'Status',
+                            'radioButtons' => [
+                                [
+                                    'label' => 'Aberto',
+                                    'value' => 1
+                                ],
+                                [
+                                    'label' => 'Fechado',
+                                    'value' => 2
+                                ],
+                                [
+                                    'label' => 'Todos',
+                                    'value' => -1
+                                ],
+                            ],
+                            'inputSize' => 3,
+                            'defaultValue' => -1
+                        ],
                         [
                             'type' => 'btn-group',
                             'field' => 'tipo_relatorio',

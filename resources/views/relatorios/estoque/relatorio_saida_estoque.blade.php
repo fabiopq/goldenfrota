@@ -8,9 +8,17 @@
     $departamentoVolume = 0;
     $distanciaTotal = 0;
     $valortotal = 0;
+    $quantidadeCliente = 0;
+    $valorCliente = 0;
+    $quantidadeDepartamento = 0;
 @endphp
 {{--  {{dd($clientes)}}  --}}
 @foreach($clientes as $cliente) 
+@php
+$quantidadeCliente =0;
+$valorCliente =0;
+                  
+@endphp
 <div class="panel-sm">
     <div class="panel-sm">
         <div class="card-header report-subtitle-1">
@@ -19,9 +27,10 @@
         <div class="card-body">
             @foreach($cliente->departamentos as $departamento)
             @php
+                
                 $quantidadeDepartamento = 0;
                 $valorDepartamento = 0;
-                  
+                 
             @endphp
             <div class="panel-sm">
                 <div class="card-header report-subtitle-1">
@@ -70,10 +79,25 @@
                     </table>
                 </div>
             </div>
+            @php
+                $quantidadeCliente += $quantidadeDepartamento;
+                $valorCliente += $valorDepartamento;
+            @endphp
             @endforeach
         </div>
     </div>
+    <table class="table table-sm report-table">
+        <tbody>
+            <tr class="default">
+                <td><h6>Total Cliente</h6></td>
+                <td align="right"><h6></h6></td>
+                <td align="right"><h6>Valor Total CLiente R$: {{number_format($valorCliente, 2, ',', '.')}}</h6></td>
+    
+            </tr>
+        </tbody>
+    </table>
 </div>
+
 @endforeach
 <table class="table table-sm report-table">
     <tbody>
