@@ -41,7 +41,7 @@
                             <td align="left">Número</td>
                             <td align="right"></td>
                             <td align="right">Placa / Veículo</td>
-                            <td align="right">Odômetro / Horímetro:</td>
+                            <td align="right">Odômetro / Horímetro</td>
                             <td align="right">Valor</td>
                                                    
                             
