@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Events\NovoRegistroAtualizacaoApp;
 use App\AtualizacaoApp;
+use App\Rules\ValidarPlaca;
 
 class VeiculoController extends Controller
 {
@@ -100,7 +101,7 @@ class VeiculoController extends Controller
         $this->validate($request, [
             'grupo_veiculo_id' => 'required|integer|min:1',
             'cliente_id' => 'required',
-            'placa' => 'required|formato_placa_de_veiculo',
+            'placa' =>  'required',
             'marca_veiculo_id' => 'required',
             'modelo_veiculo_id' => 'required',
             'ano' => 'required|integer',

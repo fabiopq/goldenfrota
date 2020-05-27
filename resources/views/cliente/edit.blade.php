@@ -34,7 +34,8 @@
                             'label' => 'Nome/Razão Sozial',
                             'required' => true,
                             'inputSize' => 9,
-                            'inputValue' => $cliente->nome_razao
+                            'inputValue' => $cliente->nome_razao,
+                            'css' => 'text-uppercase'
                         ],
                         [
                             'type' => 'select',
@@ -53,7 +54,8 @@
                             'type' => 'text',
                             'field' => 'fantasia',
                             'label' => 'Nome Fantasia',
-                            'inputValue' => $cliente->fantasia
+                            'inputValue' => $cliente->fantasia,
+                            'css' => 'text-uppercase'
                         ]
                     ]
                 ])
@@ -74,7 +76,8 @@
                             'label' => 'RG/IE',
                             'required' => true,
                             'inputSize' => 6,
-                            'inputValue' => $cliente->rg_ie
+                            'inputValue' => $cliente->rg_ie,
+                            'css' => 'text-uppercase'
                         ]
                     ]
                 ])
@@ -140,14 +143,16 @@
                                     'label' => 'Endereço',
                                     'required' => true,
                                     'inputSize' => 11,
-                                    'inputValue' => $cliente->endereco
+                                    'inputValue' => $cliente->endereco,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
                                     'field' => 'numero',
                                     'label' => 'Número',
                                     'inputSize' => 1,
-                                    'inputValue' => $cliente->numero
+                                    'inputValue' => $cliente->numero,
+                                    'css' => 'text-uppercase'
                                 ],
                             ]
                         ])
@@ -159,21 +164,24 @@
                                     'field' => 'bairro',
                                     'label' => 'Bairro',
                                     'inputSize' => 4,
-                                    'inputValue' => $cliente->bairro
+                                    'inputValue' => $cliente->bairro,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
                                     'field' => 'cidade',
                                     'label' => 'Cidade',
                                     'inputSize' => 4,
-                                    'inputValue' => $cliente->cidade
+                                    'inputValue' => $cliente->cidade,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
                                     'field' => 'cep',
                                     'label' => 'Cep',
                                     'inputSize' => 2,
-                                    'inputValue' => $cliente->cep
+                                    'inputValue' => $cliente->cep,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'select',

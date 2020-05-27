@@ -31,7 +31,8 @@
                             'field' => 'nome_razao',
                             'label' => 'Nome/Razão Sozial',
                             'required' => true,
-                            'inputSize' => 10
+                            'inputSize' => 10,
+                            'css' => 'text-uppercase'
                         ]
                     ]
                 ])
@@ -42,6 +43,7 @@
                             'type' => 'text',
                             'field' => 'fantasia',
                             'label' => 'Nome Fantasia',
+                            'css' => 'text-uppercase'
                         ]
                     ]
                 ])
@@ -60,7 +62,8 @@
                             'field' => 'rg_ie',
                             'label' => 'RG/IE',
                             'required' => true,
-                            'inputSize' => 6
+                            'inputSize' => 6,
+                            'css' => 'text-uppercase'
                         ]
                     ]
                 ])
@@ -121,13 +124,15 @@
                                     'field' => 'endereco',
                                     'label' => 'Endereço',
                                     'required' => true,
-                                    'inputSize' => 11
+                                    'inputSize' => 11,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
                                     'field' => 'numero',
                                     'label' => 'Número',
-                                    'inputSize' => 1
+                                    'inputSize' => 1,
+                                    'css' => 'text-uppercase'
                                 ],
                             ]
                         ])
@@ -138,19 +143,22 @@
                                     'type' => 'text',
                                     'field' => 'bairro',
                                     'label' => 'Bairro',
-                                    'inputSize' => 4
+                                    'inputSize' => 4,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
                                     'field' => 'cidade',
                                     'label' => 'Cidade',
-                                    'inputSize' => 4
+                                    'inputSize' => 4,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
                                     'field' => 'cep',
                                     'label' => 'Cep',
-                                    'inputSize' => 2
+                                    'inputSize' => 2,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'select',

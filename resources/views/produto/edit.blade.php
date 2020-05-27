@@ -22,7 +22,8 @@
                             'required' => true,
                             'autofocus' => true,
                             'inputSize' => 6,
-                            'inputValue' => $produto->produto_descricao
+                            'inputValue' => $produto->produto_descricao,
+                            'css' => 'text-uppercase'
                         ],
                         [
                             'type' => 'text',
@@ -30,7 +31,8 @@
                             'label' => 'Descrição Reduzida',
                             'inputSize' => 2,
                             'maxLength' => 10,
-                            'inputValue' => $produto->produto_desc_red
+                            'inputValue' => $produto->produto_desc_red,
+                            'css' => 'text-uppercase'
                         ],
                         [
                             'type' => 'select',
