@@ -510,7 +510,7 @@ class OrdemServicoController extends Controller
                     ->distinct()
                     ->get();
             $cliente->departamentos = $departamentos;
-           //dd($cliente->departamentos);
+           
             foreach($cliente->departamentos as $departamento) {
                 $ordemservicos = DB::table('ordem_servicos')
                         ->select('veiculos.placa','ordem_servicos.*')
@@ -529,8 +529,9 @@ class OrdemServicoController extends Controller
                         //->toSql();
                         
                 $departamento->ordemservicos = $ordemservicos;
-            }
-            foreach($departamento->ordemservicos as $ordemservicos) {
+            
+            
+                foreach($departamento->ordemservicos as $ordemservicos) {
                 $produtos = DB::table('ordem_servico_produto')
                         ->select('produtos.id','produtos.produto_descricao','ordem_servico_produto.quantidade',
                                 'ordem_servico_produto.valor_produto',
@@ -553,10 +554,12 @@ class OrdemServicoController extends Controller
                         ->get();
                         //->toSql();
                         
-                $ordemservicos->produtos = $produtos;
-                foreach($departamento->ordemservicos as $ordemservicos) {
+                        $ordemservicos->produtos = $produtos;
+                    }
+            
+                    foreach($departamento->ordemservicos as $ordemservicos) {
 
-                    $servicos = DB::table('ordem_servico_servico')
+                        $servicos = DB::table('ordem_servico_servico')
                             ->select('servicos.id','servicos.descricao',
                                     'ordem_servico_servico.valor_servico',
                                     'ordem_servico_servico.valor_desconto','ordem_servico_servico.valor_acrescimo','ordem_servico_servico.valor_cobrado')
@@ -578,12 +581,13 @@ class OrdemServicoController extends Controller
                             ->get();
                             //->toSql();
                             
-                    $ordemservicos->servicos = $servicos;
-                }
-            }
+                        $ordemservicos->servicos = $servicos;
+                    }
+                }   
            
-        }
+            }   
+        
         return View('relatorios.ordem_servicos.relatorio_ordem_servicos_analitico')->withClientes($clientes)->withTitulo('Relatório de Ordem de Serviços - Analítico')->withParametros($parametros)->withParametro(Parametro::first());    }
-}
+    }
 
 }

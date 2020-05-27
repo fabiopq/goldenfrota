@@ -100,6 +100,14 @@
                             </tr>
                             @endforeach
                             <tr class="success"> 
+                                <td align="left"><b>Observações: {{$ordemservico->obs}}  </b></td>
+                                <td align="right"></td>    
+                                <td align="right"></td>   
+                                <td align="right"></td>     
+                                <td align="right"></td>   
+                                <td align="right"></td>                          
+                            </tr>
+                            <tr class="success"> 
                                 <td align="left"><h6><b>Total da Ordem de Serviço</b></h6></td>
                                 <td align="right"></td>
                                 <td align="right"></td>

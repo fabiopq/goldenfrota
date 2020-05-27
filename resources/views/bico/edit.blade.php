@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
+
 @section('content')
+
     <div class="card m-0 border-0">
+       
         @component('components.form', [
             'title' => 'Alterar Bico', 
             'routeUrl' => route('bico.update', $bico->id), 
@@ -47,6 +50,7 @@
                             'liveSearch' => true,
                             'indexSelected' => $bico->tanque_id
                         ],
+                        
                         [
                             'type' => 'text',
                             'field' => 'encerrante',
@@ -83,4 +87,6 @@
             $(encerrante).mask('000000000000000.000', {reverse: true});
         });
     </script>
+
+
 @endsection

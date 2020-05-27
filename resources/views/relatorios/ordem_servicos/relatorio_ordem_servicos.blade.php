@@ -40,7 +40,8 @@
                             <td>Data/Hora Fechamento</td>
                             <td align="left">Número</td>
                             <td align="right"></td>
-                            <td align="right">Placa/Veículo</td>
+                            <td align="right">Placa / Veículo</td>
+                            <td align="right">Odômetro / Horímetro:</td>
                             <td align="right">Valor</td>
                                                    
                             
@@ -62,6 +63,7 @@
                                 <td align="left"> {{$ordemservico->id}} </td>
                                 <td align="right"></td>
                                 <td align="right"> {{$ordemservico->placa}} </td>
+                                <td align="right">{{number_format($ordemservico->km_veiculo,0, ',', '.')}} </td>
                                 <td align="right">R$ {{number_format($ordemservico->valor_total,2, ',', '.')}} </td>
                                 
                             </tr>

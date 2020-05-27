@@ -207,50 +207,50 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownRelatorios">
                     @permission('acesso-posicao-tanques-grafico')
-                    <li><a class="dropdown-item" href="{{route('relatorio_posicao_tanques')}}" target="_blank">Posição dos Tanques (Gráfico)</a></li>
+                    <li><a class="dropdown-item" href="{{route('relatorio_posicao_tanques')}}" target="_blank">Tanques (Gráfico)</a></li>
                     @endpermission
                     @permission('acesso-media-consumo-veiculos-grafico')
-                    <li><a class="dropdown-item" href="{{route('relatorio_media_consumo')}}" target="_blank">Média de Consumo de Veículos (Gráfico)</a></li>
+                    <li><a class="dropdown-item" href="{{route('relatorio_media_consumo')}}" target="_blank">Consumo de Veículos (Gráfico)</a></li>
                     @endpermission
                     @permission('acesso-listagem-clientes')
-                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_clientes')}}" target="_blank">Listagem de Clientes</a></li>
+                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_clientes')}}" target="_blank">Clientes</a></li>
                     @endpermission
                     @permission('acesso-relatorio-listagem-grupo-produto')
-                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_grupo_produto')}}">Listagem de Grupo de Produtos</a></li>
+                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_grupo_produto')}}">Grupo de Produtos</a></li>
                     @endpermission
                     @permission('acesso-relatorio-listagem-combustivel')
-                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_combustiveis')}}" target="_blank">Listagem de Combustíveis</a></li>
+                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_combustiveis')}}" target="_blank">Combustíveis</a></li>
                     @endpermission
                     @permission('acesso-relatorio-listagem-produtos')
-                    <li><a class="dropdown-item" href="{{route('param_relatorio_listagem_produtos')}}" target="_blank">Listagem de Produtos</a></li>
+                    <li><a class="dropdown-item" href="{{route('param_relatorio_listagem_produtos')}}" target="_blank">Produtos</a></li>
                     @endpermission
                     @permission('acesso-listagem-servicos')
-                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_servicos')}}" target="_blank">Listagem de Servicos</a></li>
+                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_servicos')}}" target="_blank">Servicos</a></li>
                     @endpermission
                     @permission('acesso-listagem-veiculos')
-                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_veiculos')}}">Listagem de Veículos</a></li>
+                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_veiculos')}}">Veículos</a></li>
                     @endpermission
                     @permission('acesso-listagem-tanques')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_tanques')}}" target="_blank">Listagem de Tanques</a></li>
                     @endpermission
                     @permission('acesso-relatorio-ordem-servicos')
-                    <li><a class="dropdown-item" href="{{route('param_relatorio_ordem_servicos')}}" target="_blank">Relatorio de Ordem de Serviços</a></li>
+                    <li><a class="dropdown-item" href="{{route('param_relatorio_ordem_servicos')}}" target="_blank">Ordem de Serviços</a></li>
                     @endpermission
 
                     <a class="dropdown-item dropdown-toggle" href="#">Abastecimentos</a>
                     <ul class="dropdown-menu">
                     <li class="dropdown-submenu">
                         @permission('acesso-relatorio-abastecimentos')
-                            <li><a class="dropdown-item" href="{{route('param_relatorio_abastecimentos')}}">Relatorio de Abastecimentos</a></li>
+                            <li><a class="dropdown-item" href="{{route('param_relatorio_abastecimentos')}}">Abastecimentos</a></li>
                         @endpermission
                         @permission('acesso-relatorio-abastecimentos-bico')
-                            <li><a class="dropdown-item" href="{{route('param_relatorio_abastecimentos_bico')}}">Relatório de Abastecimentos - Bico</a></li>
+                            <li><a class="dropdown-item" href="{{route('param_relatorio_abastecimentos_bico')}}">Abastecimentos - Bico</a></li>
                         @endpermission
                         @permission('acesso-relatorio-media-consumo-modelo')
-                            <li><a class="dropdown-item" href="{{route('param_relatorio_media_modelo')}}">Relatório de Média de Consumo por Modelo</a></li>
+                            <li><a class="dropdown-item" href="{{route('param_relatorio_media_modelo')}}">Média de Consumo por Modelo</a></li>
                         @endpermission
                         @permission('acesso-relatorio-afericoes')
-                            <li><a class="dropdown-item" href="{{route('param_relatorio_afericoes')}}">Relatório de Aferições</a></li>
+                            <li><a class="dropdown-item" href="{{route('param_relatorio_afericoes')}}">Aferições</a></li>
                         @endpermission
                         
                     </li>
@@ -260,16 +260,16 @@
                     <ul class="dropdown-menu">
                     <li class="dropdown-submenu">
                         @permission('acesso-relatorio-posicao-estoque')
-                        <li><a class="dropdown-item" href="{{route('param_relatorio_posicao_estoque')}}">Relatório de Posição de Estoque</a></li>
+                        <li><a class="dropdown-item" href="{{route('param_relatorio_posicao_estoque')}}">Posição de Estoque</a></li>
                         @endpermission
                         @permission('acesso-relatorio-estoque-minimo')
-                        <li><a class="dropdown-item" href="{{route('param_relatorio_estoque_minimo')}}">Relatório de Produtos Abaixo do Estoque Mínimo</a></li>
+                        <li><a class="dropdown-item" href="{{route('param_relatorio_estoque_minimo')}}">Produtos Abaixo do Estoque Mínimo</a></li>
                         @endpermission
                         @permission('acesso-relatorio-movimentacao-estoque')
-                        <li><a class="dropdown-item" href="{{route('param_relatorio_movimentacao_estoque')}}">Relatório de Movimentação de Estoque - Produtos</a></li>
+                        <li><a class="dropdown-item" href="{{route('param_relatorio_movimentacao_estoque')}}">Movimentação de Estoque - Produtos</a></li>
                         @endpermission
                         @permission('acesso-relatorio-saida-estoque')
-                        <li><a class="dropdown-item" href="{{route('param_relatorio_saida_estoque')}}">Relatório de Saida de Estoque - Produtos</a></li>
+                        <li><a class="dropdown-item" href="{{route('param_relatorio_saida_estoque')}}">Saida de Estoque - Produtos</a></li>
                         @endpermission
 
                     </li>

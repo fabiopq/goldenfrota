@@ -51,6 +51,9 @@
                     ]
                 ])
                 @endcomponent
+                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#addGrupoVeiculoModal">
+					Cadastrar
+				</button>
                 @component('components.form-group', [
                     'inputs' => [
                         [
@@ -157,6 +160,102 @@
             @endsection
         @endcomponent
     </div>
+    
+    <div id="visulUsuarioModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="visulUsuarioModalLabel">Detalhes do Usuário</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span id="visul_usuario"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="addGrupoVeiculoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addGrupoVeiculoModalLabel">Cadastrar Grupo Veículo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="insert_form">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Nome</label>
+                            <div class="col-sm-10">
+                                <input name="nome" type="text" class="form-control" id="nome" placeholder="Nome do Grupo">
+                            </div>
+                        </div>
+                                                
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <input type="submit" name="CadUser" id="CadUser" value="Cadastrar" class="btn btn-outline-success">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var qnt_result_pg = 50; //quantidade de registro por página
+        var pagina = 1; //página inicial
+        $(document).ready(function () {
+            listar_usuario(pagina, qnt_result_pg); //Chamar a função para listar os registros
+        });
+        
+        function listar_usuario(pagina, qnt_result_pg){
+            var dados = {
+                pagina: pagina,
+                qnt_result_pg: qnt_result_pg
+            }
+            $.post('listar_usuario.php', dados , function(retorna){
+                //Subtitui o valor no seletor id="conteudo"
+                $("#conteudo").html(retorna);
+            });
+        }
+        
+        $(document).ready(function(){
+            $(document).on('click','.view_data', function(){
+                var user_id = $(this).attr("id");
+                //alert(user_id);
+                //Verificar se há valor na variável "user_id".
+                if(user_id !== ''){
+                    var dados = {
+                        user_id: user_id
+                    };
+                    $.post('visualizar.php', dados, function(retorna){
+                        //Carregar o conteúdo para o usuário
+                        $("#visul_usuario").html(retorna);
+                        $('#visulUsuarioModal').modal('show'); 
+                    });
+                }
+            });
+            
+            $('#addGrupoVeiculoModal').on('submit', function(event){
+                event.preventDefault();
+                //Receber os dados do formulário
+                
+                var request = $("#insert_form").serialize();
+                $.post("grupo_veiculo.store")[]{
+                                       
+                });
+            });
+        });
+    </script>
+
 @endsection
 
 @push('document-ready')

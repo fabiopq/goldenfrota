@@ -143,7 +143,11 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/dashboard/os_em_aberto', 'DashboardController@osEmAberto');
 });
 
- /*Route::get('/param_teste_exportar_hiro', function() {
+ 
+Route::get('/aula', function() {
+    return View('aula.index');
+});
+/*Route::get('/param_teste_exportar_hiro', function() {
     return View('integracao_hiro.index');
 });
  */
