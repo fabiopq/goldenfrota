@@ -41,10 +41,6 @@
                             @php
                                 
                                 $valorDepartamento += $ordemservico->valor_total;
-                               // $clienteDistancia += $abastecimento->km_final - $abastecimento->km_inicial;
-                                //$departamentoVolume += $abastecimento->consumo; 
-                                //$departamentoDistancia += $abastecimento->km_final - $abastecimento->km_inicial;  
-                                //$distanciaTotal += $abastecimento->km_final - $abastecimento->km_inicial;  
                                 $valortotal += $ordemservico->valor_total;
                             @endphp
                             <thead> 
@@ -81,9 +77,6 @@
                                 <td align="right"> {{number_format($produto->valor_desconto,2, ',', '.')}} </td>
                                 <td align="right"> {{number_format($produto->valor_acrescimo,2, ',', '.')}} </td>
                                 <td align="right"> {{number_format($produto->valor_cobrado,2, ',', '.')}} </td>
-                                
-                                
-                                
                             </tr>
                             @endforeach
                             
@@ -115,6 +108,14 @@
                                 <td align="right"></td>
                                 <td align="right"><h6><b>R$ {{number_format($ordemservico->valor_total,2, ',', '.')}}</b></h6> </td>
                                 
+                            </tr>
+                            <tr class="success"> 
+                                <td align="right"> </td>
+                                <td align="right"> </td>
+                                <td align="right"> </td>
+                                <td align="right"> </td>
+                                <td align="right"> </td>
+                                <td align="right"> </td>                                
                             </tr>
                             @endforeach
                             
