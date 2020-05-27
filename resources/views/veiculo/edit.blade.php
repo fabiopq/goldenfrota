@@ -51,9 +51,7 @@
                     ]
                 ])
                 @endcomponent
-                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#addGrupoVeiculoModal">
-					Cadastrar
-				</button>
+                
                 @component('components.form-group', [
                     'inputs' => [
                         [
