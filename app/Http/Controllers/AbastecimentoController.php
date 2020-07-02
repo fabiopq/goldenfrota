@@ -817,4 +817,20 @@ class AbastecimentoController extends Controller
                     ->withParametro(Parametro::first());
         }
     }
+
+    public function apiAbastecimentos() {
+        return response()->json(DB::table('abastecimentos')
+        ->select('abastecimentos.*')
+        ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+        ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+        ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+        ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
+        ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+       
+        ->get());
+    }
+
+    public function apiAbastecimento($id) {
+        return response()->json(Abastecimento::ativo()->where('id', $id)->get());
+    }
 }

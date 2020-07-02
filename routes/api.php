@@ -53,12 +53,17 @@ Route::middleware('auth:api')->group(function(){
     Route::get('modelo_veiculos', 'ModeloVeiculoController@apiModeloVeiculos');
     Route::get('modelo_veiculo/{id}', 'ModeloVeiculoController@apiModeloVeiculo');
 
-    Route::get('produtos', 'ProdutoController@apiProdutos');
+    //Route::get('produtos', 'ProdutoController@apiProdutos');
     Route::get('produto/{id}', 'ProdutoController@apiProduto');
 
     Route::get('servicos', 'ServicoController@apiServicos');
     Route::get('servico/{id}', 'ServicoController@apiServico');
 
     //Route::get('veiculos', 'VeiculoController@apiVeiculos');
-    Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
+    //Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 });
+Route::get('produtos', 'ProdutoController@apiProdutos');
+
+Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
+Route::get('veiculos', 'VeiculoController@apiVeiculos');
+Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');

@@ -145,7 +145,7 @@ Route::middleware(['auth:web'])->group(function() {
 
  
 Route::get('/aula', function() {
-    return View('aula.index');
+    return 'aula';
 });
 /*Route::get('/param_teste_exportar_hiro', function() {
     return View('integracao_hiro.index');
