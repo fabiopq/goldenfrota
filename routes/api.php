@@ -67,3 +67,4 @@ Route::get('produtos', 'ProdutoController@apiProdutos');
 Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
 Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
+Route::get('veiculoscliente', 'VeiculoController@apiVeiculosClientes');

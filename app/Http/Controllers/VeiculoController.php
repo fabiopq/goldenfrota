@@ -532,7 +532,35 @@ class VeiculoController extends Controller
     }
 
     public function apiVeiculos() {
-        return response()->json(Veiculo::ativo()->get());
+        //return response()->json(Veiculo::ativo()->get());
+        return response()->json(  DB::table('veiculos')
+                            ->select(
+                           'veiculos.id','veiculos.placa','veiculos.tag','veiculos.hodometro','veiculos.renavam',
+                           'modelo_veiculos.modelo_veiculo','marca_veiculos.marca_veiculo'                        
+                            )
+                            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                            ->orderBy('veiculos.placa','desc')
+                            //->orderBy('marca_veiculo', 'asc')
+                            //->orderBy('modelo_veiculo', 'asc')
+                            //->tosql();
+                            ->get());
+    }
+
+    public function apiVeiculosClientes() {
+    
+        return response()->json(  DB::table('veiculos')
+                            ->select(
+                           'veiculos.id','veiculos.placa','veiculos.tag','veiculos.hodometro','veiculos.renavam',
+                           'modelo_veiculos.modelo_veiculo','marca_veiculos.marca_veiculo'                        
+                            )
+                            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                            ->orderBy('veiculos.placa','desc')
+                            //->orderBy('marca_veiculo', 'asc')
+                            //->orderBy('modelo_veiculo', 'asc')
+                            //->tosql();
+                            ->get());
     }
 
     public function apiVeiculo($id) {
