@@ -12,12 +12,16 @@
 @php
     $qtdBico = 0;
     $vlrBico = 0;
+    
 @endphp
+
 <div class="panel-sm">
     <div class="panel-sm">
         <div class="card-header report-subtitle-1">
             <h4> Bico: {{$bico->num_bico}} - {{$bico->descricao_tanque}} - {{$bico->descricao}} </h4>
-        </div>    
+        </div>   
+        
+
         <div class="card-body">
             <table class="table table-sm report-table">
                 <thead>
@@ -55,6 +59,8 @@
                         <td align="right"> {{number_format($abastecimento->valor_litro, 3, ',', '.')}} </td>
                         <td align="right"> {{number_format($abastecimento->valor_abastecimento, 3, ',', '.')}} </td>
                     </tr>
+               
+                    
                 @endforeach
                     <tr class="success"> 
                         <td colspan=2>Total do Bico</td>

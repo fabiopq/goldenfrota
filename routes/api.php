@@ -28,7 +28,7 @@ Route::middleware('auth:api')->group(function(){
 
     Route::get('atualizacoes/{idUltimaAtualizacao?}', 'AtualizacaoAppController@obterAtualizacoes');
 
-    Route::get('clientes', 'ClienteController@apiClientes');
+    //Route::get('clientes', 'ClienteController@apiClientes');
     Route::get('cliente/{id}', 'ClienteController@apiCliente');
     
 
@@ -68,3 +68,4 @@ Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
 Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 Route::get('veiculoscliente', 'VeiculoController@apiVeiculosClientes');
+Route::get('clientes', 'ClienteController@apiClientes');
