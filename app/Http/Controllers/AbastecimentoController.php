@@ -618,7 +618,7 @@ class AbastecimentoController extends Controller
                 ->whereRaw($whereParam)
                 ->whereRaw($whereTipoAbastecimento)
                 ->groupBy('abastecimentos.veiculo_id')
-                ->orderBy('clientes.nome_razao', 'asc')
+                //->orderBy('clientes.nome_razao', 'asc')
                 ->distinct()
                 ->get();
 
@@ -635,7 +635,7 @@ class AbastecimentoController extends Controller
                 ->whereRaw($whereParam)
                 ->whereRaw($whereTipoAbastecimento)
    
-                ->orderBy('clientes.nome_razao', 'asc')
+               // ->orderBy('clientes.nome_razao', 'asc')
                 ->distinct()
                 ->get();
               // dd($clientesNullo);
