@@ -101,7 +101,7 @@ class VeiculoController extends Controller
         $this->validate($request, [
             'grupo_veiculo_id' => 'required|integer|min:1',
             'cliente_id' => 'required',
-            'placa' =>  'required',
+            'placa' =>  'required||unique:veiculos',
             'marca_veiculo_id' => 'required',
             'modelo_veiculo_id' => 'required',
             'ano' => 'required|integer',

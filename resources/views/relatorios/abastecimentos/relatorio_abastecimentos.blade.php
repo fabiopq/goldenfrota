@@ -78,6 +78,84 @@
     </div>
 </div>
 @endforeach
+
+
+
+@foreach($clientes as $cliente) 
+@php
+    
+    $clienteVolume = 0;
+    $clienteDistancia = 0;
+@endphp
+<div class="panel-sm">
+    <div class="panel-sm">
+        <div class="card-header report-subtitle-1">
+            <h4> Cliente: Não Informado </h4>
+        </div>    
+        <div class="card-body">
+            @php
+            
+            $departamentoDistancia = 0;
+            $departamentoVolume = 0;
+
+
+            @endphp
+                
+           
+            @foreach($clientesNullo as $clienteItem)
+            @php
+            $clienteVolume += $clienteItem->consumo;
+            $clienteDistancia += $clienteItem->km_final - $clienteItem->km_inicial;
+            $departamentoVolume += $clienteItem->consumo; 
+            $departamentoDistancia += $clienteItem->km_final - $clienteItem->km_inicial;  
+            $distanciaTotal += $clienteItem->km_final - $clienteItem->km_inicial;  
+            $volumeTotal += $clienteItem->consumo;
+            @endphp
+            <div class="panel-sm">
+                <div class="card-header report-subtitle-1">
+                    <h5>Departamento: Departamento Não Informado </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm report-table">
+                        <thead>
+                            <td>Veículo</td>
+                            <td align="right">KM Inicial</td>
+                            <td align="right">KM Final</td>
+                            <td align="right">Distância Percorrida</td>
+                            <td align="right">Consumo Médio/KM</td>
+                            <td align="right">Consumo Total</td>
+                        </thead>
+                        <tbody>
+                            
+                           
+                            <tr> 
+                                <td> Placa Não Informada </td>
+                                <td align="right"> &nbsp</td>
+                                <td align="right"> &nbsp</td>
+                                <td align="right"> &nbsp</td>
+                                <td align="right"> &nbsp</td>
+                                <td align="right">{{number_format($clienteItem->consumo, 2, ',', '.')}}</td>
+                            </tr>
+                        @endforeach
+                            <tr class="success"> 
+                                <td colspan=2>Total do Departamento</td>
+                                <td align="right"></td>
+                                <td align="right">{{number_format($departamentoDistancia, 1, ',', '.')}} </td>
+                                <td align="right"> </td>
+                                <td align="right">{{number_format($departamentoVolume, 3, ',', '.')}}</td>
+                                
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+@endforeach
 <table class="table table-sm report-table">
     <tbody>
         <tr class="default">
