@@ -634,7 +634,7 @@ class AbastecimentoController extends Controller
                 ->whereRaw($whereData)
                 ->whereRaw($whereParam)
                 ->whereRaw($whereTipoAbastecimento)
-   
+                   
                // ->orderBy('clientes.nome_razao', 'asc')
                 ->distinct()
                 ->get();
