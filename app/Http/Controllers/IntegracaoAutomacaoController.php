@@ -216,11 +216,12 @@ class IntegracaoAutomacaoController extends Controller
             //return;
         }
 
+       
         $cfgPreco = DB::table('settings')
                                 ->select('settings.value')
                                 ->where('settings.key','automacao_valor_combustivel')
                                 ->first();
-                               // dd($cfgPreco);
+                                //dd($cfgPreco->value);
         
         try {
             /* Config da conta de FTP */
@@ -267,9 +268,10 @@ class IntegracaoAutomacaoController extends Controller
                                 ->select('combustiveis.valor')
                                 ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
                                 ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
-                                ->where('bicos.id', '=', '3')
+                                ->where('bicos.id', '=', trim($registro[3]))
                                 ->first();
                         
+                                
                                 $veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
         
         
@@ -285,14 +287,23 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->atendente_id = $atendente->id;
                                 }
                                 
-
+                                
                                 $abastecimento->id_automacao = trim($registro[1]);
                                 $abastecimento->ns_automacao = trim($registro[2]);           
                                 $abastecimento->data_hora_abastecimento = $this->formataDataHoraAbastecimento($registro[4].$registro[5])->format('Y-m-d H:i:s');
                                 
                                 if ($cfgPreco->value){
-                                    $abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($registro[7]), 3) * $preco->valor);
-                                    $abastecimento->valor_litro = $preco->valor;
+                                    if (!$preco){
+                                        $abastecimento->valor_abastecimento = $this->formataValorDecimal(trim($registro[6]));
+                                        $abastecimento->valor_litro = $this->formataValorDecimal(trim($registro[8]), trim($registro[9]));
+
+                                    }else{
+                                        $abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($registro[7]), 3) * $preco->valor);
+                                        $abastecimento->valor_litro = $preco->valor;
+                                    }
+
+                                     
+                                    
                                 }else{
                                     $abastecimento->valor_abastecimento = $this->formataValorDecimal(trim($registro[6]));
                                     $abastecimento->valor_litro = $this->formataValorDecimal(trim($registro[8]), trim($registro[9]));
@@ -337,6 +348,8 @@ class IntegracaoAutomacaoController extends Controller
                                 
                                 $dataAbastecimento = $this->formataDataHoraAbastecimento($registro[4].$registro[5]);
                                
+                                
+                               
                                 //Log::debug($dataInicio);
 
 
@@ -355,6 +368,7 @@ class IntegracaoAutomacaoController extends Controller
 
                             try {
                                 //dd($abastecimento);
+                                //Log::debug($abastecimento);
                                 DB::beginTransaction();
                                 
                                 if($abastecimento->save()) {
