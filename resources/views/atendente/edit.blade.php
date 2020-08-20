@@ -45,7 +45,7 @@
                                 [
                                     'type' => 'text',
                                     'field' => 'usuario_atendente',
-                                    'label' => 'Nome',
+                                    'label' => 'Nome (Hiro)',
                                     'required' => true,
                                     'inputValue' => $atendente->usuario_atendente,
                                     'inputSize' => 6
@@ -53,11 +53,24 @@
                                 [
                                     'type' => 'text',
                                     'field' => 'senha_atendente',
-                                    'label' => 'Identificação',
+                                    'label' => 'Identificação TAG (Hiro)',
                                     'required' => true,
                                     'inputValue' => $atendente->senha_atendente,
                                     'inputSize' => 6
-                                ]
+                                ],
+                                [
+                                    'type' => 'select',
+                                    'field' => 'veiculo_id',
+                                    'label' => 'Veículo (opcional)',
+                                    'required' => true,
+                                    'items' => $veiculos,
+                                    'displayField' => 'veiculo',
+                                    'liveSearch' => true,
+                                    'keyField' => 'id',
+                                    'defaultNone' => true,
+                                    'inputSize' => 6,
+                                    'indexSelected' => $atendente->veiculo_id
+                                ], 
                             ]
                         ])
                         @endcomponent

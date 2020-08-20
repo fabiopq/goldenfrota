@@ -36,7 +36,7 @@
                                 [
                                     'type' => 'text',
                                     'field' => 'usuario_atendente',
-                                    'label' => 'Nome',
+                                    'label' => 'Nome (Hiro)',
                                     'required' => true,
                                     'inputValue' => isset($atendente->usuario_atendente) ? $atendente->usuario_atendente : '',
                                     'inputSize' => 6
@@ -44,11 +44,23 @@
                                 [
                                     'type' => 'text',
                                     'field' => 'senha_atendente',
-                                    'label' => 'Identificação',
+                                    'label' => 'Identificação TAG (Hiro)',
                                     'required' => true,
                                     'inputValue' => isset($atendente->senha_atendente) ? $atendente->senha_atendente : '',
                                     'inputSize' => 6
-                                ]
+                                ],
+                                 [
+                                   'type' => 'select',
+                                    'field' => 'veiculo_id',
+                                    'label' => 'Veículo (opcional)',
+                                    'required' => true,
+                                    'items' => $veiculos,
+                                    'displayField' => 'veiculo',
+                                    'liveSearch' => true,
+                                    'keyField' => 'id',
+                                    'defaultNone' => true,
+                                      'inputSize' => 6,
+                              ] , 
                             ]
                         ])
                         @endcomponent

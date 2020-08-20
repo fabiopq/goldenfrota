@@ -321,8 +321,18 @@ class IntegracaoAutomacaoController extends Controller
                                 }
         
                                 if (!$veiculo) {
-                                    $obs .= 'Veículo ['.trim($registro[14]).']: Não encontrado!&#10;';
-                                    $abastecimento->media_veiculo = 0;
+                                    
+                                  
+                                    if (!$atendente->veiculo_id){//verifica se no cadastro de atendente possui veiculo
+                                        $abastecimento->media_veiculo = 0;
+                                        $obs .= 'Veículo ['.trim($registro[14]).']: Não encontrado!&#10;';
+                                    }else{
+                                        $abastecimento->veiculo_id = $atendente->veiculo_id;
+                                        $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
+                                        $veiculo = Veiculo::where('id', '=',$atendente->veiculo_id)->first(); 
+                                        $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                                    }
+                                    
                                 } else {
                                     $abastecimento->veiculo_id = $veiculo->id;
                                     //if ( $veiculo->modelo_veiculo->tipo_controle_veiculo_id == 1) {

@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Atendente extends Model
 {
-    public $fillable = ['nome_atendente', 'usuario_atendente', 'senha_atendente', 'ativo'];
+    public $fillable = ['nome_atendente', 'usuario_atendente', 'senha_atendente', 'veiculo_id','ativo'];
+    
+    public function veiculos() {
+        return $this->hasMany(Veiculo::class);
+    }
 }
