@@ -255,7 +255,7 @@ class IntegracaoAutomacaoController extends Controller
                                                 ->orderBy('data_hora_abastecimento', 'desc')
                                                 ->pluck('data_hora_abastecimento')
                                                 ->first());
-                                                dd($registros);
+                    
 
                     foreach ($registros as $registro)  {
                         if (count($registro) == 17) {
