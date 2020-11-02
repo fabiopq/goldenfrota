@@ -14,7 +14,7 @@ class AlterAtendentesAddIdVeiculo extends Migration
     public function up()
     {
         Schema::table('atendentes', function (Blueprint $table) {
-            $table->unsignedInteger('veiculo_id')->after('senha_atendente');
+            $table->unsignedInteger('veiculo_id')->after('senha_atendente')->nullable();
             $table->foreign('veiculo_id')->references('id')->on('veiculos')->nullable();
         });
     }

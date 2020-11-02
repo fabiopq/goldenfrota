@@ -181,7 +181,8 @@ class IntegracaoAutomacaoController extends Controller
     }
 
     protected function formataPlacaVeiculo($placa) {
-        return strtoupper(substr($placa, 0, -4).'-'.substr($placa, -4));
+        
+        return strtoupper(substr($placa, 0, -5).'-'.substr($placa, -4));
     }
 
     /* 
@@ -239,6 +240,7 @@ class IntegracaoAutomacaoController extends Controller
                     $registros = array();
                     
                     $linhas = explode('>', $arquivo);
+
                     foreach ($linhas as $linha) {
                         $linha = str_replace('<', '', $linha);
                         $linha = explode(';', $linha);
@@ -247,11 +249,13 @@ class IntegracaoAutomacaoController extends Controller
                         }
                     }
                     
+                    
                     $dataInicio = \DateTime::createFromFormat('Y-m-d H:i:s', 
                                         Abastecimento::whereNotNull('id_automacao')
                                                 ->orderBy('data_hora_abastecimento', 'desc')
                                                 ->pluck('data_hora_abastecimento')
                                                 ->first());
+                                                dd($registros);
 
                     foreach ($registros as $registro)  {
                         if (count($registro) == 17) {
@@ -271,7 +275,7 @@ class IntegracaoAutomacaoController extends Controller
                                 ->where('bicos.id', '=', trim($registro[3]))
                                 ->first();
                         
-                                
+                               // dd('placa', '=', $this->formataPlacaVeiculo(trim($registro[13]))); 
                                 $veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
         
         
@@ -379,10 +383,11 @@ class IntegracaoAutomacaoController extends Controller
                             try {
                                 //dd($abastecimento);
                                 //Log::debug($abastecimento);
+                               
                                 DB::beginTransaction();
                                 
                                 if($abastecimento->save()) {
-                                    // Movimenta o estoque do tanque */
+                                    // Movimenta o estoque do tanque 
                                     if (MovimentacaoCombustivelController::saidaAbastecimento($abastecimento)) {
                                         DB::commit();
                                         Log::info('Novo abastecimento: '.$abastecimento.' importado da Automação.');
@@ -392,6 +397,7 @@ class IntegracaoAutomacaoController extends Controller
                                 } else {
                                     throw new \Exception('Erro ao inserir o abastecimento. ['.implode("|",$registro).']');
                                 }
+                               
                             } catch (\Exception $e) {
                                 $errosImportacao = true;
                                 DB::rollback();
