@@ -182,7 +182,7 @@ class IntegracaoAutomacaoController extends Controller
 
     protected function formataPlacaVeiculo($placa) {
         
-        return strtoupper(substr($placa, 0, -5).'-'.substr($placa, -4));
+        return strtoupper(substr($placa, 0, 3).'-'.substr($placa, -4));
     }
 
     /* 
@@ -255,7 +255,7 @@ class IntegracaoAutomacaoController extends Controller
                                                 ->orderBy('data_hora_abastecimento', 'desc')
                                                 ->pluck('data_hora_abastecimento')
                                                 ->first());
-                    
+                                                //dd($registros);
 
                     foreach ($registros as $registro)  {
                         if (count($registro) == 17) {
