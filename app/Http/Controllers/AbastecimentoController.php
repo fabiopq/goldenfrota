@@ -38,6 +38,7 @@ class AbastecimentoController extends Controller
         'placa' => 'Veículo',
         'km_veiculo' => ['label' => 'Odômetro/Horímetro', 'type' => 'decimal', 'decimais' => 1],
         'media_veiculo' => ['label' => 'Média', 'type' => 'decimal', 'decimais' => 2],
+        'nome_atendente' => 'Atendente',
         'abastecimento_local' => ['label' => 'Abast. Local', 'type' => 'bool'],
         'eh_afericao' => ['label' => 'Aferição', 'type' => 'bool']
         //'ativo' => ['label' => 'Ativo', 'type' => 'bool'],
@@ -76,6 +77,7 @@ class AbastecimentoController extends Controller
                                     ->whereRaw($whereData)
                                     ->where('veiculos.placa', 'like', '%'.$request->searchField.'%')
                                     ->orWhere('clientes.nome_razao', 'like', '%'.$request->searchField.'%')
+                                    ->orWhere('atendentes.nome_atendente', 'like', '%'.$request->searchField.'%')
                                     /* ->orderBy('abastecimentos.id', 'desc') */
                                     ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
                                     ->paginate();
