@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Tanque;
+use App\Combustivel;
 use App\Parametro;
 use App\Fornecedor;
 use App\EntradaTanque;
@@ -126,6 +127,21 @@ class EntradaTanqueController extends Controller
                     ]));
 
                     DB::commit();
+                    // altera preco cadastro combustivel
+
+                    foreach($entrada->entrada_tanque_items as $item){
+                      
+                     $tanque = Tanque::find($item->tanque_id);
+                
+                     $combustivel = Combustivel::find($tanque->combustivel_id);
+              
+                     DB::table('combustiveis')
+                      ->where('id', $combustivel->id)
+                      ->update(['valor' => $item->valor_unitario]);
+                     DB::commit();
+               
+                    } 
+                    
 
                     return redirect()->action('EntradaTanqueController@index');
                 } else {
