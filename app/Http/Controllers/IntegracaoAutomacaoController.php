@@ -255,7 +255,7 @@ class IntegracaoAutomacaoController extends Controller
                                                 ->orderBy('data_hora_abastecimento', 'desc')
                                                 ->pluck('data_hora_abastecimento')
                                                 ->first());
-                                                //dd($registros);
+                                               // dd($registros);
 
                     foreach ($registros as $registro)  {
                         if (count($registro) == 17) {
@@ -296,6 +296,7 @@ class IntegracaoAutomacaoController extends Controller
                                 $abastecimento->ns_automacao = trim($registro[2]);           
                                 $abastecimento->data_hora_abastecimento = $this->formataDataHoraAbastecimento($registro[4].$registro[5])->format('Y-m-d H:i:s');
                                 
+                                
                                 if ($cfgPreco->value){
                                     if (!$preco){
                                         $abastecimento->valor_abastecimento = $this->formataValorDecimal(trim($registro[6]));
@@ -314,8 +315,9 @@ class IntegracaoAutomacaoController extends Controller
                                 }
                                 
                                 
-                                
+                              
                                 $abastecimento->volume_abastecimento = $this->formataValorDecimal(trim($registro[7]), 3);
+                                
                                 $abastecimento->encerrante_inicial = $this->formataValorDecimal(trim($registro[10]));
                                 $abastecimento->encerrante_final = $this->formataValorDecimal(trim($registro[11]));                                
                         
@@ -381,7 +383,7 @@ class IntegracaoAutomacaoController extends Controller
 
 
                             try {
-                                //dd($abastecimento);
+                               // dd($abastecimento);
                                 //Log::debug($abastecimento);
                                
                                 DB::beginTransaction();
