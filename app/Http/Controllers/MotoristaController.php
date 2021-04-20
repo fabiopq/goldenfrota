@@ -138,7 +138,8 @@ class MotoristaController extends Controller
                // 'data_admissao' => 'required|date_format:d/m/Y H:i:s',
                 'estado_civil' => 'nullable|estado_civil',
                 'tipo_sanguineo' => 'nullable|string',
-                'veiculo_padrao_id' => 'nullable|numeric'
+                'veiculo_padrao_id' => 'nullable|numeric',
+                'tag' => 'nullable|string'
     
             ]);
 
@@ -211,7 +212,7 @@ class MotoristaController extends Controller
                 'apelido' => 'nullable|string',
                 'cpf' => ['required', new cpfCnpj],
                 'rg' => 'required',
-                'habilitacao' => 'required|string',
+                'habilitacao' => 'nullable|string',
                 'categoria' => 'required',
                 'data_validade_habilitacao' => 'required|date_format:d/m/Y H:i:s',
                 'data_nascimento' => 'required|date_format:d/m/Y H:i:s',
@@ -230,7 +231,8 @@ class MotoristaController extends Controller
 
                 'estado_civil' => 'nullable|estado_civil',
                 'tipo_sanguineo' => 'nullable|string',
-                'veiculo_padrao_id' => 'nullable|numeric'
+                'veiculo_padrao_id' => 'nullable|numeric',
+                
 
             ]);
 
@@ -257,7 +259,8 @@ class MotoristaController extends Controller
                 $motorista->uf_id = $request->uf_id;
                 $motorista->ativo = $request->ativo;
                 $motorista->observacoes = $request->observacoes;
-                $motorista->veiculo_id;
+                $motorista->veiculo_id = $request->veiculo_id;
+                $motorista->tag = $request->tag;
 
 
                 if ($motorista->save()) {

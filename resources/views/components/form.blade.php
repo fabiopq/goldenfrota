@@ -5,6 +5,7 @@
     $cancelRoute = (isset($cancelRoute) ? $cancelRoute : false);
     $indexRoute = $cancelRoute ? $cancelRoute : explode('.', Route::current()->getAction()['as'])[0].'.index';  
     $routeUrl .= (count(Request()->all()) > 0) ? '?'.http_build_query(Request()->all()) : '';  
+    
 @endphp
 
 {{-- {{ dd($routeUrl .= (count(Request()->all()) > 0) ? '?'.http_build_query(Request()->all()) : '') }} --}}

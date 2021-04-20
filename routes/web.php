@@ -48,6 +48,8 @@ Route::middleware(['auth:web'])->group(function() {
     Route::resource('/fornecedor', 'FornecedorController')->except('show');
     Route::resource('/estoque', 'EstoqueController')->except('show');
     Route::resource('/parametro', 'ParametroController')->except('show');
+    Route::resource('/importa', 'ImportaController')->except('show');
+    
     Route::resource('/tipo_movimentacao_produto', 'TipoMovimentacaoProdutoController')->except('show');
     Route::resource('/entrada_estoque', 'EntradaEstoqueController');
     Route::resource('/entrada_tanque', 'EntradaTanqueController');
@@ -73,6 +75,7 @@ Route::middleware(['auth:web'])->group(function() {
 
     Route::get('/exportacao', 'IntegracaoAutomacaoController@Exportar')->name('exportacao');
     Route::get('/exportacao_atendentes', 'IntegracaoAutomacaoController@ExportarAtendentes')->name('exportacao_atendentes');
+    Route::get('/exportacao_motoristas', 'IntegracaoAutomacaoController@ExportarMotoristas')->name('exportacao_motoristas');
     Route::get('/exportacao_veiculos', 'IntegracaoAutomacaoController@ExportarVeiculos')->name('exportacao_veiculos');
     Route::get('/exportacao_produtos', 'IntegracaoAutomacaoController@ExportarProdutos')->name('exportacao_produtos');
     
@@ -143,10 +146,9 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/dashboard/os_em_aberto', 'DashboardController@osEmAberto');
 });
 
- 
-Route::get('/aula', function() {
-    return 'aula';
-});
+
+//Route::get('/teste', 'GrupoProdutoController@teste');
+
 /*Route::get('/param_teste_exportar_hiro', function() {
     return View('integracao_hiro.index');
 });

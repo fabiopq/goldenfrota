@@ -89,6 +89,14 @@
                           
                             
                         ],
+                        [
+                            'type' => 'text',
+                            'field' => 'tag',
+                            'label' => 'TAG (Automação)',
+                            'required' => false,
+                            'inputSize' => 3,
+                            'inputValue' => $motorista->tag
+                        ],
                         
                     ]
                 ])

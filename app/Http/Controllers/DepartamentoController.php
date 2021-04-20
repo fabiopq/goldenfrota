@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Events\NovoRegistroAtualizacaoApp;
+use Illuminate\Support\Facades\Storage;
 
 class DepartamentoController extends Controller
 {
@@ -217,5 +218,20 @@ class DepartamentoController extends Controller
 
     public function apiDepartamento($id) {
         return response()->json(Departamento::ativo()->where('id', $id)->get());
+    }
+
+    public function importarDepartamento(){
+        $arquivo = Storage::disk($this->disk())->get('posto.xlsx');
+
+    }
+
+    public function apiStore(Request $request)
+    {
+        
+        $departamento = new Departamento();
+        $departamento->fill($request->all());
+        $departamento->save();
+
+        return response()->json($departamento, 201);
     }
 }

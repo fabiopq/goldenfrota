@@ -74,6 +74,13 @@
                             'inputValue' => date('d/m/Y H:i:s')
                             
                         ],
+                        [
+                            'type' => 'text',
+                            'field' => 'tag',
+                            'label' => 'TAG (Automação)',
+                            'required' => false,
+                            'inputSize' => 3
+                        ],
                         
                     ]
                 ])

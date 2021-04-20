@@ -309,6 +309,9 @@
                         @permission('acesso-exportar-exportar-dados-cadastrais')
                         <li><a class="dropdown-item" href="{{route('exportacao_veiculos')}}">Exportar - Veículos</a></li>
                         @endpermission
+                        @permission('acesso-exportar-exportar-dados-cadastrais')
+                        <li><a class="dropdown-item" href="{{route('exportacao_motoristas')}}">Exportar - Motoristas</a></li>
+                        @endpermission
                        
                         
                     </li>

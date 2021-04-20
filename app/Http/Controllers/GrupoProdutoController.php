@@ -219,4 +219,44 @@ class GrupoProdutoController extends Controller
         
     }
 
+    public function apiStore(Request $request)
+    {
+        
+        $grupoproduto = new GrupoProduto();
+        $grupoproduto->fill($request->all());
+        $grupoproduto->save();
+
+        return response()->json($grupoproduto, 201);
+    }
+    
+    public function teste()
+    {
+        $handle = fopen("d:\posto.csv", "r");
+        $row = 0;
+        while ($line = fgetcsv($handle, 1000, ";")) {
+	    if ($row++ == 0) {
+		continue;
+	    }
+	
+	    $peoples[] = [
+		'modelo' => $line[0],
+		'marca' => $line[1]
+		
+        ];
+        
+        
+        }
+       // dd($peoples);
+        foreach ($peoples as $people) {
+            $grupoProduto = new GrupoProduto();
+            $grupoProduto->grupo_produto = strtoupper($people['modelo']);
+    
+            $grupoProduto->save();
+    
+        }
+        
+       
+        fclose($handle);
+    }
+
 }

@@ -24,5 +24,24 @@ class GroupSettingAutomacaoSeeder extends Seeder
                 'value' => false
             ]
         ]);
+
+        DB::table('settings')->insert([
+            [
+                'description' => 'Utiliza Preço Cadastro Combustivel',
+                'key' => 'automacao_valor_combustivel',
+                'value' => true,
+                'data_type' => 'boolean',
+                'group_setting_id' => 3
+            ],
+            [
+                'description' => 'Utiliza Tag Cadastro',
+                'key' => 'automacao_valor_combustivel',
+                'value' => true,
+                'data_type' => 'boolean',
+                'group_setting_id' => 3
+            ]
+         
+        ]);
+
     }
 }

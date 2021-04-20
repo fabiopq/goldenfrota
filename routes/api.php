@@ -35,7 +35,7 @@ Route::middleware('auth:api')->group(function(){
     Route::get('combustiveis', 'CombustivelController@apiCombustiveis');
     Route::get('combustivel/{id}', 'CombustivelController@apiCombustivel');
 
-    Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
+    //Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
     Route::get('departamento/{id}', 'DepartamentoController@apiDepartamento');
 
     Route::get('grupo_produtos', 'GrupoProdutoController@apiGrupoProdutos');
@@ -69,3 +69,8 @@ Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 Route::get('veiculoscliente', 'VeiculoController@apiVeiculosClientes');
 Route::get('clientes', 'ClienteController@apiClientes');
+Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
+
+Route::post('departamentos', 'DepartamentoController@apiStore');
+
+Route::post('grupo_produtos', 'GrupoProdutoController@apiStore');
