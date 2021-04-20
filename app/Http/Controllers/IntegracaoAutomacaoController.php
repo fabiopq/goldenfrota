@@ -7,6 +7,7 @@ use App\Produto;
 use App\Veiculo;
 use App\Atendente;
 use App\Abastecimento;
+use App\Motorista;
 use App\TanqueMovimentacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,39 @@ class IntegracaoAutomacaoController extends Controller
             
         }
     }
+
+    public function ExportarMotoristas() {
+        try {
+            $conteudo = '';
+            $motoristas = Motorista::whereNotNull('tag')->where('ativo', true)->get();
+            foreach ($motoristas as $motorista) {
+                $conteudo .= '<01;';
+                $conteudo .= substr('                '.$motorista->tag, -16).';';
+                $conteudo .= substr('          '.$motorista->nome, -10);
+                $conteudo .= '>';
+            }
+
+            Log::debug($conteudo);
+
+            $conteudo = $this->cryptAPI($conteudo);
+
+            /* Config da conta de FTP */
+            $this->configFTP();
+
+            Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
+        
+            Session::flash('success', 'Dados Exportados com sucesso!');
+            return redirect()->action('HomeController@index');
+        
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+
+            
+        }
+    }
+
 
     /* 
     produtos.hir  -  Cadastro de produtos
@@ -217,7 +251,7 @@ class IntegracaoAutomacaoController extends Controller
             //return;
         }
 
-       
+         // verifica se na configuracao esta habilitado preco do cadastro do combustivel
         $cfgPreco = DB::table('settings')
                                 ->select('settings.value')
                                 ->where('settings.key','automacao_valor_combustivel')
@@ -326,10 +360,10 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->valor_abastecimento = round($abastecimento->volume_abastecimento * $abastecimento->valor_litro, 2);
                                 }
         
-                                if (!$veiculo) {
+                                if (!$veiculo) {  // verifica se nao veio veiculo no arquivo
                                     
-                                  
-                                    if (!$atendente->veiculo_id){//verifica se no cadastro de atendente possui veiculo
+                                    
+                                    if (!$atendente->veiculo_id){//verifica se no cadastro de atendente nao possui veiculo
                                         $abastecimento->media_veiculo = 0;
                                         $obs .= 'Veículo ['.trim($registro[14]).']: Não encontrado!&#10;';
                                     }else{

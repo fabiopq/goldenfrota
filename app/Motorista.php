@@ -31,7 +31,8 @@ class Motorista extends Model
         'estado_civil',
         'tipo_sanquineo',
         'veiculo_id',
-        'ativo'
+        'ativo',
+        'tag'
     ];
 
     public function veiculos() {
