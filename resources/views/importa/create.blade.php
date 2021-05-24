@@ -35,6 +35,11 @@
                             'field' => 'arquivo_servico',
                             'label' => 'Servico',
                             'required' => true,
+
+                            'type' => 'file',
+                            'field' => 'arquivo_cliente',
+                            'label' => 'Cliente',
+                            'required' => true,
                         ]
                     ]
                 ])

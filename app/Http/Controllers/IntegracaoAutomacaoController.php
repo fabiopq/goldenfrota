@@ -43,7 +43,7 @@ class IntegracaoAutomacaoController extends Controller
             $atendentes = Atendente::where('ativo', true)->get();
             foreach ($atendentes as $atendente) {
                 $conteudo .= '<01;';
-                $conteudo .= substr('                '.$atendente->senha_atendente, -16).';';
+                $conteudo .= substr('                '.$atendente->senha_atendente, -8).';';
                 $conteudo .= substr('          '.$atendente->usuario_atendente, -10);
                 $conteudo .= '>';
             }
@@ -75,7 +75,7 @@ class IntegracaoAutomacaoController extends Controller
             $motoristas = Motorista::whereNotNull('tag')->where('ativo', true)->get();
             foreach ($motoristas as $motorista) {
                 $conteudo .= '<01;';
-                $conteudo .= substr('                '.$motorista->tag, -16).';';
+                $conteudo .= substr('                '.$motorista->tag, -8).';';
                 $conteudo .= substr('          '.$motorista->nome, -10);
                 $conteudo .= '>';
             }

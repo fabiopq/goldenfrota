@@ -49,7 +49,7 @@ class ImportaController extends Controller
        
     try {
         if ($request->hasFile('arquivo')) {
-            
+           // dd($request);
             $handle = \fopen($request->arquivo,"r");
             $row = 0;
             while ($line = fgetcsv($handle, 1000, ";")) {
@@ -107,6 +107,67 @@ class ImportaController extends Controller
             
             fclose($handle);
         } 
+
+        if ($request->hasFile('arquivo_cliente')) {
+            
+            $handle = \fopen($request->arquivo_cliente,"r");
+            $row = 0;
+            while ($line = fgetcsv($handle, 10000, ";")) {
+                if ($row++ == 0) {
+                    continue;
+                }
+        
+                $peoples[] = [
+                'nome_razao' => $line[1],
+                'fantasia' => $line[2],
+                'cpf_cnpj' => $line[3],
+                'rg_ie' => $line[4],
+                'fone1' => $line[6],
+                'fone2' => $line[6],
+                'email1' => $line[7],
+                'email2' => $line[8],
+                'endereco' => $line[9],
+                'numero' => $line[10],
+                'bairro' => $line[11],
+                'cidade' => $line[12],
+                'cep' => $line[13],
+                'uf_id' => 24,
+                'tipo_pessoa_id' => 2
+
+                
+                ];
+            
+            
+            }
+
+             //dd($peoples);
+             
+            foreach ($peoples as $people) {
+                $cliente = new Cliente();
+                $cliente->nome_razao = strtoupper($people['nome_razao']);
+                $cliente->fantasia = strtoupper($people['fantasia']);
+                $cliente->cpf_cnpj = strtoupper($people['cpf_cnpj']);
+                $cliente->rg_ie = strtoupper($people['rg_ie']);
+                $cliente->fone1 = strtoupper($people['fone1']);
+                $cliente->email1 = strtoupper($people['email1']);
+                $cliente->email2 = strtoupper($people['email2']);
+                $cliente->endereco = strtoupper($people['endereco']);
+                $cliente->numero = strtoupper($people['numero']);
+                $cliente->bairro = strtoupper($people['bairro']);
+                $cliente->cidade = strtoupper($people['cidade']);
+                $cliente->cep = strtoupper($people['cep']);
+                $cliente->uf_id = 24;
+                $cliente->tipo_pessoa_id = 2;
+               
+        
+                $cliente->save();
+        
+            }
+            
+            
+            fclose($handle);
+        } 
+
     } catch (\Exception $e) {
         
         Session::flash('error', 'Ocorreu um erro ao importar . '.$e->getMessage());
@@ -158,4 +219,6 @@ class ImportaController extends Controller
     {
         //
     }
+
+
 }

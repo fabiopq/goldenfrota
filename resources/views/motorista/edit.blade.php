@@ -18,7 +18,7 @@
                             'field' => 'nome',
                             'label' => 'Nome',
                             'required' => true,
-                            'inputSize' => 8,
+                            'inputSize' => 6,
                             'inputValue' => $motorista->nome
                         ],
                         [
