@@ -19,12 +19,9 @@ class ImportaController extends Controller
      */
     public function index()
     {
-        $parametro = Parametro::first();
-        if ($parametro == null) {
+       
             return $this->create();
-        } else {
-            return $this->edit($parametro);
-        }
+        
     }
 
     /**
@@ -185,7 +182,7 @@ class ImportaController extends Controller
      */
     public function show(Parametro $parametro)
     {
-        //
+        return View('importa.create');
     }
 
     /**
