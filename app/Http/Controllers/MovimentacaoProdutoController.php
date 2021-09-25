@@ -397,7 +397,7 @@ class MovimentacaoProdutoController extends Controller
         } else {
             $whereData = '1 = 1'; //busca qualquer coisa
         }
-
+        
         $estoques = Estoque::whereHas('movimentacao_produtos')
                                 ->with(['produtos' => function($query) use ($whereProduto, $whereGrupoProduto, $whereData, $whereTipoMovimentacao) {
                                     $query->whereRaw($whereProduto)

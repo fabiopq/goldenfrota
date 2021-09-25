@@ -114,8 +114,8 @@ class OrdemServicoController extends Controller
         if (Auth::user()->canCadastrarOrdemServico()) {
             $this->validate($request, [
                 'cliente_id' => 'required',
-                'veiculo_id' => 'required',
-                'km_veiculo' => 'required|numeric|min:0',
+                //'veiculo_id' => 'required',
+                //'km_veiculo' => 'required|numeric|min:0',
                 //'servicos' => 'array|size:1',
             ]);
             try {

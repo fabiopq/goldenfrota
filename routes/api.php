@@ -74,3 +74,5 @@ Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
 Route::post('departamentos', 'DepartamentoController@apiStore');
 
 Route::post('grupo_produtos', 'GrupoProdutoController@apiStore');
+Route::post('abastecimentos', 'AbastecimentoController@apiStore');
+

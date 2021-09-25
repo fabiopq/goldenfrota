@@ -532,7 +532,7 @@ class AbastecimentoController extends Controller
         } else {
             $whereData = '1 = 1'; //busca qualquer coisa
         }
-
+       
         switch ($request->tipo_abastecimento) {
             case 0:
                 $whereTipoAbastecimento = ('abastecimentos.abastecimento_local = 0');
@@ -599,7 +599,7 @@ class AbastecimentoController extends Controller
                 ->orderBy('clientes.nome_razao', 'asc')
                 ->distinct()
                 ->get();
-
+                
                 $clientesNullo = DB::table('abastecimentos')
                 ->select(
                     
@@ -690,6 +690,7 @@ class AbastecimentoController extends Controller
                 }
                 
             }
+            
            return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else {
             /* relatório Analítico */
@@ -770,7 +771,7 @@ class AbastecimentoController extends Controller
         } else {
             $whereBico = '1 = 1';
         }
-
+       
         $bicos = DB::table('abastecimentos')
                         ->select('bicos.id', 'bicos.num_bico', 'tanques.descricao_tanque', 'combustiveis.descricao')
                         ->join('bicos', 'bicos.id', 'abastecimentos.bico_id')
@@ -781,6 +782,7 @@ class AbastecimentoController extends Controller
                         ->distinct()
                         ->orderBy('bicos.num_bico', 'asc')
                         ->get();
+        
 
         foreach ($bicos as $bico) {
             $bico->abastecimentos = DB::table('abastecimentos')
@@ -876,5 +878,90 @@ class AbastecimentoController extends Controller
 
     public function apiAbastecimento($id) {
         return response()->json(Abastecimento::ativo()->where('id', $id)->get());
+    }
+
+    public function apiStore(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $abastecimento = new Abastecimento;
+            $abastecimento->data_hora_abastecimento = $request->data_hora_abastecimento;
+            //$abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
+            $abastecimento->veiculo_id = $request->veiculo_id;
+            $abastecimento->km_veiculo = $request->km_veiculo;
+            $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
+            $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
+            $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
+            $abastecimento->abastecimento_local = false;
+            $abastecimento->bico_id = $request->bico_id;
+            $abastecimento->encerrante_inicial = $request->encerrante_inicial;
+            $abastecimento->encerrante_final = $request->encerrante_final;
+            /* Calcula a média do veículo, caso seja informado um veículo */
+            if ($request->veiculo_id) {
+                $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
+            } else {
+                $abastecimento->media_veiculo = 0;
+            }
+            $abastecimento->eh_afericao = (bool)$request->eh_afericao;
+            //Log::debug('Abastecimento Inserido: '.$abastecimento);
+            $abastecimento->save();
+            if ($abastecimento->save()) {
+
+                if ($request->bico_id) {
+                    /* Se for aferição, faz a movimentação de saída e entrada por aferição */
+                    if (isset($request->eh_afericao) && ($request->eh_afericao)) {
+                        $afericao = Afericao::create([
+                            'abastecimento_id' => $abastecimento->id,
+                            'user_id' => Auth::user()->id
+                        ]);
+
+                        MovimentacaoCombustivelController::cadastroAfericao($afericao);
+                    } else {
+                        /* Se informado o bico, movimenta o estoque do tanque */
+                        MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
+                    }
+
+                    if (!BicoController::atualizarEncerranteBico($request->bico_id, $request->encerrante_final)) {
+                        throw new \Exception(__('messages.exception', [
+                            'exception' => 'Não foi possível atualizar o encerrante do bico'
+                        ]));
+                    }
+                }
+
+                //Log::debug('Abastecimento Inserido: '.$abastecimento);
+
+                DB::commit();
+
+                event(new NovoAbastecimento($abastecimento));
+
+                //Ajusta médias futuras
+                if (!$this->ajustarMediaAbastecimentosFuturos($abastecimento)) {
+                    throw new \Exception(__('messages.exception', [
+                        'exception' => 'Não foi possível atualizar as médias futuras do veículo'
+                    ]));
+                }
+
+                
+            } else{
+                return response()->json($abastecimento, 201);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            //return response()->json($abastecimento, 201);
+        }
+    
+   
+      
+      
+        //***************************** */
+       // abastecimento = new Abastecimento();
+       // $abastecimento->fill($request->all());
+       // $abastecimento->save();
+
+       // return response()->json($abastecimento, 201);
     }
 }

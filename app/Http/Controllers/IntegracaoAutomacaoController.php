@@ -332,6 +332,7 @@ class IntegracaoAutomacaoController extends Controller
                                 
                                 
                                 if ($cfgPreco->value){
+
                                     if (!$preco){
                                         $abastecimento->valor_abastecimento = $this->formataValorDecimal(trim($registro[6]));
                                         $abastecimento->valor_litro = $this->formataValorDecimal(trim($registro[8]), trim($registro[9]));
@@ -341,15 +342,16 @@ class IntegracaoAutomacaoController extends Controller
                                         $abastecimento->valor_litro = $preco->valor;
                                     }
 
-                                     
+                                    
                                     
                                 }else{
                                     $abastecimento->valor_abastecimento = $this->formataValorDecimal(trim($registro[6]));
                                     $abastecimento->valor_litro = $this->formataValorDecimal(trim($registro[8]), trim($registro[9]));
+                                    
                                 }
                                 
                                 
-                              
+                                
                                 $abastecimento->volume_abastecimento = $this->formataValorDecimal(trim($registro[7]), 3);
                                 
                                 $abastecimento->encerrante_inicial = $this->formataValorDecimal(trim($registro[10]));
@@ -421,9 +423,10 @@ class IntegracaoAutomacaoController extends Controller
                                 //Log::debug($abastecimento);
                                
                                 DB::beginTransaction();
-                                
+                                 
                                 if($abastecimento->save()) {
                                     // Movimenta o estoque do tanque 
+                                    
                                     if (MovimentacaoCombustivelController::saidaAbastecimento($abastecimento)) {
                                         DB::commit();
                                         Log::info('Novo abastecimento: '.$abastecimento.' importado da Automação.');
