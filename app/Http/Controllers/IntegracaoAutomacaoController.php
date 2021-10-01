@@ -256,7 +256,7 @@ class IntegracaoAutomacaoController extends Controller
                                 ->select('settings.value')
                                 ->where('settings.key','automacao_valor_combustivel')
                                 ->first();
-                                //dd($cfgPreco->value);
+                                
         
         try {
             /* Config da conta de FTP */
