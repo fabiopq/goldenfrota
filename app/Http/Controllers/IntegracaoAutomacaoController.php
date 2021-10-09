@@ -198,11 +198,14 @@ class IntegracaoAutomacaoController extends Controller
 
     protected function formataDataHoraAbastecimento(String $dataHora) {
         $b = null;
+        
         $dataHora = str_replace(' ', '0', $dataHora);
+        
         foreach (str_split($dataHora, 2) as $a) {
             $b .= $b ? '-' : '';
             $b .= trim($a);
         }
+        
         return \DateTime::createFromFormat('d-m-y-H-i-s', $b);
     }
 
@@ -289,7 +292,7 @@ class IntegracaoAutomacaoController extends Controller
                                                 ->orderBy('data_hora_abastecimento', 'desc')
                                                 ->pluck('data_hora_abastecimento')
                                                 ->first());
-                                               // dd($registros);
+                                               
 
                     foreach ($registros as $registro)  {
                         if (count($registro) == 17) {
@@ -309,9 +312,11 @@ class IntegracaoAutomacaoController extends Controller
                                 ->where('bicos.id', '=', trim($registro[3]))
                                 ->first();
                         
-                               // dd('placa', '=', $this->formataPlacaVeiculo(trim($registro[13]))); 
-                                $veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
-        
+                        
+                               
+                               $veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
+                               
+                               //dd($veiculo);
         
                                 if (!$bico) {   
                                     $obs .= 'Bico ['.trim($registro[3]).']: Não encontrado!&#10;';
@@ -327,7 +332,8 @@ class IntegracaoAutomacaoController extends Controller
                                 
                                 
                                 $abastecimento->id_automacao = trim($registro[1]);
-                                $abastecimento->ns_automacao = trim($registro[2]);           
+                                $abastecimento->ns_automacao = trim($registro[2]);     
+                                  
                                 $abastecimento->data_hora_abastecimento = $this->formataDataHoraAbastecimento($registro[4].$registro[5])->format('Y-m-d H:i:s');
                                 
                                 
@@ -361,7 +367,7 @@ class IntegracaoAutomacaoController extends Controller
                                 if ($abastecimento->valor_abastecimento == 0) {
                                     $abastecimento->valor_abastecimento = round($abastecimento->volume_abastecimento * $abastecimento->valor_litro, 2);
                                 }
-        
+                                
                                 if (!$veiculo) {  // verifica se nao veio veiculo no arquivo
                                     
                                     
@@ -370,7 +376,15 @@ class IntegracaoAutomacaoController extends Controller
                                         $obs .= 'Veículo ['.trim($registro[14]).']: Não encontrado!&#10;';
                                     }else{
                                         $abastecimento->veiculo_id = $atendente->veiculo_id;
-                                        $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
+                                       
+                                        if($veiculo->hodometro_decimal){
+                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
+
+                                        }else{ // acresenta zero ao km digitado no arquivo de importacao
+                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0', 1); 
+
+                                        }
+                                        
                                         $veiculo = Veiculo::where('id', '=',$atendente->veiculo_id)->first(); 
                                         $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                                     }
@@ -379,6 +393,14 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->veiculo_id = $veiculo->id;
                                     //if ( $veiculo->modelo_veiculo->tipo_controle_veiculo_id == 1) {
                                         /* controle de km rodados */
+                                       // dd($veiculo);
+                                        if($veiculo->hodometro_decimal){
+                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
+                                            dd($abastecimento->km_veiculo);
+                                        }else{ // acresenta zero ao km digitado no arquivo de importacao
+                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0', 1); 
+                                            dd($abastecimento->km_veiculo);
+                                        }
                                     $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1);
                                     // } else {
                                         /* controle de horas trabalhadas */
@@ -387,7 +409,7 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                                    // Log::debug('Media_Veiculo='.$abastecimento->media_veiculo);
                                 }
-        
+                               
                                 if ($abastecimento->km_veiculo <= 0) {
                                     $obs .= 'KM não informada para.&#10;';
                                 }
@@ -404,7 +426,7 @@ class IntegracaoAutomacaoController extends Controller
                                
                                 //Log::debug($dataInicio);
 
-
+                                
                                  if ($dataAbastecimento <= $dataInicio) {
                                     
                                     continue; //pula para o proximo abastecimento
@@ -423,7 +445,7 @@ class IntegracaoAutomacaoController extends Controller
                                 //Log::debug($abastecimento);
                                
                                 DB::beginTransaction();
-                                 
+                               
                                 if($abastecimento->save()) {
                                     // Movimenta o estoque do tanque 
                                     

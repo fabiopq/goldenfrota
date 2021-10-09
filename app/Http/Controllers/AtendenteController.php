@@ -15,6 +15,7 @@ class AtendenteController extends Controller
         'id' => 'ID',
         'nome_atendente' => 'Atendente',
         'placa' => 'Placa',
+        'senha_atendente' => 'Tag',
         'ativo' => ['label' => 'Ativo', 'type' => 'bool']
     );
 
@@ -33,6 +34,7 @@ class AtendenteController extends Controller
                                 ->select('atendentes.*',  'veiculos.placa')
                                 ->leftJoin('veiculos', 'veiculos.id', 'atendentes.veiculo_id')
                                 ->where('veiculos.placa', 'like', '%'.$request->searchField.'%')
+                                ->orWhere('atendentes.senha_atendente', 'like', '%'.$request->searchField.'%')
                                 ->orWhere('atendentes.nome_atendente', 'like', '%'.$request->searchField.'%')
                                 /* ->orderBy('abastecimentos.id', 'desc') */
                                 //->orderBy('atendentes.data_hora_abastecimento', 'desc')

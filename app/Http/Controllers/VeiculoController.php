@@ -124,6 +124,7 @@ class VeiculoController extends Controller
             $veiculo->chassi = $request->chassi;
             $veiculo->hodometro = $request->hodometro;
             $veiculo->media_minima = $request->media_minima;
+            $veiculo->hodometro_decimal = $request->hodometro_decimal;
 
             if ($veiculo->save()) {
 
@@ -202,6 +203,7 @@ class VeiculoController extends Controller
         ]);
 
         try {
+            
             $veiculo = Veiculo::find($veiculo->id);
             $veiculo->placa = strtoupper($request->placa);
             $veiculo->tag = $request->tag;
@@ -214,6 +216,7 @@ class VeiculoController extends Controller
             $veiculo->chassi = $request->chassi;
             $veiculo->hodometro = $request->hodometro;
             $veiculo->media_minima = $request->media_minima;
+            $veiculo->hodometro_decimal = $request->hodometro_decimal;
             $veiculo->ativo = $request->ativo;
 
 
