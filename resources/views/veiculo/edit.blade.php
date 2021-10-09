@@ -148,7 +148,7 @@
                         [
                             'type' => 'select',
                             'field' => 'hodometro_decimal',
-                            'label' => 'KM Decimal',
+                            'label' => 'Km Decimal',
                             'inputSize' => 1,
                             'indexSelected' => $veiculo->hodometro_decimal,
                             'items' => ['Não', 'Sim'],

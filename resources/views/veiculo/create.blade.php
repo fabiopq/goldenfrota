@@ -134,7 +134,7 @@
                         [
                             'type' => 'select',
                             'field' => 'hodometro_decimal',
-                            'label' => 'KM Decimal',
+                            'label' => 'Km Decimal',
                             'inputSize' => 1,
                             'indexSelected' => 1,
                             'items' => ['Não', 'Sim'],
