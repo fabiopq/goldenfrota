@@ -130,6 +130,7 @@
                             'label' => 'Km',
                             'inputSize' => 2
                         ],
+                        
                         [
                             'type' => 'select',
                             'field' => 'hodometro_decimal',

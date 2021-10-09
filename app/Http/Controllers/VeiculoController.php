@@ -98,6 +98,7 @@ class VeiculoController extends Controller
      */
     public function store(Request $request)
     {
+       dd($request);
         $this->validate($request, [
             'grupo_veiculo_id' => 'required|integer|min:1',
             'cliente_id' => 'required',

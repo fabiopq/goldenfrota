@@ -58,6 +58,7 @@
                                     'displayField' => 'veiculo',
                                     'liveSearch' => true,
                                     'keyField' => 'id',
+                                    'indexSelected' => 0,
                                     'defaultNone' => true,
                                       'inputSize' => 6,
                               ] , 

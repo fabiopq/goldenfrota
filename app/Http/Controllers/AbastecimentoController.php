@@ -130,6 +130,7 @@ class AbastecimentoController extends Controller
      */
     public function store(Request $request)
     {
+       
         if (Auth::user()->canCadastrarAbastecimento()) {
             $this->validate($request, [
                 'data_hora_abastecimento' => 'required|date_format:d/m/Y H:i:s',
