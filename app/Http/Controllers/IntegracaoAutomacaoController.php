@@ -399,7 +399,7 @@ class IntegracaoAutomacaoController extends Controller
                                             dd($abastecimento->km_veiculo);
                                         }else{ // acresenta zero ao km digitado no arquivo de importacao
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0', 1); 
-                                            dd($abastecimento->km_veiculo);
+                                            //dd($abastecimento->km_veiculo);
                                         }
                                     $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1);
                                     // } else {
