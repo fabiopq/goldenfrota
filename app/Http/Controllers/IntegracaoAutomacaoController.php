@@ -210,12 +210,15 @@ class IntegracaoAutomacaoController extends Controller
     }
 
     protected function formataValorDecimal($valor, $numCasas = 2) {
-        if ($numCasas > 0) {            
+        if ($numCasas > 0) { 
             return floatval(substr($valor, 0, ($numCasas * -1)).'.'.substr($valor, ($numCasas * -1)));
         } else {
+            
             return floatval($valor);
         }
     }
+
+   
 
     protected function formataPlacaVeiculo($placa) {
         
@@ -376,13 +379,13 @@ class IntegracaoAutomacaoController extends Controller
                                         $obs .= 'Veículo ['.trim($registro[14]).']: Não encontrado!&#10;';
                                     }else{
                                         $abastecimento->veiculo_id = $atendente->veiculo_id;
-                                       
+                                      
                                         if($veiculo->hodometro_decimal){
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
 
                                         }else{ // acresenta zero ao km digitado no arquivo de importacao
-                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0', 1); 
-
+                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0',  1); 
+                                          
                                         }
                                         
                                         $veiculo = Veiculo::where('id', '=',$atendente->veiculo_id)->first(); 
@@ -390,18 +393,20 @@ class IntegracaoAutomacaoController extends Controller
                                     }
                                     
                                 } else {
+                                    
+                                    
                                     $abastecimento->veiculo_id = $veiculo->id;
                                     //if ( $veiculo->modelo_veiculo->tipo_controle_veiculo_id == 1) {
                                         /* controle de km rodados */
                                        // dd($veiculo);
                                         if($veiculo->hodometro_decimal){
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
-                                            dd($abastecimento->km_veiculo);
+                                           // dd($abastecimento->km_veiculo);
                                         }else{ // acresenta zero ao km digitado no arquivo de importacao
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0', 1); 
-                                            //dd($abastecimento->km_veiculo);
+                                            
                                         }
-                                    $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1);
+                                   // $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1);
                                     // } else {
                                         /* controle de horas trabalhadas */
                                     //    $abastecimento->horas_trabalhadas = $this->formataValorDecimal(trim($registro[15]), 1);
@@ -445,7 +450,7 @@ class IntegracaoAutomacaoController extends Controller
                                 //Log::debug($abastecimento);
                                
                                 DB::beginTransaction();
-                               
+                                
                                 if($abastecimento->save()) {
                                     // Movimenta o estoque do tanque 
                                     
