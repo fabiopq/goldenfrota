@@ -319,7 +319,7 @@ class IntegracaoAutomacaoController extends Controller
                                
                                $veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
                                
-                               //dd($veiculo);
+                              
         
                                 if (!$bico) {   
                                     $obs .= 'Bico ['.trim($registro[3]).']: Não encontrado!&#10;';
@@ -398,10 +398,10 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->veiculo_id = $veiculo->id;
                                     //if ( $veiculo->modelo_veiculo->tipo_controle_veiculo_id == 1) {
                                         /* controle de km rodados */
-                                       // dd($veiculo);
+                                       
                                         if($veiculo->hodometro_decimal){
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
-                                           // dd($abastecimento->km_veiculo);
+                                           
                                         }else{ // acresenta zero ao km digitado no arquivo de importacao
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0', 1); 
                                             
