@@ -40,7 +40,25 @@ class OrdemServicoController extends Controller
     public function index(Request $request)
     {
         if (Auth::user()->canListarOrdemServico()) {
+            
+            $data_inicial = $request->data_inicial;
+            $data_final = $request->data_final;
+    
+            if($data_inicial && $data_final) {
+                $whereData = 'ordem_servicos.created_at between \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\' and \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+            } elseif ($data_inicial) {
+                $whereData = 'ordem_servicos.created_at >= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\'';
+            } elseif ($data_final) {
+                $whereData = 'ordem_servicos.created_at <= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+            } else {
+                $whereData = '1 = 1'; //busca qualquer coisa
+             }
+    
             if ($request->searchField) {
+
+                $ordemServicoStatus = DB::table('ordem_servico_status')
+                ->select('ordem_servico_status.*');
+
                 $ordemServicos = DB::table('ordem_servicos')
                                 ->select('ordem_servicos.*', 'clientes.nome_razao', 'veiculos.placa', 'users.name', 'ordem_servico_status.os_status')
                                 ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
@@ -50,27 +68,43 @@ class OrdemServicoController extends Controller
                                 ->where('ordem_servicos.id', $request->searchField)
                                 ->orWhere('clientes.nome_razao', 'like', '%'.$request->searchField.'%')
                                 ->orWhere('veiculos.placa', 'like', '%'.$request->searchField.'%')
+                                ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+ 
+                                //->whereRaw('ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+                                ->whereRaw($whereData)
                                 ->orderBy('id', 'desc')
                                 ->paginate();
+
+
             } else {
+
+                $ordemServicoStatus = DB::table('ordem_servico_status')
+                ->select('ordem_servico_status.*');
+
                 $ordemServicos = DB::table('ordem_servicos')
                                 ->select('ordem_servicos.*', 'clientes.nome_razao', 'veiculos.placa', 'users.name', 'ordem_servico_status.os_status')
                                 ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
                                 ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                                 ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
                                 ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
+                                ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+                                ->whereRaw($whereData)
                                 ->orderBy('id', 'desc')
                                 ->paginate();
             }
 
+
+           
             return View('ordem_servico.index', [
                 'ordem_servicos' => $ordemServicos,
                 'fields' => $this->fields
-            ]);
+            ])->withordemServicoStatus($ordemServicoStatus);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
+
+        
     }
 
     /**

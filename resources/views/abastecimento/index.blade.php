@@ -15,13 +15,15 @@
                 'custom_action' => 'components.customActions.AfericaoAbastecimento'
             ],
             'edit', 
-            'destroy'],
-            'colorLineCondition' => [
+            'destroy'
+            ],
+            'colorLineCondition' => 
+            [
             'field' => 'inconsistencias_importacao',
             'value' => '1',
             'class' => 'danger'
             ],
-        'searchParms' => 'abastecimento.search_parms'
+            'searchParms' => 'abastecimento.search_parms'
         ]);
     @endcomponent
 @endsection
