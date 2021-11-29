@@ -63,6 +63,8 @@ Route::middleware('auth:api')->group(function(){
     //Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 });
 Route::get('produtos', 'ProdutoController@apiProdutos');
+Route::get('atendentes', 'AtendenteController@apiAtendentes');
+Route::get('bicos', 'BicoController@apiBicos');
 
 Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
 Route::get('veiculos', 'VeiculoController@apiVeiculos');

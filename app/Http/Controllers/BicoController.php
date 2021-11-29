@@ -211,6 +211,15 @@ class BicoController extends Controller
         return response()->json(Bico::find($request->id)->with('tanque.combustivel')->first());
     }
 
+    public function apiBicos() {
+        return response()->json(  DB::table('bicos')
+        ->select('bicos.*')->get());
+        //->orderBy('marca_veiculo', 'asc')
+        //->orderBy('modelo_veiculo', 'asc')
+        //->tosql();
+        
+    }
+
     static public function atualizarEncerranteBico($bicoId, $encerrante) {
         try {
             $bico = Bico::find($bicoId);
@@ -223,4 +232,7 @@ class BicoController extends Controller
             ]));
         }
     }
+
+    
+
 }

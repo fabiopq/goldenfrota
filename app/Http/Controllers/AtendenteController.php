@@ -181,6 +181,11 @@ class AtendenteController extends Controller
         }
     }
 
+    public function apiAtendentes() {
+        return response()->json(  DB::table('atendentes')
+        ->select('atendentes.*')->get());
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -217,5 +222,7 @@ class AtendenteController extends Controller
             Session::flash('error', env('ACCESS_DENIED_MSG'));
             return redirect()->back();
         }
+
+       
     }
 }

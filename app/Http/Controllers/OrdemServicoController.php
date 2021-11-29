@@ -68,9 +68,7 @@ class OrdemServicoController extends Controller
                                 ->where('ordem_servicos.id', $request->searchField)
                                 ->orWhere('clientes.nome_razao', 'like', '%'.$request->searchField.'%')
                                 ->orWhere('veiculos.placa', 'like', '%'.$request->searchField.'%')
-                                ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
- 
-                                //->whereRaw('ordem_servicos.ordem_servico_status_id = '.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).') or ('.(isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1).' = -1))')
+                                ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->abast_local) ? $request->abast_local : 1).') or ('.(isset($request->abast_local) ? $request->abast_local : 1).' = 1))')
                                 ->whereRaw($whereData)
                                 ->orderBy('id', 'desc')
                                 ->paginate();
@@ -87,7 +85,7 @@ class OrdemServicoController extends Controller
                                 ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                                 ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
                                 ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
-                                ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+                                ->whereRaw('((ordem_servicos.ordem_servico_status_id = '.(isset($request->abast_local) ? $request->abast_local : 1).') or ('.(isset($request->abast_local) ? $request->abast_local : 1).' = -1))')
                                 ->whereRaw($whereData)
                                 ->orderBy('id', 'desc')
                                 ->paginate();
@@ -148,12 +146,14 @@ class OrdemServicoController extends Controller
         if (Auth::user()->canCadastrarOrdemServico()) {
             $this->validate($request, [
                 'cliente_id' => 'required',
+                'veiculo_id' => 'nullable|numeric'
                 //'veiculo_id' => 'required',
                 //'km_veiculo' => 'required|numeric|min:0',
                 //'servicos' => 'array|size:1',
             ]);
+            
             try {
-
+                
                 DB::beginTransaction();
 
                 $ordemServico = Auth::user()->ordem_servico()->create($request->all());

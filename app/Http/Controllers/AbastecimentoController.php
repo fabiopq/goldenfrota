@@ -132,6 +132,7 @@ class AbastecimentoController extends Controller
     {
        
         if (Auth::user()->canCadastrarAbastecimento()) {
+            
             $this->validate($request, [
                 'data_hora_abastecimento' => 'required|date_format:d/m/Y H:i:s',
                 'cliente_id' => 'required_if:eh_afericao,false|required_without:eh_afericao',
@@ -142,7 +143,7 @@ class AbastecimentoController extends Controller
                 'valor_abastecimento' => 'required|numeric|min:0',
                 'bico_id' => 'required_if:eh_afericao,true'
             ]);
-
+            
             try {
                 DB::beginTransaction();
 

@@ -43,7 +43,8 @@
                             'field' => 'km_veiculo',
                             'label' => 'KM Atual',
                             'required' => true,
-                            'inputSize' => 2
+                            'inputSize' => 2,
+                            'inputValue' => 0,
                         ],
                         [
                             'type' => 'select',

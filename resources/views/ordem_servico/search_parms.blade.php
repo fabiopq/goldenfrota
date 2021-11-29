@@ -1,5 +1,5 @@
 @php
-    $abast_local = isset($_GET['abast_local']) ? $_GET['abast_local'] : -1;
+    $abast_local = isset($_GET['abast_local']) ? $_GET['abast_local'] : 1;
     $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : null;
     $data_final = isset($_GET['data_final']) ? $_GET['data_final'] : null;
 @endphp
