@@ -296,9 +296,10 @@ class IntegracaoAutomacaoController extends Controller
                                                 ->pluck('data_hora_abastecimento')
                                                 ->first());
                                                
-
+                                                                            
                     foreach ($registros as $registro)  {
-                        if (count($registro) == 17) {
+                        
+                        if (count($registro) >= 17) {
                             
                             try {
                                 $abastecimento = new Abastecimento;
@@ -359,7 +360,7 @@ class IntegracaoAutomacaoController extends Controller
                                     
                                 }
                                 
-                                
+                               
                                 
                                 $abastecimento->volume_abastecimento = $this->formataValorDecimal(trim($registro[7]), 3);
                                 

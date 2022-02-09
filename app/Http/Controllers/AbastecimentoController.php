@@ -144,6 +144,7 @@ class AbastecimentoController extends Controller
                 'bico_id' => 'required_if:eh_afericao,true'
             ]);
             
+            
             try {
                 DB::beginTransaction();
 
