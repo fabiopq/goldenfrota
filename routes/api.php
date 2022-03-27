@@ -68,6 +68,7 @@ Route::get('atendentes', 'AtendenteController@apiAtendentes');
 Route::get('bicos', 'BicoController@apiBicos');
 
 Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
+Route::get('abastecimentossemplaca', 'AbastecimentoController@apiAbastecimentosSemPlaca');
 Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 Route::get('veiculoscliente', 'VeiculoController@apiVeiculosClientes');
@@ -78,4 +79,5 @@ Route::post('departamentos', 'DepartamentoController@apiStore');
 
 Route::post('grupo_produtos', 'GrupoProdutoController@apiStore');
 Route::post('abastecimento', 'AbastecimentoController@apiStore');
+Route::post('abastecimentoupdatesemplaca', 'AbastecimentoController@apiUpdateSemPlaca');
 
