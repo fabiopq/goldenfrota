@@ -67,7 +67,8 @@ return [
             'host'     => env('FTP_HOST', ''), 
             'port'     => env('FTP_PORT', 21),
             'username' => env('FTP_USER', ''), 
-            'password' => env('FTP_PASS', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
         
             // Optional FTP Settings...
             // 'port'     => 21,

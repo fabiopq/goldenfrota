@@ -24,7 +24,7 @@ class IntegracaoAutomacaoController extends Controller
     private function disk() {
         return (App::environment('local')) ? 'local' : 'ftp';
     }
-
+     
     /* 
         funcionarios.hir - Cadastro de Funcionarios
 
@@ -55,8 +55,8 @@ class IntegracaoAutomacaoController extends Controller
             /* Config da conta de FTP */
             $this->configFTP();
 
-            Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
-        
+            Storage::disk($this.disk())->put('funcionarios.hir', $conteudo);
+             
             Session::flash('success', 'Dados Exportados com sucesso!');
             return redirect()->action('HomeController@index');
         
@@ -252,6 +252,7 @@ class IntegracaoAutomacaoController extends Controller
     > = Caracter marcador de fim de regsitro
     */
     public function ImportarAbastecimentos() {
+       
         if (App::environment('local')) {
             Log::debug('Tarefa agendada: Importação de Abastecimento... [ambiente de desenvolvimento]');
             //return;
@@ -269,10 +270,10 @@ class IntegracaoAutomacaoController extends Controller
             $this->configFTP();
 
             $errosImportacao = false;
-            if (Storage::disk($this->disk())->exists('abastecimentos.hir')) {
+            if (Storage::disk($this.disk())->exists('abastecimentos.hir')) {
                 
                 try {
-                    $arquivo = Storage::disk($this->disk())->get('abastecimentos.hir');
+                    $arquivo = Storage::disk($this.disk())->get('abastecimentos.hir');
                     $arquivo = $this->cryptAPI($arquivo);
                    
                     
@@ -366,7 +367,7 @@ class IntegracaoAutomacaoController extends Controller
                                 
                                 $abastecimento->encerrante_inicial = $this->formataValorDecimal(trim($registro[10]));
                                 $abastecimento->encerrante_final = $this->formataValorDecimal(trim($registro[11]));                                
-                        
+                                $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
                                 /* se valor total zerado, calcula valor total */
                                 if ($abastecimento->valor_abastecimento == 0) {
                                     $abastecimento->valor_abastecimento = round($abastecimento->volume_abastecimento * $abastecimento->valor_litro, 2);
@@ -381,14 +382,16 @@ class IntegracaoAutomacaoController extends Controller
                                     }else{
                                         $abastecimento->veiculo_id = $atendente->veiculo_id;
                                       
-                                        if($veiculo->hodometro_decimal){
+                                        
+
+                                       /* if($veiculo->hodometro_decimal){
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
 
                                         }else{ // acresenta zero ao km digitado no arquivo de importacao
                                             $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0',  1); 
                                           
                                         }
-                                        
+                                       */ 
                                         $veiculo = Veiculo::where('id', '=',$atendente->veiculo_id)->first(); 
                                         $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                                     }
@@ -399,14 +402,7 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->veiculo_id = $veiculo->id;
                                     //if ( $veiculo->modelo_veiculo->tipo_controle_veiculo_id == 1) {
                                         /* controle de km rodados */
-                                       
-                                        if($veiculo->hodometro_decimal){
-                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
-                                           
-                                        }else{ // acresenta zero ao km digitado no arquivo de importacao
-                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0', 1); 
-                                            
-                                        }
+                             
                                    // $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1);
                                     // } else {
                                         /* controle de horas trabalhadas */
