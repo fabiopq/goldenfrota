@@ -55,7 +55,7 @@ class IntegracaoAutomacaoController extends Controller
             /* Config da conta de FTP */
             $this->configFTP();
 
-            Storage::disk($this.disk())->put('funcionarios.hir', $conteudo);
+            Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
              
             Session::flash('success', 'Dados Exportados com sucesso!');
             return redirect()->action('HomeController@index');
@@ -270,10 +270,10 @@ class IntegracaoAutomacaoController extends Controller
             $this->configFTP();
 
             $errosImportacao = false;
-            if (Storage::disk($this.disk())->exists('abastecimentos.hir')) {
+            if (Storage::disk($this->disk())->exists('abastecimentos.hir')) {
                 
                 try {
-                    $arquivo = Storage::disk($this.disk())->get('abastecimentos.hir');
+                    $arquivo = Storage::disk($this->disk())->get('abastecimentos.hir');
                     $arquivo = $this->cryptAPI($arquivo);
                    
                     
