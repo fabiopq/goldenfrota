@@ -908,8 +908,14 @@ class AbastecimentoController extends Controller
             DB::beginTransaction();
 
             $abastecimento = new Abastecimento;
-            $abastecimento->data_hora_abastecimento = $request->data_hora_abastecimento;
+            if ($request->data_hora_abastecimento) {
+                $abastecimento->data_hora_abastecimento = $request->data_hora_abastecimento;
+            } else {
+                $abastecimento->data_hora_abastecimento =  new \DateTime(now());
+            }
+
             //$abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
+
             $abastecimento->veiculo_id = $request->veiculo_id;
             $abastecimento->km_veiculo = $request->km_veiculo;
             $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
@@ -925,6 +931,7 @@ class AbastecimentoController extends Controller
             } else {
                 $abastecimento->media_veiculo = 0;
             }
+            Log::debug('Abastecimento Inserido xx: ' . $abastecimento);
             $abastecimento->eh_afericao = (bool)$request->eh_afericao;
             //Log::debug('Abastecimento Inserido: '.$abastecimento);
             $abastecimento->save();
