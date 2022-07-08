@@ -22,7 +22,9 @@ use App\Http\Controllers\AbastecimentoController;
 class IntegracaoAutomacaoController extends Controller
 {
     private function disk() {
-        return (App::environment('local')) ? 'local' : 'ftp';
+        //alterado para enviar apenas por ftp
+        //return (App::environment('local')) ? 'local' : 'ftp';
+        return ('ftp');
     }
      
     /* 
@@ -54,7 +56,7 @@ class IntegracaoAutomacaoController extends Controller
 
             /* Config da conta de FTP */
             $this->configFTP();
-
+           
             Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
              
             Session::flash('success', 'Dados Exportados com sucesso!');
@@ -268,6 +270,7 @@ class IntegracaoAutomacaoController extends Controller
         try {
             /* Config da conta de FTP */
             $this->configFTP();
+
 
             $errosImportacao = false;
             if (Storage::disk($this->disk())->exists('abastecimentos.hir')) {
@@ -542,9 +545,10 @@ class IntegracaoAutomacaoController extends Controller
     protected function configFTP() {
         try {
             $configs = SettingController::getGroupSetting(1)->settings()->get(); //ID = 1 (FTP)
-
+           
             //return $configs;
             foreach($configs as $config) {
+               // dd($configs);
                 switch ($config['key']) {
                     case 'ftp_server':
                         Config::set('filesystems.disks.ftp.host', $config['value']);
