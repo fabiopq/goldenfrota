@@ -12,7 +12,6 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
-        "   ": "5.1.*",
         "santigarcor/laratrust": "5.0.*",
         "tymon/jwt-auth": "1.0.0-rc.3"
     },
