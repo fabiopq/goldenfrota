@@ -995,6 +995,12 @@ class AbastecimentoController extends Controller
             $abastecimento->veiculo_id = $request->veiculo_id;
             $abastecimento->km_veiculo = $request->km_veiculo;
 
+            if ($abastecimento->veiculo_id) {
+                $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
+            } else {
+                $abastecimento->media_veiculo = 0;
+            }
+
 
             if ($abastecimento->save()) {
 
