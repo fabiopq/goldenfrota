@@ -890,7 +890,8 @@ class AbastecimentoController extends Controller
         return response()->json(DB::table('abastecimentos')
             ->select('abastecimentos.*')
             ->whereNull('abastecimentos.veiculo_id')
-            ->where('abastecimentos.id', '<', '104')
+            ->orderByDesc('abastecimentos.id')
+            //->where('abastecimentos.id', '<', '104')
 
             ->get());
     }

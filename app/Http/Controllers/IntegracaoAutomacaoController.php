@@ -23,8 +23,11 @@ class IntegracaoAutomacaoController extends Controller
 {
     private function disk() {
         //alterado para enviar apenas por ftp
-        //return (App::environment('local')) ? 'local' : 'ftp';
-        return ('ftp');
+        //verifica no arvio .env se a chave APP_ENV = local
+        // sefor local nao ira enviar os arquivos para ftp, ficara apenas na pasta storage
+        //
+        return (App::environment('local')) ? 'local' : 'ftp';
+        //return ('ftp');
     }
      
     /* 
