@@ -875,7 +875,7 @@ class AbastecimentoController extends Controller
     public function apiAbastecimentos()
     {
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*')
+            ->select('abastecimentos.*', 'veiculos.placa')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
