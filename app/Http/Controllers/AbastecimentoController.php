@@ -881,7 +881,7 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-
+            ->orderBy('abastecimentos.data_hora_abastecimento','desc')
             ->get());
     }
 

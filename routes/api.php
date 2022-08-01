@@ -73,6 +73,7 @@ Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 Route::get('veiculoscliente', 'VeiculoController@apiVeiculosClientes');
 Route::get('clientes', 'ClienteController@apiClientes');
+Route::get('cliente/{id}', 'ClienteController@apiClienteCnpj');
 Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
 
 //Route::post('departamentos', 'DepartamentoController@apiStore');
@@ -80,4 +81,6 @@ Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
 //Route::post('grupo_produtos', 'GrupoProdutoController@apiStore');
 Route::post('abastecimento', 'AbastecimentoController@apiStore');
 Route::post('abastecimentoupdatesemplaca', 'AbastecimentoController@apiUpdateSemPlaca');
-
+Route::get('users', 'UserController@apiUsers');
+Route::get('user/{username}', 'UserController@apiUsers');
+Route::post('me', 'AuthController@me');

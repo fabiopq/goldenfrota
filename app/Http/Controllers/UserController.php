@@ -29,10 +29,10 @@ class UserController extends Controller
         if (Auth::user()->canListarUser()) {
             if (isset($request->searchField)) {
                 $users = DB::table('users')
-                            ->where('name', 'like', '%'.$request->searchField.'%')
-                            ->orWhere('username', 'like', '%'.$request->searchField.'%')
-                            ->orWhere('email', 'like', '%'.$request->searchField.'%')
-                            ->paginate();
+                    ->where('name', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('username', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('email', 'like', '%' . $request->searchField . '%')
+                    ->paginate();
             } else {
                 $users = User::paginate();
             }
@@ -57,7 +57,6 @@ class UserController extends Controller
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
-        
     }
 
     /**
@@ -126,12 +125,12 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
-    {        
+    {
         if (Auth::user()->canAlterarUser()) {
             $this->validate($request, [
                 'name' => 'required|string|max:255',
-                'username' => 'nullable|string|min:4|max:12|unique:users,id,'.$user->id,
-                'email' => 'required|string|email|max:255|unique:users,id,'.$user->id,
+                'username' => 'nullable|string|min:4|max:12|unique:users,id,' . $user->id,
+                'email' => 'required|string|email|max:255|unique:users,id,' . $user->id,
                 'password' => 'nullable|min:6|confirmed',
             ]);
 
@@ -181,7 +180,7 @@ class UserController extends Controller
                         'model' => __('models.user'),
                         'name' => $user->name
                     ]));
-                    
+
                     return redirect()->action('UserController@index');
                 }
             } catch (\Exception $e) {
@@ -203,22 +202,25 @@ class UserController extends Controller
         }
     }
 
-    public function profile() {
+    public function profile()
+    {
         return view('user.profile')->withUser(Auth::user());
     }
 
-    public function showChangePassword() {
+    public function showChangePassword()
+    {
         return view('user.change-password')->withUser(Auth::user());
     }
 
-    public function changePassword(Request $request, User $user) {
+    public function changePassword(Request $request, User $user)
+    {
         $this->validate($request, [
             'current_password' => 'required',
             'password' => 'required|string|min:6|confirmed',
             'current_password' => ['required', new ValidCurrentPassword($user->password)]
         ]);
 
-        try {       
+        try {
             $user->password = bcrypt($request->password);
 
             if ($user->save()) {
@@ -233,5 +235,30 @@ class UserController extends Controller
             ]));
             return redirect()->back();
         }
+    }
+
+    public function apiUsers(Request $request)
+
+    {
+
+        return response()->json(DB::table('users')
+            ->select('users.*')
+            ->orderBy('users.password', 'desc')
+
+            ->get());
+    }
+
+    public function apiUser($username)
+
+    {
+
+        return response()->json(DB::table('users')
+            ->select('users.id', 'users.username', 'permissions.name as permissao')
+            ->leftJoin('role_user', 'role_user.user_id', 'users.id')
+            ->leftJoin('permission_role', 'permission_role.role_id', 'role_user.id')
+            ->leftJoin('permissions', 'permission_role.permission_id', 'permissions.id')
+            ->where('users.name', $username)
+            //->orderBy('users.id')
+            ->get());
     }
 }

@@ -92,6 +92,7 @@ class ClienteController extends Controller
                 'fone2' => ['nullable', new telefoneComDDD],
                 'email1' => 'nullable|email',
                 'email2' => 'nullable|email',
+               // 'site' => 'nullable|site',
                 'endereco' => 'required|string|min:3|max:200',
                 'numero' => 'required',
                 'bairro' => 'required|string|min:3|max:200',
@@ -165,6 +166,7 @@ class ClienteController extends Controller
                 'fone2' => ['nullable', new telefoneComDDD],
                 'email1' => 'nullable|email',
                 'email2' => 'nullable|email',
+                //'site' => 'nullable|site',
                 'endereco' => 'required|string|min:3|max:200',
                 'numero' => 'required',
                 'bairro' => 'required|string|min:3|max:200',
@@ -264,4 +266,9 @@ class ClienteController extends Controller
     public function apiCliente($id) {
         return response()->json(Cliente::ativo()->where('id', $id)->get());
     }
+
+    public function apiClienteCnpj($id) {
+        return response()->json(Cliente::ativo()->where('cpf_cnpj', $id)->get());
+    }
+
 }

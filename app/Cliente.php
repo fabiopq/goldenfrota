@@ -25,6 +25,7 @@ class Cliente extends Model
         'cidade',
         'uf_id',
         'cep',
+        'site',
         'ativo'
     ];
 
