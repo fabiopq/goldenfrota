@@ -872,8 +872,11 @@ class AbastecimentoController extends Controller
         }
     }
 
-    public function apiAbastecimentos()
+    public function apiAbastecimentos(Request $request)
     {
+       
+     // parametro de data precisa ser entre as datas. necessario data inicial e final
+
         return response()->json(DB::table('abastecimentos')
             ->select('abastecimentos.*', 'veiculos.placa')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
@@ -881,7 +884,11 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-            ->orderBy('abastecimentos.data_hora_abastecimento','desc')
+            //->whereRaw($whereData)
+           // ->whereDate('abastecimentos.data_hora_abastecimento', $request->data_inicial)
+            //->whereDate('abastecimentos.data_hora_abastecimento', $request->data_final)
+            ->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
+           // ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
             ->get());
     }
 
