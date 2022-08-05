@@ -888,16 +888,18 @@ class AbastecimentoController extends Controller
            // ->whereDate('abastecimentos.data_hora_abastecimento', $request->data_inicial)
             //->whereDate('abastecimentos.data_hora_abastecimento', $request->data_final)
             ->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
-           // ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+            ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
             ->get());
     }
 
-    public function apiAbastecimentosSemPlaca()
+    public function apiAbastecimentosSemPlaca(Request $request)
     {
         return response()->json(DB::table('abastecimentos')
             ->select('abastecimentos.*')
             ->whereNull('abastecimentos.veiculo_id')
             ->orderByDesc('abastecimentos.id')
+            ->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
+            ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
             //->where('abastecimentos.id', '<', '104')
 
             ->get());
