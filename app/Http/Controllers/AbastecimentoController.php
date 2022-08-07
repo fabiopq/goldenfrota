@@ -874,8 +874,8 @@ class AbastecimentoController extends Controller
 
     public function apiAbastecimentos(Request $request)
     {
-       
-     // parametro de data precisa ser entre as datas. necessario data inicial e final
+
+        // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
             ->select('abastecimentos.*', 'veiculos.placa')
@@ -885,7 +885,7 @@ class AbastecimentoController extends Controller
             ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
             //->whereRaw($whereData)
-           // ->whereDate('abastecimentos.data_hora_abastecimento', $request->data_inicial)
+            // ->whereDate('abastecimentos.data_hora_abastecimento', $request->data_inicial)
             //->whereDate('abastecimentos.data_hora_abastecimento', $request->data_final)
             ->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
             ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
@@ -1003,6 +1003,7 @@ class AbastecimentoController extends Controller
             //  dd($abastecimento);
             $abastecimento->veiculo_id = $request->veiculo_id;
             $abastecimento->km_veiculo = $request->km_veiculo;
+            $abastecimento->atendente_id = $request->atendente_id;
 
             if ($abastecimento->veiculo_id) {
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);

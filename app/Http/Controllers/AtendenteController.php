@@ -225,4 +225,6 @@ class AtendenteController extends Controller
 
        
     }
+
+    
 }
