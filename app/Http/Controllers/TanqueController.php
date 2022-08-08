@@ -26,26 +26,26 @@ class TanqueController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         if (Auth::user()->canListarTanque()) {
             if (isset($request->searchField)) {
                 $tanques = DB::table('tanques')
-                                ->select('tanques.*', 'combustiveis.descricao')
-                                ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-                                ->where('descricao_tanque', 'like', '%'.$request->searchField.'%')
-                                ->paginate();
+                    ->select('tanques.*', 'combustiveis.descricao')
+                    ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+                    ->where('descricao_tanque', 'like', '%' . $request->searchField . '%')
+                    ->paginate();
             } else {
                 $tanques = DB::table('tanques')
-                                ->select('tanques.*', 'combustiveis.descricao')
-                                ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-                                ->paginate();
+                    ->select('tanques.*', 'combustiveis.descricao')
+                    ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+                    ->paginate();
             }
 
             return View('tanque.index')->withTanques($tanques)->withFields($this->fields);
         } else {
             Session::flash('error', __('messages.access_denied'));
-            return redirect()->back();   
+            return redirect()->back();
         }
     }
 
@@ -60,7 +60,7 @@ class TanqueController extends Controller
             return View('tanque.create')->withCombustiveis(Combustivel::all());
         } else {
             Session::flash('error', __('messages.access_denied'));
-            return redirect()->back();   
+            return redirect()->back();
         }
     }
 
@@ -84,7 +84,7 @@ class TanqueController extends Controller
                 if ($tanque->save()) {
                     Session::flash('success', __('messages.create_success', [
                         'model' => __('models.tanque'),
-                        'name' => $tanque->descricao_tanque 
+                        'name' => $tanque->descricao_tanque
                     ]));
                     return redirect()->action('TanqueController@index');
                 }
@@ -96,7 +96,7 @@ class TanqueController extends Controller
             }
         } else {
             Session::flash('error', __('messages.access_denied'));
-            return redirect()->back();   
+            return redirect()->back();
         }
     }
 
@@ -112,7 +112,7 @@ class TanqueController extends Controller
             return View('tanque.edit')->withTanque($tanque)->withCombustiveis(Combustivel::all());
         } else {
             Session::flash('error', __('messages.access_denied'));
-            return redirect()->back();   
+            return redirect()->back();
         }
     }
 
@@ -127,7 +127,7 @@ class TanqueController extends Controller
     {
         if (Auth::user()->canAlterarTanque()) {
             $this->validate($request, [
-                'descricao_tanque' => 'string|required|min:3|unique:tanques,id,'.$tanque->id,
+                'descricao_tanque' => 'string|required|min:3|unique:tanques,id,' . $tanque->id,
                 'combustivel_id' => 'numeric|required',
                 'capacidade' => 'numeric|required'
             ]);
@@ -142,7 +142,7 @@ class TanqueController extends Controller
                 if ($tanque->save()) {
                     Session::flash('success', __('messages.update_success', [
                         'model' => __('models.tanque'),
-                        'name' => $tanque->descricao_tanque 
+                        'name' => $tanque->descricao_tanque
                     ]));
                     return redirect()->action('TanqueController@index');
                 }
@@ -154,7 +154,7 @@ class TanqueController extends Controller
             }
         } else {
             Session::flash('error', __('messages.access_denied'));
-            return redirect()->back();   
+            return redirect()->back();
         }
     }
 
@@ -171,9 +171,9 @@ class TanqueController extends Controller
                 if ($tanque->delete()) {
                     Session::flash('success', __('messages.delete_success', [
                         'model' => __('models.tanque'),
-                        'name' => $tanque->descricao_tanque 
+                        'name' => $tanque->descricao_tanque
                     ]));
-                    
+
                     return redirect()->action('TanqueController@index');
                 }
             } catch (\Exception $e) {
@@ -191,41 +191,44 @@ class TanqueController extends Controller
             }
         } else {
             Session::flash('error', __('messages.access_denied'));
-            return redirect()->back();   
+            return redirect()->back();
         }
     }
 
-    public function getTanquesJson(Request $request) {
+    public function getTanquesJson(Request $request)
+    {
         $tanques = Tanque::where('combustivel_id', $request->id)->get();
 
         return response()->json($tanques);
     }
 
-    public function relPosicaoTanque() {
+    public function relPosicaoTanque()
+    {
         $tanques = Tanque::select('tanques.*', 'combustiveis.descricao')
-                        ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-                        ->where('tanques.ativo', true)->get();
-        
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->where('tanques.ativo', true)->get();
+
         $graficos = array();
 
         foreach ($tanques as $tanque) {
             $graficos[] = Charts::create('percentage', 'justgage')
-                            ->title($tanque->descricao_tanque.' ('.$tanque->descricao.')')
-                            ->elementLabel('Litros')
-                            ->values([$this->getPosicaoEstoque($tanque), 0, $tanque->capacidade])
-                            ->responsive(false)
-                            ->height(250);
-                            //->width(0);
+                ->title($tanque->descricao_tanque . ' (' . $tanque->descricao . ')')
+                ->elementLabel('Litros')
+                ->values([$this->getPosicaoEstoque($tanque), 0, $tanque->capacidade])
+                ->responsive(false)
+                ->height(250);
+            //->width(0);
         }
 
         return View('relatorios.tanques.posicao_tanques')->withTitulo('Posição de Estoque - Tanques')->withGraficos($graficos);
     }
 
-    static public function getPosicaoEstoque(Tanque $tanque) {
+    static public function getPosicaoEstoque(Tanque $tanque)
+    {
         $posicao = DB::table('movimentacao_combustiveis')
-        ->select(
-            DB::raw(
-                'SUM(
+            ->select(
+                DB::raw(
+                    'SUM(
                     CASE tipo_movimentacao_combustiveis.eh_entrada
                         WHEN 1 THEN
                             movimentacao_combustiveis.quantidade
@@ -233,15 +236,15 @@ class TanqueController extends Controller
                             movimentacao_combustiveis.quantidade * -1
                     END
                 ) as posicao'
+                )
             )
-        )
-        ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
-        ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
-        ->where('movimentacao_combustiveis.tanque_id', $tanque->id)
-        ->first();
+            ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
+            ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
+            ->where('movimentacao_combustiveis.tanque_id', $tanque->id)
+            ->first();
 
         return ($posicao->posicao) ? $posicao->posicao : 0;
-        
+
         /* dd(($posicao == null) ? $posicao : 0);
         
         
@@ -265,13 +268,24 @@ class TanqueController extends Controller
         return $entradas - $saidas; */
     }
 
-    public function listagemTanques() {
-        $tanques = Tanque::all(); 
+    public function listagemTanques()
+    {
+        $tanques = Tanque::all();
 
-        foreach($tanques as $tanque) {
+        foreach ($tanques as $tanque) {
             $tanque->posicao = $this->getPosicaoEstoque($tanque);
         }
 
         return View('relatorios.tanques.listagem_tanques')->withTanques($tanques)->withTitulo('Listagem de Tanques')->withParametro(Parametro::first());
+    }
+
+    public function apiTanques()
+    {
+        $tanques = Tanque::all();
+
+        foreach ($tanques as $tanque) {
+            $tanque->posicao = $this->getPosicaoEstoque($tanque);
+        }
+        return response()->json($tanques);
     }
 }

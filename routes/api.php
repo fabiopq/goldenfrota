@@ -65,6 +65,8 @@ Route::middleware('auth:api')->group(function(){
 
 Route::get('produtos', 'ProdutoController@apiProdutos');
 Route::get('atendentes', 'AtendenteController@apiAtendentes');
+Route::get('motoristas', 'MotoristaController@apiMotoristas');
+Route::get('tanques', 'TanqueController@apiTanques');
 Route::get('bicos', 'BicoController@apiBicos');
 
 Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
