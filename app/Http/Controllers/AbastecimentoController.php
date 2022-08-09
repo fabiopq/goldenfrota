@@ -1013,6 +1013,7 @@ class AbastecimentoController extends Controller
 
 
             if ($abastecimento->save()) {
+                VeiculoController::atualizaKmVeiculo($abastecimento);
 
                 Session::flash('success', __('messages.update_success', [
                     'model' => __('models.abastecimento'),
