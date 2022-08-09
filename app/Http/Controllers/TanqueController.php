@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use ConsoleTVs\Charts\Facades\Charts;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class TanqueController extends Controller
 {
@@ -268,6 +269,17 @@ class TanqueController extends Controller
         return $entradas - $saidas; */
     }
 
+    static public function getCombustivelTanque(Tanque $tanque)
+    {
+
+        Log::debug('Tanque  ' . $tanque);
+        $combustiveis = Combustivel::ativo()->where('id', $tanque->combustivel_id)->get();
+        Log::debug('combustivel ' . $combustiveis);
+        
+        return ($combustiveis[0]->descricao);
+    }
+
+
     public function listagemTanques()
     {
         $tanques = Tanque::all();
@@ -285,6 +297,7 @@ class TanqueController extends Controller
 
         foreach ($tanques as $tanque) {
             $tanque->posicao = $this->getPosicaoEstoque($tanque);
+            $tanque->combustivel = $this->getCombustivelTanque($tanque);
         }
         return response()->json($tanques);
     }

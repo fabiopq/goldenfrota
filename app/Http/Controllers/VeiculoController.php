@@ -546,12 +546,11 @@ class VeiculoController extends Controller
             $veiculo->hodometro = $abastecimento->km_veiculo;
 
             
-            Log::debug('Abastecimento ' . $abastecimento);
-            Log::debug('Antes Update Veiculo ' . $veiculo);
+            
             if ($veiculo->save()) {
 
                 
-                Log::info('Depois Update Veiculo: ' . $veiculo . ' importado da Automação.');
+                //Log::info('Depois Update Veiculo: ' . $veiculo . ' importado da Automação.');
 
                 // event(new NovoRegistroAtualizacaoApp($veiculo));
 

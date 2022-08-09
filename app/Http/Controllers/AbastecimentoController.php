@@ -1016,12 +1016,12 @@ class AbastecimentoController extends Controller
                 VeiculoController::atualizaKmVeiculo($abastecimento);
 
 
-                return true;
+                return response()->json(true);
             } else {
 
 
 
-                return false;
+                return response()->json(false);
             }
             /*  } */
         } catch (\Exception $e) {
