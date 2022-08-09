@@ -1015,20 +1015,13 @@ class AbastecimentoController extends Controller
             if ($abastecimento->save()) {
                 VeiculoController::atualizaKmVeiculo($abastecimento);
 
-                Session::flash('success', __('messages.update_success', [
-                    'model' => __('models.abastecimento'),
-                    'name' => $abastecimento->id
-                ]));
-                //return redirect(url()->previous());
-                return redirect()->action('AbastecimentoController@index', $request->query->all() ?? []);
-            } else {
-                dd($abastecimento);
-                Session::flash('error', __('messages.update_error', [
-                    'model' => 'models.abastecimento',
-                    'name' => $abastecimento->id
-                ]));
 
-                return redirect()->back()->withInput();
+                return true;
+            } else {
+
+
+
+                return false;
             }
             /*  } */
         } catch (\Exception $e) {
