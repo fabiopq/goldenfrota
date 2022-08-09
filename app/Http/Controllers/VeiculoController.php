@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Events\NovoRegistroAtualizacaoApp;
+use Illuminate\Support\Facades\Log;
 use App\AtualizacaoApp;
 use App\Rules\ValidarPlaca;
 
@@ -542,14 +543,16 @@ class VeiculoController extends Controller
 
             if ($veiculo->save()) {
 
-                event(new NovoRegistroAtualizacaoApp($veiculo));
+                Log::info('Update Veiculo: '.$veiculo.' importado da Automação.');
+
+               // event(new NovoRegistroAtualizacaoApp($veiculo));
 
                 
                 return true;
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Ocorreu um erro ao salvar os dados. '.$e->getMessage());
-            return Redirect::back()->withInput(Input::all());
+            dd($e);
+            throw new \Exception($e);
         }
     }
 
