@@ -543,7 +543,7 @@ class VeiculoController extends Controller
 
             $veiculo = Veiculo::find($abastecimento->veiculo->id);
 
-            $veiculo->hodometro = $abastecimento->hodometro;
+            $veiculo->hodometro = $abastecimento->km_veiculo;
 
             
             Log::debug('Abastecimento ' . $abastecimento);
