@@ -41,31 +41,31 @@ class VeiculoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         if (isset($request->searchField)) {
             $veiculos = DB::table('veiculos')
-                            ->select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo', 'clientes.nome_razao', 'grupo_veiculos.grupo_veiculo', 'departamentos.departamento')
-                            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                            ->join('clientes', 'clientes.id', 'veiculos.cliente_id')
-                            ->join('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
-                            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-                            ->where('placa', 'like', '%'.$request->searchField.'%')
-                            ->orWhere('tag', 'like', '%'.$request->searchField.'%')
-                            ->orWhere('nome_razao', 'like', '%'.$request->searchField.'%')
-                            ->orderBy('veiculos.id', 'desc')
-                            ->paginate();   
+                ->select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo', 'clientes.nome_razao', 'grupo_veiculos.grupo_veiculo', 'departamentos.departamento')
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->join('clientes', 'clientes.id', 'veiculos.cliente_id')
+                ->join('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
+                ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                ->where('placa', 'like', '%' . $request->searchField . '%')
+                ->orWhere('tag', 'like', '%' . $request->searchField . '%')
+                ->orWhere('nome_razao', 'like', '%' . $request->searchField . '%')
+                ->orderBy('veiculos.id', 'desc')
+                ->paginate();
         } else {
             $veiculos = DB::table('veiculos')
-                            ->select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo', 'clientes.nome_razao', 'grupo_veiculos.grupo_veiculo', 'departamentos.departamento')
-                            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                            ->join('clientes', 'clientes.id', 'veiculos.cliente_id')
-                            ->join('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
-                            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-                            ->orderBy('veiculos.id', 'desc')
-                            ->paginate();
+                ->select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo', 'clientes.nome_razao', 'grupo_veiculos.grupo_veiculo', 'departamentos.departamento')
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->join('clientes', 'clientes.id', 'veiculos.cliente_id')
+                ->join('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
+                ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                ->orderBy('veiculos.id', 'desc')
+                ->paginate();
         }
 
         return View('veiculo.index')->withVeiculos($veiculos)->withFields($this->fields);
@@ -99,8 +99,8 @@ class VeiculoController extends Controller
      */
     public function store(Request $request)
     {
-       
-        
+
+
         $this->validate($request, [
             'grupo_veiculo_id' => 'required|integer|min:1',
             'cliente_id' => 'required',
@@ -133,11 +133,11 @@ class VeiculoController extends Controller
 
                 event(new NovoRegistroAtualizacaoApp($veiculo));
 
-                Session::flash('success', 'Veiculo '.$veiculo->placa.' cadastrado com sucesso.');
+                Session::flash('success', 'Veiculo ' . $veiculo->placa . ' cadastrado com sucesso.');
                 return redirect()->action('VeiculoController@index');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Ocorreu um erro ao salvar os dados. '.$e->getMessage());
+            Session::flash('error', 'Ocorreu um erro ao salvar os dados. ' . $e->getMessage());
             return Redirect::back()->withInput(Input::all());
         }
     }
@@ -167,7 +167,8 @@ class VeiculoController extends Controller
         $veiculo = Veiculo::find($veiculo->id);
         $marcaVeiculo = ModeloVeiculo::find($veiculo->modelo_veiculo_id)->marca_veiculo_id;
 
-        $modeloVeiculos = ModeloVeiculo::where('marca_veiculo_id', 
+        $modeloVeiculos = ModeloVeiculo::where(
+            'marca_veiculo_id',
             ModeloVeiculo::find($veiculo->modelo_veiculo_id)->marca_veiculo_id
         )->get();
 
@@ -196,8 +197,8 @@ class VeiculoController extends Controller
         $this->validate($request, [
             'grupo_veiculo_id' => 'required',
             'cliente_id' => 'required',
-            'placa' =>  'required||unique:veiculos,veiculos.id,'.$veiculo->id,
-           // 'placa' => 'required|formato_placa_de_veiculo|unique:veiculos,id,'.$veiculo->id,
+            'placa' =>  'required||unique:veiculos,veiculos.id,' . $veiculo->id,
+            // 'placa' => 'required|formato_placa_de_veiculo|unique:veiculos,id,'.$veiculo->id,
             'marca_veiculo_id' => 'required',
             'modelo_veiculo_id' => 'required',
             'ano' => 'required|integer',
@@ -207,7 +208,7 @@ class VeiculoController extends Controller
         ]);
 
         try {
-            
+
             $veiculo = Veiculo::find($veiculo->id);
             $veiculo->placa = strtoupper($request->placa);
             $veiculo->tag = $request->tag;
@@ -228,11 +229,11 @@ class VeiculoController extends Controller
 
                 event(new NovoRegistroAtualizacaoApp($veiculo));
 
-                Session::flash('success', 'Veiculo '.$veiculo->placa.' alterado com sucesso.');
+                Session::flash('success', 'Veiculo ' . $veiculo->placa . ' alterado com sucesso.');
                 return redirect()->action('VeiculoController@index');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Ocorreu um erro ao salvar os dados. '.$e->getMessage());
+            Session::flash('error', 'Ocorreu um erro ao salvar os dados. ' . $e->getMessage());
             return Redirect::back()->withInput(Input::all());
         }
     }
@@ -251,30 +252,31 @@ class VeiculoController extends Controller
 
                 event(new NovoRegistroAtualizacaoApp($veiculo, true));
 
-                Session::flash('success', 'Veiculo '.$veiculo->placa.' removido com sucesso.');
-                
+                Session::flash('success', 'Veiculo ' . $veiculo->placa . ' removido com sucesso.');
+
                 return redirect()->action('VeiculoController@index');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Registro não pode ser excluído. '.$e->getMessage());
+            Session::flash('error', 'Registro não pode ser excluído. ' . $e->getMessage());
             return redirect()->action('VeiculoController@index');
         }
     }
 
-    public function getVeiculosJson(Request $request) {
+    public function getVeiculosJson(Request $request)
+    {
         if ($request->id > 0) {
-            $whereCliente = 'cliente_id = '.$request->id;
+            $whereCliente = 'cliente_id = ' . $request->id;
         } else {
             $whereCliente = '1 = 1';
         }
 
         $veiculos = Veiculo::with('modelo_veiculo.tipo_controle_veiculo')
-                        ->with('modelo_veiculo.marca_veiculo')
-                        ->with('vencimento_produtos')
-                        ->where('veiculos.ativo', true)
-                        ->whereRaw($whereCliente)
-                        ->orderBy('veiculos.placa', 'asc')
-                        ->get();
+            ->with('modelo_veiculo.marca_veiculo')
+            ->with('vencimento_produtos')
+            ->where('veiculos.ativo', true)
+            ->whereRaw($whereCliente)
+            ->orderBy('veiculos.placa', 'asc')
+            ->get();
         /* $veiculos = Veiculo::select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo')
                     ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
                     ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
@@ -285,100 +287,104 @@ class VeiculoController extends Controller
         return response()->json($veiculos);
     }
 
-    public function getVeiculosComponenteJson(Request $request) {
+    public function getVeiculosComponenteJson(Request $request)
+    {
         if ($request->id > 0) {
-            $whereCliente = 'cliente_id = '.$request->id;
+            $whereCliente = 'cliente_id = ' . $request->id;
         } else {
             $whereCliente = '1 = 1';
         }
 
-       
-         $veiculos = $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
-                                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                                ->where('veiculos.ativo', true)
-                                ->get();
+
+        $veiculos = $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
+            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->where('veiculos.ativo', true)
+            ->get();
 
 
         return response()->json($veiculos);
     }
 
 
-    public function getVeiculosDepartamentoJson(Request $request) {
+    public function getVeiculosDepartamentoJson(Request $request)
+    {
         if ($request->id > 0) {
-            $whereDepartamento = 'departamento_id = '.$request->id;
+            $whereDepartamento = 'departamento_id = ' . $request->id;
         } else {
             $whereDepartamento = '1 = 1';
         }
 
         if ($request->cliente_id > 0) {
-            $whereCliente = 'cliente_id = '.$request->cliente_id;
+            $whereCliente = 'cliente_id = ' . $request->cliente_id;
         } else {
             $whereCliente = '1 = 1';
         }
-                 
+
 
         $veiculos = Veiculo::select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo')
-                    ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                    ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                    ->where('veiculos.ativo', true)
-                    ->whereRaw($whereDepartamento)
-                    ->whereRaw($whereCliente)
-                    ->get();
+            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->where('veiculos.ativo', true)
+            ->whereRaw($whereDepartamento)
+            ->whereRaw($whereCliente)
+            ->get();
 
         return response()->json($veiculos);
     }
 
-    public function relMediaConsumo() {
+    public function relMediaConsumo()
+    {
         $graficos = array();
 
         $veiculos = Veiculo::where('ativo', true)->get();
 
-        foreach($veiculos as $veiculo) {
+        foreach ($veiculos as $veiculo) {
             $labels = array();
             $values = array();
 
-            foreach($veiculo->abastecimentos as $abastecimento) {
-                $labels[] = $abastecimento->km_veiculo.' Km';
+            foreach ($veiculo->abastecimentos as $abastecimento) {
+                $labels[] = $abastecimento->km_veiculo . ' Km';
                 $values[] = $abastecimento->media_veiculo;
             }
 
- 
+
             $graficos[] = Charts::create('area', 'highcharts')
-                                ->title('Veículo: '.$veiculo->placa)
-                                ->elementLabel('Média')
-                                ->labels($labels)
-                                ->values($values)
-                                ->responsive(true);
+                ->title('Veículo: ' . $veiculo->placa)
+                ->elementLabel('Média')
+                ->labels($labels)
+                ->values($values)
+                ->responsive(true);
         }
 
         return View('relatorios.veiculos.media_consumo')->withTitulo('Média Consumo')->withGraficos($graficos)->withParametro(Parametro::first());
     }
 
-    public function listagemVeiculos(Request $request) {
-        
+    public function listagemVeiculos(Request $request)
+    {
 
-        $parametros = array();        
+
+        $parametros = array();
 
         if ($request->cliente_id > 0) {
-            $whereCliente = 'clientes.id = '.$request->cliente_id;
-            array_push($parametros, 'Cliente: '.Cliente::find($request->cliente_id)->nome_razao);
+            $whereCliente = 'clientes.id = ' . $request->cliente_id;
+            array_push($parametros, 'Cliente: ' . Cliente::find($request->cliente_id)->nome_razao);
         } else {
-            $whereCliente = '1 = 1'; 
+            $whereCliente = '1 = 1';
         }
 
         if ($request->departamento_id > 0) {
-            $whereDepartamento = 'departamentos.id = '.$request->departamento_id;
-            array_push($parametros, 'Departamento: '.Departamento::find($request->departamento_id)->departamento);
+            $whereDepartamento = 'departamentos.id = ' . $request->departamento_id;
+            array_push($parametros, 'Departamento: ' . Departamento::find($request->departamento_id)->departamento);
         } else {
-            $whereDepartamento = '1 = 1'; 
+            $whereDepartamento = '1 = 1';
         }
 
         if ($request->grupo_veiculo_id > 0) {
-            $whereGrupo = 'grupo_veiculos.id = '.$request->grupo_veiculo_id;
-            array_push($parametros, 'Grupo: '.GrupoVeiculo::find($request->grupo_veiculo_id)->grupo_veiculo);
+            $whereGrupo = 'grupo_veiculos.id = ' . $request->grupo_veiculo_id;
+            array_push($parametros, 'Grupo: ' . GrupoVeiculo::find($request->grupo_veiculo_id)->grupo_veiculo);
         } else {
-            $whereGrupo = '1 = 1'; 
+            $whereGrupo = '1 = 1';
         }
 
         switch ($request->ativo) {
@@ -390,31 +396,32 @@ class VeiculoController extends Controller
                 $whereStatus = 'veiculos.ativo = 0';
                 array_push($parametros, 'Status: Desativado');
                 break;
-            default: 
+            default:
                 $whereStatus = '1 = 1';
                 break;
         }
 
         $veiculos = Veiculo::select('veiculos.*', 'clientes.nome_razao', 'departamentos.departamento', 'grupo_veiculos.grupo_veiculo', 'modelo_veiculos.modelo_veiculo', 'marca_veiculos.marca_veiculo')
-                        ->leftjoin('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
-                        ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
-                        ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-                        ->leftJoin('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                        ->leftJoin('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                        ->whereRaw($whereStatus)
-                        ->whereRaw($whereCliente)
-                        ->whereRaw($whereGrupo)
-                        ->whereRaw($whereDepartamento)
-                        ->orderBy('clientes.nome_razao', 'asc')
-                        ->orderBy('departamentos.departamento', 'asc')
-                        ->orderBy('grupo_veiculos.grupo_veiculo', 'asc')
-                        ->orderBy('veiculos.placa', 'asc')
-                        ->get();
+            ->leftjoin('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
+            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->leftJoin('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+            ->leftJoin('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->whereRaw($whereStatus)
+            ->whereRaw($whereCliente)
+            ->whereRaw($whereGrupo)
+            ->whereRaw($whereDepartamento)
+            ->orderBy('clientes.nome_razao', 'asc')
+            ->orderBy('departamentos.departamento', 'asc')
+            ->orderBy('grupo_veiculos.grupo_veiculo', 'asc')
+            ->orderBy('veiculos.placa', 'asc')
+            ->get();
 
         return View('relatorios.veiculos.listagem_veiculos')->withVeiculos($veiculos)->withParametros($parametros)->withTitulo('Listagem de Veículos')->withParametro(Parametro::first());
     }
 
-    public function parametrosListagemVeiculos() {
+    public function parametrosListagemVeiculos()
+    {
         $clientes = Cliente::where('ativo', true)->orderBy('nome_razao', 'asc')->get();
         $grupo_veiculos = GrupoVeiculo::where('ativo', true)->orderBy('grupo_veiculo', 'asc')->get();
 
@@ -424,7 +431,8 @@ class VeiculoController extends Controller
         ]);
     }
 
-    public function obterKmAbasteciemntoAnterior(Request $request) {
+    public function obterKmAbasteciemntoAnterior(Request $request)
+    {
         /* $abastecimento = Abastecimento::select('km_veiculo')
                             ->where('abastecimentos.veiculo_id', $request->veiculo_id)
                             ->where('abastecimentos.id', '<', $request->id)
@@ -432,122 +440,122 @@ class VeiculoController extends Controller
                             ->first();
                                 
         return response()->json($abastecimento); */
-        
+
         //return response()->json(Abastecimento::select('km_veiculo')->ultimoDoVeiculo($request->veiculo_id, $request->id));
         $ultimoAbast = Abastecimento::find($request->id);
         return response()->json(Abastecimento::with('veiculo.modelo_veiculo')->ultimoDoVeiculo($request->veiculo_id, $ultimoAbast->data_hora_abastecimento));
     }
 
-    public function relatorioMediaModeloParam() {
+    public function relatorioMediaModeloParam()
+    {
         $marcaVeiculos = MarcaVeiculo::where('ativo', true)
-                            ->orderBy('marca_veiculo', 'asc')
-                            ->get();
-        $modelo        = ModeloVeiculo::where('ativo',true)
-                            ->orderBy('modelo_veiculo','asc')
-                            ->get();
+            ->orderBy('marca_veiculo', 'asc')
+            ->get();
+        $modelo        = ModeloVeiculo::where('ativo', true)
+            ->orderBy('modelo_veiculo', 'asc')
+            ->get();
 
         return View('relatorios.veiculos.media_modelo_veiculo_param')->withmodelo($modelo)
-        ->withmarcaVeiculos($marcaVeiculos);
-        
+            ->withmarcaVeiculos($marcaVeiculos);
     }
 
-    public function relatorioMediaModelo(Request $request) {
+    public function relatorioMediaModelo(Request $request)
+    {
         $data_inicial = $request->data_inicial;
         $data_final = $request->data_final;
         $parametros = array();
 
-        if($data_inicial && $data_final) {
-            $whereData = 'abastecimentos.data_hora_abastecimento between \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\' and \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
-            array_push($parametros, 'Período de '.$data_inicial.' até '.$data_final);
+        if ($data_inicial && $data_final) {
+            $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'Período de ' . $data_inicial . ' até ' . $data_final);
         } elseif ($data_inicial) {
-            $whereData = 'abastecimentos.data_hora_abastecimento >= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\'';
-            array_push($parametros, 'A partir de '.$data_inicial);
+            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'A partir de ' . $data_inicial);
         } elseif ($data_final) {
-            $whereData = 'abastecimentos.data_hora_abastecimento <= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
-            array_push($parametros, 'Até '.$data_final);
+            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'Até ' . $data_final);
         } else {
             $whereData = '1 = 1'; //busca qualquer coisa
         }
 
         if ($request->marca_veiculo_id > 0) {
-            array_push($parametros, 'Marca: '.MarcaVeiculo::find($request->marca_veiculo_id)->marca_veiculo);
-            $whereMarca = 'marca_veiculo_id = '.$request->marca_veiculo_id;
+            array_push($parametros, 'Marca: ' . MarcaVeiculo::find($request->marca_veiculo_id)->marca_veiculo);
+            $whereMarca = 'marca_veiculo_id = ' . $request->marca_veiculo_id;
         } else {
             $whereMarca = '1 = 1';
         }
 
         if ($request->modelo_veiculo_id > 0) {
-            array_push($parametros, 'Modelo: '.ModeloVeiculo::find($request->modelo_veiculo_id)->modelo_veiculo);
-            $whereModelo = 'modelo_veiculo_id = '.$request->modelo_veiculo_id;
+            array_push($parametros, 'Modelo: ' . ModeloVeiculo::find($request->modelo_veiculo_id)->modelo_veiculo);
+            $whereModelo = 'modelo_veiculo_id = ' . $request->modelo_veiculo_id;
         } else {
             $whereModelo = '1 = 1';
         }
 
-        
-        $modeloVeiculos = DB::table('abastecimentos')
-                         ->select('modelo_veiculos.modelo_veiculo','modelo_veiculos.id')
-                         ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
-                         ->leftJoin('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                         ->whereRaw('abastecimentos.veiculo_id is not null')
-                         ->whereRaw($whereData)
-                         ->whereRaw($whereMarca)
-                         ->whereRaw($whereModelo)
-                         ->orderBy('modelo_veiculos.modelo_veiculo', 'asc')
-                         ->distinct()
-                         ->get();
 
-                          // dd($modeloVeiculos);
+        $modeloVeiculos = DB::table('abastecimentos')
+            ->select('modelo_veiculos.modelo_veiculo', 'modelo_veiculos.id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+            ->whereRaw('abastecimentos.veiculo_id is not null')
+            ->whereRaw($whereData)
+            ->whereRaw($whereMarca)
+            ->whereRaw($whereModelo)
+            ->orderBy('modelo_veiculos.modelo_veiculo', 'asc')
+            ->distinct()
+            ->get();
+
+        // dd($modeloVeiculos);
         foreach ($modeloVeiculos as $modeloVeiculo) {
             $abastecimentos = DB::table('abastecimentos')
-                            ->select(
-                           'veiculos.placa',
-                           DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
-                           DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
-                           DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
-                           DB::raw('AVG(abastecimentos.media_veiculo) AS media')
-                            )
-                            ->join('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
-                            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                            ->whereRaw($whereData)
-                            ->whereRaw($whereMarca)
-                            ->where('modelo_veiculos.id', $modeloVeiculo->id)
-                            ->groupBy('veiculos.placa')
-                            ->orderBy('media','desc')
-                            //->orderBy('marca_veiculo', 'asc')
-                            //->orderBy('modelo_veiculo', 'asc')
-                            //->tosql();
-                            ->get();
-                        
-                        //dd($abastecimentos);
-            $modeloVeiculo->abastecimentos =  $abastecimentos;             
-            
-        }
-           
-         //dd($modeloVeiculo);
-        return View('relatorios.veiculos.media_modelo_veiculo')->withmodeloVeiculos($modeloVeiculos)->withTitulo('Relatório de Abastecimentos - Modelo Veículo')->withParametros($parametros)->withParametro(Parametro::first());
+                ->select(
+                    'veiculos.placa',
+                    DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                    DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
+                    DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                    DB::raw('AVG(abastecimentos.media_veiculo) AS media')
+                )
+                ->join('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->whereRaw($whereData)
+                ->whereRaw($whereMarca)
+                ->where('modelo_veiculos.id', $modeloVeiculo->id)
+                ->groupBy('veiculos.placa')
+                ->orderBy('media', 'desc')
+                //->orderBy('marca_veiculo', 'asc')
+                //->orderBy('modelo_veiculo', 'asc')
+                //->tosql();
+                ->get();
 
-       
+            //dd($abastecimentos);
+            $modeloVeiculo->abastecimentos =  $abastecimentos;
+        }
+
+        //dd($modeloVeiculo);
+        return View('relatorios.veiculos.media_modelo_veiculo')->withmodeloVeiculos($modeloVeiculos)->withTitulo('Relatório de Abastecimentos - Modelo Veículo')->withParametros($parametros)->withParametro(Parametro::first());
     }
 
-    static public function atualizaKmVeiculo(Abastecimento $abastecimento) {
+    static public function atualizaKmVeiculo(Abastecimento $abastecimento)
+    {
         try {
-            
+
 
             $veiculo = Veiculo::find($abastecimento->veiculo->id);
-            
+
             $veiculo->hodometro = $abastecimento->hodometro;
-            
-           
 
+            Log::info('Update Veiculo: ' . $veiculo . ' importado da Automação.');
 
+            Log::debug('obterMediaVeiculo - ultimoAbastecimento => ' . $veiculo);
             if ($veiculo->save()) {
 
-                Log::info('Update Veiculo: '.$veiculo.' importado da Automação.');
+                Log::debug('obterMediaVeiculo - ultimoAbastecimento => ' . $veiculo);
+                Log::info('Update Veiculo: ' . $veiculo . ' importado da Automação.');
 
-               // event(new NovoRegistroAtualizacaoApp($veiculo));
+                // event(new NovoRegistroAtualizacaoApp($veiculo));
 
-                
+
                 return true;
             }
         } catch (\Exception $e) {
@@ -556,7 +564,8 @@ class VeiculoController extends Controller
         }
     }
 
-    public function apiIndex() {
+    public function apiIndex()
+    {
         return response()->json(
             Veiculo::with('modelo_veiculo.marca_veiculo')
                 ->Ativo()
@@ -564,39 +573,52 @@ class VeiculoController extends Controller
         );
     }
 
-    public function apiVeiculos() {
+    public function apiVeiculos()
+    {
         //return response()->json(Veiculo::ativo()->get());
-        return response()->json(  DB::table('veiculos')
-                            ->select(
-                           'veiculos.id','veiculos.placa','veiculos.tag','veiculos.hodometro','veiculos.renavam',
-                           'modelo_veiculos.modelo_veiculo','marca_veiculos.marca_veiculo'                        
-                            )
-                            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                            ->orderBy('veiculos.placa','desc')
-                            //->orderBy('marca_veiculo', 'asc')
-                            //->orderBy('modelo_veiculo', 'asc')
-                            //->tosql();
-                            ->get());
+        return response()->json(DB::table('veiculos')
+            ->select(
+                'veiculos.id',
+                'veiculos.placa',
+                'veiculos.tag',
+                'veiculos.hodometro',
+                'veiculos.renavam',
+                'modelo_veiculos.modelo_veiculo',
+                'marca_veiculos.marca_veiculo'
+            )
+            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->orderBy('veiculos.placa', 'desc')
+            //->orderBy('marca_veiculo', 'asc')
+            //->orderBy('modelo_veiculo', 'asc')
+            //->tosql();
+            ->get());
     }
 
-    public function apiVeiculosClientes() {
-    
-        return response()->json(  DB::table('veiculos')
-                            ->select(
-                           'veiculos.id','veiculos.placa','veiculos.tag','veiculos.hodometro','veiculos.renavam',
-                           'modelo_veiculos.modelo_veiculo','marca_veiculos.marca_veiculo'                        
-                            )
-                            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                            ->orderBy('veiculos.placa','desc')
-                            //->orderBy('marca_veiculo', 'asc')
-                            //->orderBy('modelo_veiculo', 'asc')
-                            //->tosql();
-                            ->get());
+    public function apiVeiculosClientes()
+    {
+
+        return response()->json(DB::table('veiculos')
+            ->select(
+                'veiculos.id',
+                'veiculos.placa',
+                'veiculos.tag',
+                'veiculos.hodometro',
+                'veiculos.renavam',
+                'modelo_veiculos.modelo_veiculo',
+                'marca_veiculos.marca_veiculo'
+            )
+            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->orderBy('veiculos.placa', 'desc')
+            //->orderBy('marca_veiculo', 'asc')
+            //->orderBy('modelo_veiculo', 'asc')
+            //->tosql();
+            ->get());
     }
 
-    public function apiVeiculo($id) {
+    public function apiVeiculo($id)
+    {
         return response()->json(Veiculo::ativo()->where('id', $id)->get());
     }
 }

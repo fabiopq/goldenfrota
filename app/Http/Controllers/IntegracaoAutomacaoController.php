@@ -456,7 +456,7 @@ class IntegracaoAutomacaoController extends Controller
                                 
                                 if($abastecimento->save()) {
                                     // Movimenta o estoque do tanque 
-                                    VeiculoController::atualizaKmVeiculo($abastecimento);
+                                    //VeiculoController::atualizaKmVeiculo($abastecimento);
                                     
                                     if (MovimentacaoCombustivelController::saidaAbastecimento($abastecimento)) {
                                         DB::commit();
