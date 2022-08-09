@@ -529,6 +529,30 @@ class VeiculoController extends Controller
        
     }
 
+    static public function atualizaKmVeiculo(Abastecimento $abastecimento) {
+        try {
+            
+
+            $veiculo = Veiculo::find($abastecimento->veiculo->id);
+            
+            $veiculo->hodometro = $abastecimento->hodometro;
+            
+           
+
+
+            if ($veiculo->save()) {
+
+                event(new NovoRegistroAtualizacaoApp($veiculo));
+
+                
+                return true;
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', 'Ocorreu um erro ao salvar os dados. '.$e->getMessage());
+            return Redirect::back()->withInput(Input::all());
+        }
+    }
+
     public function apiIndex() {
         return response()->json(
             Veiculo::with('modelo_veiculo.marca_veiculo')
