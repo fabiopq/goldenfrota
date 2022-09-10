@@ -118,7 +118,7 @@ class MotoristaController extends Controller
             $this->validate($request, [
                 'nome' => 'required|string|unique:motoristas',
                 'apelido' => 'nullable|string',
-                'cpf' => ['nullable', new cpfCnpj],
+                'cpf' => ['required', new cpfCnpj],
                 'rg' => 'nullable',
                 'habilitacao' => 'nullable|string',
                 'categoria' => 'nullable',
