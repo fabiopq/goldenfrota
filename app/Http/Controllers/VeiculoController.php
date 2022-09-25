@@ -401,6 +401,77 @@ class VeiculoController extends Controller
                 break;
         }
 
+        $clientes = Cliente::select('clientes.id', 'clientes.nome_razao')
+            ->leftJoin('departamentos', 'departamentos.cliente_id', 'clientes.id')
+            ->leftJoin('veiculos', 'veiculos.departamento_id', 'departamentos.id')
+            ->whereRaw($whereCliente)
+            ->groupBy('clientes.id')
+            ->orderBy('clientes.id')
+            ->get();
+
+
+        foreach ($clientes as $cliente) {
+
+            if ($request->departamento_id > 0) {
+                $departamentos = DB::table('departamentos')
+                    ->select(
+                        'departamentos.id',
+                        'departamentos.departamento',
+                        'departamentos.cliente_id'
+                    )
+                    ->join('clientes', 'clientes.id', 'departamentos.cliente_id')
+
+                    ->where('departamentos.cliente_id', $cliente->id)
+                    ->whereRaw($whereDepartamento)
+                    //->orderBy('departamentos.departamento')
+                    ->get();
+            } else {
+                $departamentos = DB::table('departamentos')
+                    ->select(
+                        'departamentos.id',
+                        'departamentos.departamento'
+
+                    )
+
+                    ->Join('clientes', 'clientes.id', 'departamentos.cliente_id')
+                    ->Join('veiculos', 'veiculos.departamento_id', 'departamentos.id')
+                    ->where('departamentos.cliente_id', $cliente->id)
+                    ->groupBy('departamentos.id')
+                    //->whereRaw($whereProduto)
+                    ->orderBy('departamentos.departamento')
+                    ->get();
+            }
+
+            $cliente->departamentos = $departamentos;
+
+            foreach ($cliente->departamentos as $departamento) {
+
+                $veiculos = DB::table('veiculos')
+                    ->select(
+                        'veiculos.id',
+                        'veiculos.placa',
+                        'veiculos.ano',
+                        'media_minima',
+                        'modelo_veiculos.modelo_veiculo',
+                        'marca_veiculos.marca_veiculo'
+
+                    )
+                    ->leftJoin('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                    ->leftJoin('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                    ->where('veiculos.departamento_id', $departamento->id)
+                    ->get();
+                //->toSql();
+                //dd($veiculos);
+                if ($veiculos) {
+                    $departamento->veiculos = $veiculos;
+                }
+            }
+        }
+
+
+
+        //dd($clientes);
+        /*
         $veiculos = Veiculo::select('veiculos.*', 'clientes.nome_razao', 'departamentos.departamento', 'grupo_veiculos.grupo_veiculo', 'modelo_veiculos.modelo_veiculo', 'marca_veiculos.marca_veiculo')
             ->leftjoin('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
@@ -415,9 +486,11 @@ class VeiculoController extends Controller
             ->orderBy('departamentos.departamento', 'asc')
             ->orderBy('grupo_veiculos.grupo_veiculo', 'asc')
             ->orderBy('veiculos.placa', 'asc')
+            //->tosql();
             ->get();
+       */
 
-        return View('relatorios.veiculos.listagem_veiculos')->withVeiculos($veiculos)->withParametros($parametros)->withTitulo('Listagem de Veículos')->withParametro(Parametro::first());
+        return View('relatorios.veiculos.listagem_veiculos')->withClientes($clientes)->withParametros($parametros)->withTitulo('Listagem de Veículos')->withParametro(Parametro::first());
     }
 
     public function parametrosListagemVeiculos()
@@ -545,11 +618,11 @@ class VeiculoController extends Controller
 
             $veiculo->hodometro = $abastecimento->km_veiculo;
 
-            
-            
+
+
             if ($veiculo->save()) {
 
-                
+
                 //Log::info('Depois Update Veiculo: ' . $veiculo . ' importado da Automação.');
 
                 // event(new NovoRegistroAtualizacaoApp($veiculo));

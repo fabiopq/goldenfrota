@@ -47,19 +47,19 @@ class ProdutoController extends Controller
         if (Auth::user()->canListarProduto()) {
             if ($request->searchField) {
                 $produtos = DB::table('produtos')
-                                ->select('produtos.*', 'unidades.unidade', 'grupo_produtos.grupo_produto')
-                                ->join('unidades', 'unidades.id', 'produtos.unidade_id')
-                                ->join('grupo_produtos', 'grupo_produtos.id', 'produtos.grupo_produto_id')
-                                ->where('produtos.id', $request->searchField)
-                                ->orWhere('produto_descricao', 'like', '%'.$request->searchField.'%')
-                                ->orWhere('produto_desc_red', 'like', '%'.$request->searchField.'%')
-                                ->paginate();
+                    ->select('produtos.*', 'unidades.unidade', 'grupo_produtos.grupo_produto')
+                    ->join('unidades', 'unidades.id', 'produtos.unidade_id')
+                    ->join('grupo_produtos', 'grupo_produtos.id', 'produtos.grupo_produto_id')
+                    ->where('produtos.id', $request->searchField)
+                    ->orWhere('produto_descricao', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('produto_desc_red', 'like', '%' . $request->searchField . '%')
+                    ->paginate();
             } else {
                 $produtos = DB::table('produtos')
-                                ->select('produtos.*', 'unidades.unidade', 'grupo_produtos.grupo_produto')
-                                ->join('unidades', 'unidades.id', 'produtos.unidade_id')
-                                ->join('grupo_produtos', 'grupo_produtos.id', 'produtos.grupo_produto_id')
-                                ->paginate();
+                    ->select('produtos.*', 'unidades.unidade', 'grupo_produtos.grupo_produto')
+                    ->join('unidades', 'unidades.id', 'produtos.unidade_id')
+                    ->join('grupo_produtos', 'grupo_produtos.id', 'produtos.grupo_produto_id')
+                    ->paginate();
             }
 
             return View('produto.index')->withProdutos($produtos)->withFields($this->fields);
@@ -119,7 +119,7 @@ class ProdutoController extends Controller
 
                     Session::flash('success', __('messages.create_success', [
                         'model' => __('models.produto'),
-                        'name' => $produto->produto_descricao 
+                        'name' => $produto->produto_descricao
                     ]));
                     return redirect()->action('ProdutoController@index');
                 }
@@ -146,7 +146,7 @@ class ProdutoController extends Controller
     {
         if (Auth::user()->canAlterarProduto()) {
             $estoqueProdutos = array();
-            foreach($produto->estoques()->get() as $estoqueProduto) {
+            foreach ($produto->estoques()->get() as $estoqueProduto) {
                 $pivot = $estoqueProduto->pivot;
                 $estoqueProdutos[] = [
                     'estoque_id' => $pivot->estoque_id,
@@ -160,7 +160,7 @@ class ProdutoController extends Controller
                 'listaEstoques' => Estoque::has('produtos')->orWhere('ativo', true)->get(),
                 'estoques' => $estoqueProdutos,
                 'fornecedores' => Fornecedor::has('produtos')->orWhere('ativo', true)->get()
-                
+
                 //$produto->fornecedores()->get()//Fornecedor::where('ativo', true)->get()
             ]);
         } else {
@@ -180,7 +180,7 @@ class ProdutoController extends Controller
     {
         if (Auth::user()->canAlterarProduto()) {
             $this->validate($request, [
-                'produto_descricao' => 'required|string|min:3|max:60|unique:produtos,id,'.$request->id,
+                'produto_descricao' => 'required|string|min:3|max:60|unique:produtos,id,' . $request->id,
                 'produto_desc_red' => 'nullable|string|min:3|max:10',
                 'unidade_id' => 'required',
                 'grupo_produto_id' => 'required',
@@ -200,7 +200,7 @@ class ProdutoController extends Controller
 
                     Session::flash('success', __('messages.update_success', [
                         'model' => __('models.produto'),
-                        'name' => $produto->produto_descricao 
+                        'name' => $produto->produto_descricao
                     ]));
                     return redirect()->action('ProdutoController@index');
                 }
@@ -234,7 +234,7 @@ class ProdutoController extends Controller
 
                     Session::flash('success', __('messages.delete_success', [
                         'model' => __('models.produto'),
-                        'name' => $produto->produto_descricao 
+                        'name' => $produto->produto_descricao
                     ]));
                     return redirect()->action('ProdutoController@index');
                 }
@@ -257,7 +257,8 @@ class ProdutoController extends Controller
         }
     }
 
-    public function obterProdutosPeloEstoque($estoqueId) {
+    public function obterProdutosPeloEstoque($estoqueId)
+    {
         $estoque = Estoque::find($estoqueId);
         $result = [];
         if (!$estoque->permite_estoque_negativo) {
@@ -265,8 +266,8 @@ class ProdutoController extends Controller
             foreach ($produtos as $produto) {
                 $posicao = $estoque->saldo_produto($produto);
                 //if ($posicao > 0) {
-                    $produto->posicao_estoque = $posicao;
-                    $result[] = $produto;
+                $produto->posicao_estoque = $posicao;
+                $result[] = $produto;
                 //}
             }
         } else {
@@ -282,83 +283,111 @@ class ProdutoController extends Controller
         return $result;
     }
 
-    public function obterProdutosPeloGrupo(Request $request) {
+    public function obterProdutosPeloGrupo(Request $request)
+    {
         //$grupoProduto = GrupoProduto::find($request->id);
-             
+
         //return response()->json($grupoProduto->produtos()->get());
-        return response()->json(Produto::ativo()->where('grupo_produto_id', $request->id)->tosql());
+        //dd($request);
+        return response()->json(Produto::ativo()->where('grupo_produto_id', $request->id)->get());
     }
 
-    public function apiProdutos() {
+    public function apiProdutos()
+    {
         return response()->json(Produto::ativo()->get());
     }
 
-    public function apiProduto($id) {
+    public function apiProduto($id)
+    {
         return response()->json(Produto::ativo()->where('id', $id)->get());
     }
 
-    public function paramlistagemprodutos(){
-       // $produtos = Produto::where('ativo', true)->get();
+    public function paramlistagemprodutos()
+    {
+        // $produtos = Produto::where('ativo', true)->get();
         return View('relatorios.produtos.param_listagem_produtos', [
             'estoques' => Estoque::where('ativo', true)->get(),
             'grupo_produtos' => GrupoProduto::where('ativo', true)->get(),
-            'produtos' => Produto::where('ativo', true)->get() 
+            'produtos' => Produto::where('ativo', true)->get()
         ]);
     }
 
-    public function relatoriolistagemprodutos(Request $request){
+    public function relatoriolistagemprodutos(Request $request)
+    {
         $parametros = array();
-        $whereData = '1 = 1';
+        //$whereData = '1 = 1';
 
         if ($request->estoque_id > 0) {
-            $whereData = 'produtos.estoque_id = '.$request->estoque_id;
-            array_push($parametros, 'Estoque: '.(Estoque::find($request->estoque_id)->estoque)); 
-        }
-        if (($request->grupo_produto_id > 0) && ($request->produto_id < 0)) {
-            $whereData = 'produtos.grupo_produto_id = '.$request->grupo_produto_id;
-            array_push($parametros, 'Grupo de Produto: '.(GrupoProduto::find($request->grupo_produto_id)->grupo_produto)); 
+            $whereEstoque = 'produtos.estoque_id = ' . $request->estoque_id;
+            array_push($parametros, 'Estoque: ' . (Estoque::find($request->estoque_id)->estoque));
         } else {
-            if ($request->produto_id > 0) {
-                $whereData = 'produtos.id = '.$request->produto_id;
-                array_push($parametros, 'Produto: '.(Produto::find($request->produto_id)->produto_descricao));
-            }
+            $whereEstoque = '1 = 1';
         }
 
-        
+        if (($request->grupo_produto_id > 0)) {
+            $whereGrupo = 'produtos.grupo_produto_id = ' . $request->grupo_produto_id;
+            array_push($parametros, 'Grupo de Produto: ' . (GrupoProduto::find($request->grupo_produto_id)->grupo_produto));
+        } else {
+            $whereGrupo = '1 = 1';
+        }
+        if ($request->produto_id > 0) {
+            $whereProduto = 'produtos.id = ' . $request->produto_id;
+            array_push($parametros, 'Produto: ' . (Produto::find($request->produto_id)->produto_descricao));
+        } else {
+            $whereProduto = '1 = 1';
+        }
 
-        
-            $grupos = DB::table('grupo_produtos')
-            ->select('grupo_produtos.id','grupo_produtos.grupo_produto')
+        $grupos = DB::table('grupo_produtos')
+            ->select('grupo_produtos.id', 'grupo_produtos.grupo_produto')
             ->leftJoin('produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
-            ->whereRaw($whereData)
+            ->whereRaw($whereGrupo)
+            ->whereRaw($whereProduto)
             ->orderBy('grupo_produtos.grupo_produto')
             ->distinct()
             ->get();
-            
-          
-        
-            foreach($grupos as $grupoproduto) {
-                
-                $produto = DB::table('produtos')
-                ->select('produtos.id','produtos.produto_descricao','produtos.valor_custo',
-                'produtos.valor_venda')
-                ->leftJoin('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
-                ->where('produtos.grupo_produto_id',$grupoproduto->id)
-                //->whereRaw($whereData)
-                ->orderBy('produtos.produto_descricao')
-                ->get();
-                
-                $grupoproduto->produtos = $produto;
-              
-            }  
-            
-        return View('relatorios.produtos.relatorio_listagem_produtos')
-                    ->withgrupoprodutos($grupos)
-                    ->withTitulo('Listagem de Produto')
-                    ->withParametros($parametros)
-                    ->withParametro(Parametro::first());
-        
-      }
 
-    
+
+
+        foreach ($grupos as $grupoproduto) {
+
+            if ($request->produto_id > 0) {
+                $produto = DB::table('produtos')
+                    ->select(
+                        'produtos.id',
+                        'produtos.produto_descricao',
+                        'produtos.valor_custo',
+                        'produtos.valor_venda'
+                    )
+                    ->join('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
+                    ->where('produtos.grupo_produto_id', $grupoproduto->id)
+                    ->whereRaw($whereProduto)
+                    ->orderBy('produtos.produto_descricao')
+                    ->get();
+            } else {
+                $produto = DB::table('produtos')
+                    ->select(
+                        'produtos.id',
+                        'produtos.produto_descricao',
+                        'produtos.valor_custo',
+                        'produtos.valor_venda'
+                    )
+                    ->join('grupo_produtos', 'produtos.grupo_produto_id', 'grupo_produtos.id')
+                    ->where('produtos.grupo_produto_id', $grupoproduto->id)
+                    //->whereRaw($whereProduto)
+                    ->orderBy('produtos.produto_descricao')
+                    ->get();
+            }
+
+
+
+            $grupoproduto->produtos = $produto;
+        }
+        
+
+        return View('relatorios.produtos.relatorio_listagem_produtos')
+            ->withgrupoprodutos($grupos)
+            ->withTitulo('Listagem de Produto')
+            ->withParametros($parametros)
+            ->withParametro(Parametro::first());
+    }
 }

@@ -19,14 +19,16 @@
                             'label' => 'Nome',
                             'required' => true,
                             'inputSize' => 6,
-                            'inputValue' => $motorista->nome
+                            'inputValue' => $motorista->nome,
+                            'css' => 'text-uppercase'
                         ],
                         [
                             'type' => 'text',
                             'field' => 'apelido',
                             'label' => 'Apelido',
                             'inputSize' => 4,
-                            'inputValue' => $motorista->apelido
+                            'inputValue' => $motorista->apelido,
+                            'css' => 'text-uppercase'
                         ],
                         [
                             'type' => 'select',
@@ -55,7 +57,8 @@
                             'label' => 'RG',
                             'required' => true,
                             'inputSize' => 3,
-                            'inputValue' => $motorista->rg
+                            'inputValue' => $motorista->rg,
+                            'css' => 'text-uppercase'
                         ],
                         [
                             'type' => 'select',
@@ -95,7 +98,8 @@
                             'label' => 'TAG (Automação)',
                             'required' => false,
                             'inputSize' => 3,
-                            'inputValue' => $motorista->tag
+                            'inputValue' => $motorista->tag,
+                            'css' => 'text-uppercase'
                         ],
                         
                     ]
@@ -115,7 +119,8 @@
                             'label' => 'Habilitação',
                             'required' => true,
                             'inputSize' => 3,
-                            'inputValue' => $motorista->habilitacao
+                            'inputValue' => $motorista->habilitacao,
+                            'css' => 'text-uppercase'
 
                         ],
                         [
@@ -145,7 +150,8 @@
                             'field' => 'pontos_habilitacao',
                             'label' => 'Pontos',
                             'inputSize' => 1,
-                            'inputValue' => $motorista->pontos
+                            'inputValue' => $motorista->pontos_habilitacao,
+                            'css' => 'text-uppercase'
 
                         ],
                         [
@@ -178,7 +184,8 @@
                             'label' => 'Observações',
                             'required' => true,
                             'inputSize' => 6,
-                            'inputValue' => $motorista->observacoes
+                            'inputValue' => $motorista->observacoes,
+                            'css' => 'text-uppercase'
                         ],
                         ]
                         ])
@@ -231,14 +238,16 @@
                                     'label' => 'Endereço',
                                     'required' => true,
                                     'inputSize' => 11,
-                                    'inputValue' => $motorista->endereco
+                                    'inputValue' => $motorista->endereco,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
                                     'field' => 'numero',
                                     'label' => 'Número',
                                     'inputSize' => 1,
-                                    'inputValue' => $motorista->bairro
+                                    'inputValue' => $motorista->numero,
+                                    'css' => 'text-uppercase'
                                 ],
                             ]
                         ])
@@ -251,6 +260,7 @@
                                     'label' => 'Bairro',
                                     'inputSize' => 4,
                                     'inputValue' => $motorista->bairro,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
@@ -258,6 +268,7 @@
                                     'label' => 'Cidade',
                                     'inputSize' => 4,
                                     'inputValue' => $motorista->cidade,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'text',
@@ -265,6 +276,7 @@
                                     'label' => 'Cep',
                                     'inputSize' => 2,
                                     'inputValue' => $motorista->cep,
+                                    'css' => 'text-uppercase'
                                 ],
                                 [
                                     'type' => 'select',

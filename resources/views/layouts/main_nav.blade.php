@@ -215,6 +215,9 @@
                     @permission('acesso-listagem-clientes')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_clientes')}}" target="_blank">Clientes</a></li>
                     @endpermission
+                    @permission('acesso-listagem-motoristas')
+                    <li><a class="dropdown-item" href="{{route('relatorio_listagem_motoristas')}}" target="_blank">Motoristas</a></li>
+                    @endpermission
                     @permission('acesso-relatorio-listagem-grupo-produto')
                     <li><a class="dropdown-item" href="{{route('relatorio_listagem_grupo_produto')}}">Grupo de Produtos</a></li>
                     @endpermission

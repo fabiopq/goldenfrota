@@ -9,6 +9,7 @@
         'displayField' => 'nome',
         'actions' => ['edit', 'destroy'],
         'searchParms' => 'abastecimento.search_parms'
+        
         ]);
     @endcomponent
 @endsection

@@ -126,6 +126,7 @@
 
 
                         $.each(data, function (i, item) {
+                            
                             $('#modelo_veiculo_id').append($('<option>', { 
                                 value: item.id,
                                 text : item.modelo_veiculo 

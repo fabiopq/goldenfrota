@@ -5,7 +5,9 @@
             :class="{
                 'bg-success': cardType == 'success', 
                 'bg-warning': cardType == 'warning',
-                'bg-primary': cardType == 'primary'}"
+                'bg-primary': cardType == 'primary',
+                'bg-danger' : cardType == 'danger',
+                'bg-dark' : cardType == 'dark'}"
         >
             <div class="row">
                 <div class="col-5">

@@ -184,10 +184,17 @@ class MotoristaController extends Controller
     {
        //dd($motorista);
         if (Auth::user()->canAlterarMotorista()) {
+       
+
             
             return View('motorista.edit', [
                 'ufs' => Uf::all(),
-                'veiculos' => Veiculo::all(),
+                //'veiculos' => Veiculo::all(),
+                'veiculos' => Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->where('veiculos.ativo', true)
+                ->get(),
                 'motorista' => $motorista
             ]);
         } else {
@@ -211,20 +218,20 @@ class MotoristaController extends Controller
                 'nome' => 'required|string|unique:motoristas,id,' . $motorista->id,
                 'apelido' => 'nullable|string',
                 'cpf' => ['required', new cpfCnpj],
-                'rg' => 'required',
+                'rg' => 'nullable',
                 'habilitacao' => 'nullable|string',
-                'categoria' => 'required',
+                'categoria' => 'nullable',
                 'data_validade_habilitacao' => 'required|date_format:d/m/Y H:i:s',
                 'data_nascimento' => 'required|date_format:d/m/Y H:i:s',
                 'data_admissao' => 'required|date_format:d/m/Y H:i:s',
                 'pontos_habilitacao' => 'nullable|string',
                 'observacoes' => 'nullable|string',
-                'endereco' => 'required|string|min:3|max:200',
-                'numero' => 'required',
-                'bairro' => 'required|string|min:3|max:200',
-                'cidade' => 'required|string|min:3|max:200',
-                'uf_id' => 'required',
-                'cep' => 'required',
+                'endereco' => 'nullable|string|min:3|max:200',
+                'numero' => 'nullable',
+                'bairro' => 'nullable|string|min:3|max:200',
+                'cidade' => 'nullable|string|min:3|max:200',
+                'uf_id' => 'nullable',
+                'cep' => 'nullable',
                 'fone' => 'nullable|string',
                 //'fone' =>  ['required', new telefoneComDDD],
                 'email' => 'nullable|string',
@@ -286,6 +293,11 @@ class MotoristaController extends Controller
             return redirect()->back();
         }
         
+    }
+
+    public function listagemMotoristas()
+    {
+        return View('relatorios.motoristas.listagem_motoristas')->withMotoristas(Motorista::all())->withTitulo('Listagem de Motoristas')->withParametro(Parametro::first());
     }
 
     public function destroy(Motorista $motorista)

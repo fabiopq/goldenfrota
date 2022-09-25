@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Tanque;
 use App\Veiculo;
+use App\Cliente;
 use App\OrdemServico;
 use App\Abastecimento;
 use Illuminate\Http\Request;
@@ -88,6 +89,13 @@ class DashboardController extends Controller
         $veiculos['total_veiculos_frota'] = Veiculo::where('ativo', true)->count();
 
         return response()->json($veiculos);
+    }
+
+    
+    public function totalClientesCadastrados() {
+        $clientes['clientes_cadastrados'] = Cliente::where('ativo', true)->count();
+
+        return response()->json($clientes);
     }
 
     public function abastecimentosHoje() {

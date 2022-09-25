@@ -1,0 +1,64 @@
+@extends('layouts.relatorios')
+
+@section('relatorio')
+<table class="table table-sm report-table">
+    <thead>
+        <tr class="info">
+            <td>
+                Id
+            </td>
+            <td>
+                Cliente
+            </td>
+            <td>
+                Departamento
+            </td>
+            <td>
+                Grupo
+            </td>
+            <td>
+                Placa
+            </td>
+            <td>
+                Tag
+            </td>
+            <td>
+                Marca
+            </td>
+            <td>
+                Modelo
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($veiculos as $veiculo) 
+        <tr>
+            <td>
+                {{$veiculo->id}}
+            </td>
+            <td>
+                {{$veiculo->nome_razao}}
+            </td>
+            <td>
+                {{$veiculo->departamento}}
+            </td>
+            <td>
+                {{$veiculo->grupo_veiculo}}
+            </td>
+            <td>
+                {{$veiculo->placa}}
+            </td>
+            <td>
+                {{$veiculo->tag}}
+            </td>
+            <td>
+                {{$veiculo->marca_veiculo}}
+            </td>
+            <td>
+                {{$veiculo->modelo_veiculo}}
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+@endsection

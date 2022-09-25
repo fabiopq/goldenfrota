@@ -48,7 +48,7 @@
                         [
                             'type' => 'select',
                             'field' => 'grupo_veiculo_id',
-                            'label' => 'Grupo',
+                            'label' => 'Grupo de Veículos',
                             'required' => true,
                             'items' => $grupoVeiculos,
                             'inputSize' => 6,

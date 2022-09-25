@@ -63,6 +63,7 @@ return [
             'relatorio-ordem-servicos' => 'a',
             'motorista' => 'c,r,u,d',
             'relatorio-saida-estoque' => 'a',
+            'listagem-motoristas' => 'a',
             
 
         ],

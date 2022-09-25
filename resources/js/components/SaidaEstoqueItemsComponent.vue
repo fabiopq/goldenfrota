@@ -24,7 +24,7 @@
                         <tr class="row m-0">
                             <th class="col-md-1">Id</th>
                             <th class="col-md-6">Produto</th>
-                            <th class="col-md-1">Qtd</th>
+                            <th class="col-md-1">Quantidade</th>
                             <th class="col-md-1">Vlr. Un.</th>
                             <th class="col-md-1">Vlr. Desc.</th>
                             <th class="col-md-1">Vlr. Acres.</th>

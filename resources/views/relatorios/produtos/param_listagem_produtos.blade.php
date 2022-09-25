@@ -3,7 +3,7 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Posição de Estoque', 
+            'title' => 'Listagem de Produtos', 
             'routeUrl' => route('param_relatorio_listagem_produtos'), 
             'formTarget' => '_blank',
             'method' => 'POST',
@@ -17,7 +17,7 @@
                         [
                             'type' => 'select',
                             'field' => 'grupo_produto_id',
-                            'label' => 'Grupo de Produto',
+                            'label' => 'Grupo de Produtos',
                             'items' => $grupo_produtos,
                             'displayField' => 'grupo_produto',
                             'liveSearch' => true,
@@ -51,7 +51,7 @@
                 grupo_produto.id = $('#grupo_produto_id').val();
                 grupo_produto._token = $('input[name="_token"]').val();
 
-                //console.log(grupo_produto);
+                console.log(grupo_produto);
                 $.ajax({
                     url: '{{ route("produtos_pelo_grupo.json") }}',
                     type: 'POST',
@@ -59,7 +59,7 @@
                     dataType: 'JSON',
                     cache: false,
                     success: function (data) {
-                        //console.log(data);
+                        console.log(data);
                         $("#produto_id")
                             .removeAttr('disabled')
                             .find('option')
@@ -72,15 +72,16 @@
 
 
                         $.each(data, function (i, item) {
+                            
                             $('#produto_id').append($('<option>', { 
                                 value: item.id,
-                                text : item.produto 
+                                text : item.produto_descricao 
                             }));
                         });
 
-                        @if(old('modelo_veiculo_id'))
-                        $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
-                        @endif
+                        @if(old('produto_id'))
+                        $('#produto_id').selectpicker('val', {{old('produto_id')}});
+                                                            @endif
 
                         $('.selectpicker').selectpicker('refresh');
                     }
