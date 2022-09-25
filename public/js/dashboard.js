@@ -1880,6 +1880,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -37208,7 +37225,56 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-title" }, [
-                          _vm._v("Clientes Cadastrados")
+                          _vm._v("Clientes")
+                        ]),
+                        _vm._v(" "),
+                        _c("template", { slot: "card-body" }, [
+                          _vm._v(_vm._s(_vm.numClientes))
+                        ]),
+                        _vm._v(" "),
+                        _c("template", { slot: "card-footer" }, [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "text-info",
+                              attrs: { href: "/cliente" }
+                            },
+                            [
+                              _c("i", { staticClass: "fas fa-link" }),
+                              _vm._v(
+                                " Acessar\n                                    "
+                              )
+                            ]
+                          )
+                        ])
+                      ],
+                      2
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col col-md-6" },
+              [
+                _c(
+                  "transition",
+                  { attrs: { name: "fade", mode: "in-out", appear: "" } },
+                  [
+                    _c(
+                      "card-info",
+                      { attrs: { "card-type": "danger" } },
+                      [
+                        _c("template", { slot: "card-icon" }, [
+                          _c("i", { staticClass: "fas fa-user-shield fa-4x" })
+                        ]),
+                        _vm._v(" "),
+                        _c("template", { slot: "card-title" }, [
+                          _vm._v("Motoristas")
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-body" }, [

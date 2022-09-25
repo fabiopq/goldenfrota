@@ -48,7 +48,24 @@
                                     <template slot="card-icon">
                                         <i class="fas fa-user-friends fa-4x"></i>
                                     </template>
-                                    <template slot="card-title">Clientes Cadastrados</template>
+                                    <template slot="card-title">Clientes</template>
+                                    <template slot="card-body">{{ numClientes }}</template>
+                                    <template slot="card-footer">
+                                        <a href="/cliente" class="text-info">
+                                            <i class="fas fa-link"></i> Acessar
+                                        </a>
+                                    </template>
+                                </card-info>
+
+                            </transition>
+                        </div>
+                        <div class="col col-md-6">
+                            <transition name="fade" mode="in-out" appear>
+                                <card-info :card-type="'danger'">
+                                    <template slot="card-icon">
+                                        <i class="fas fa-user-shield fa-4x"></i>
+                                    </template>
+                                    <template slot="card-title">Motoristas</template>
                                     <template slot="card-body">{{ numClientes }}</template>
                                     <template slot="card-footer">
                                         <a href="/cliente" class="text-info">
