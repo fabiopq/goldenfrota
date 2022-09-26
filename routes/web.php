@@ -87,6 +87,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModelosJson')->name('modelo_veiculos.json');
     Route::post('modelo_veiculo_marca/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
+    Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
     Route::post('veiculo/jsonComponent', 'VeiculoController@getVeiculosComponentJson')->name('veiculosComponent.json');
     Route::post('bico/json', 'BicoController@getBicoJson')->name('bico.json');
@@ -142,6 +143,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/pos_tanque_30_dias', 'TanqueMovimentacaoController@posTanque30Dias');
     Route::get('/dashboard/mov_tanque', 'DashboardController@movTanque');
     Route::get('/dashboard/ultimas_entradas_comb', 'DashboardController@ultimasEntradasComb');
+    Route::get('/dashboard/saldo_tanques', 'DashboardController@saldoTanques');
     Route::get('/dashboard/total_veiculos_frota', 'DashboardController@totalVeiculosFrota');
     Route::get('/dashboard/abastecimentos_hoje', 'DashboardController@abastecimentosHoje');
     Route::get('/dashboard/clientes_cadastrados', 'DashboardController@totalClientesCadastrados');

@@ -139,7 +139,7 @@ class MovimentacaoProdutoController extends Controller
             $entradas = (new MovimentacaoProduto)->produto()->get();
             //->tipo_movimentacao_produto()->where('eh_entrada', true)->get();
 
-            dd($entradas);
+          
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -342,7 +342,7 @@ class MovimentacaoProdutoController extends Controller
         $tipo_movimentacao = $request->tipo_movimentacao;
         $parametros = array();
         $estoquesId = array();
-        
+       dd($request); 
         if ($request->estoque_id == null) {
             $whereEstoque = 'estoques.ativo = 1';
             $parametros[] = 'Estoque: Todos';

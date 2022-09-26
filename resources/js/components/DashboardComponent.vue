@@ -22,7 +22,7 @@
                             </transition>
                         </div>
 
-                        
+
 
 
                         <div class="col col-md-6">
@@ -86,6 +86,21 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card bg-light text-dark">
+                        <div class="card-header">Saldo dos Tanques
+                            <div class="float-right text-info">
+                                <a href="/entrada_tanque">
+                                    <i class="fas fa-link"></i>
+                                    Acessar
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <transition name="fade" mode="in-out" appear>
+                                <saldo-tanque></saldo-tanque>
+                            </transition>
+                        </div>
+                    </div>
+                    <div class="card bg-light text-dark mt-3">
                         <div class="card-header">Últimas entradas de Combustíveis
                             <div class="float-right text-info">
                                 <a href="/entrada_tanque">
@@ -176,11 +191,13 @@
 import Axios from "axios";
 import MovTanque from "./dashboard/MovTanque";
 import UltimasEntradasComb from "./dashboard/UltimasEntradasComb";
+import SaldoTanques from "./dashboard/SaldoTanques";
 import CardInfo from "./dashboard/CardInfo";
 import OsEmAberto from './dashboard/OsEmAberto';
 
 export default {
     components: {
+        "saldo-tanque": SaldoTanques,
         "mov-tanque": MovTanque,
         "ultimas-entradas-comb": UltimasEntradasComb,
         "card-info": CardInfo,

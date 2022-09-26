@@ -1715,8 +1715,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _dashboard_MovTanque__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dashboard/MovTanque */ "./resources/js/components/dashboard/MovTanque.vue");
 /* harmony import */ var _dashboard_UltimasEntradasComb__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dashboard/UltimasEntradasComb */ "./resources/js/components/dashboard/UltimasEntradasComb.vue");
-/* harmony import */ var _dashboard_CardInfo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./dashboard/CardInfo */ "./resources/js/components/dashboard/CardInfo.vue");
-/* harmony import */ var _dashboard_OsEmAberto__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./dashboard/OsEmAberto */ "./resources/js/components/dashboard/OsEmAberto.vue");
+/* harmony import */ var _dashboard_SaldoTanques__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./dashboard/SaldoTanques */ "./resources/js/components/dashboard/SaldoTanques.vue");
+/* harmony import */ var _dashboard_CardInfo__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./dashboard/CardInfo */ "./resources/js/components/dashboard/CardInfo.vue");
+/* harmony import */ var _dashboard_OsEmAberto__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./dashboard/OsEmAberto */ "./resources/js/components/dashboard/OsEmAberto.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -1897,6 +1898,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -1904,10 +1921,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
+    "saldo-tanque": _dashboard_SaldoTanques__WEBPACK_IMPORTED_MODULE_4__["default"],
     "mov-tanque": _dashboard_MovTanque__WEBPACK_IMPORTED_MODULE_2__["default"],
     "ultimas-entradas-comb": _dashboard_UltimasEntradasComb__WEBPACK_IMPORTED_MODULE_3__["default"],
-    "card-info": _dashboard_CardInfo__WEBPACK_IMPORTED_MODULE_4__["default"],
-    "os-em-aberto": _dashboard_OsEmAberto__WEBPACK_IMPORTED_MODULE_5__["default"]
+    "card-info": _dashboard_CardInfo__WEBPACK_IMPORTED_MODULE_5__["default"],
+    "os-em-aberto": _dashboard_OsEmAberto__WEBPACK_IMPORTED_MODULE_6__["default"]
   },
   data: function data() {
     return {
@@ -2245,6 +2263,66 @@ __webpack_require__.r(__webpack_exports__);
 
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("dashboard/os_em_aberto").then(function (r) {
       _this.oss = r.data;
+    })["catch"](function (e) {
+      console.log(e);
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/SaldoTanques.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/dashboard/SaldoTanques.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      tanques: []
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("dashboard/saldo_tanques").then(function (r) {
+      _this.tanques = r.data;
     })["catch"](function (e) {
       console.log(e);
     });
@@ -37317,8 +37395,26 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-6" }, [
-          _c("div", { staticClass: "card bg-light text-dark" }, [
+          _c("div", { staticClass: "card bg-light text-dark mt-3" }, [
             _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "card-body" },
+              [
+                _c(
+                  "transition",
+                  { attrs: { name: "fade", mode: "in-out", appear: "" } },
+                  [_c("saldo-tanque")],
+                  1
+                )
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card bg-light text-dark mt-3" }, [
+            _vm._m(1),
             _vm._v(" "),
             _c(
               "div",
@@ -37336,7 +37432,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card bg-light text-dark mt-3" }, [
-            _vm._m(1),
+            _vm._m(2),
             _vm._v(" "),
             _c(
               "div",
@@ -37358,6 +37454,22 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _vm._v("Saldo dos Tanques\n                        "),
+      _c("div", { staticClass: "float-right text-info" }, [
+        _c("a", { attrs: { href: "/entrada_tanque" } }, [
+          _c("i", { staticClass: "fas fa-link" }),
+          _vm._v(
+            "\n                                Acessar\n                            "
+          )
+        ])
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -37592,6 +37704,91 @@ var staticRenderFns = [
         _c("th", { staticClass: "col-3" }, [_vm._v("Dias em aberto")]),
         _vm._v(" "),
         _c("th", { staticClass: "col-1" })
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/SaldoTanques.vue?vue&type=template&id=57b9fd10&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/dashboard/SaldoTanques.vue?vue&type=template&id=57b9fd10& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "table-responsive m-0 p-0" }, [
+    _c(
+      "table",
+      { staticClass: "table table-sm table-bordered table-hover m-0" },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "transition-group",
+          { tag: "tbody", attrs: { name: "fade" } },
+          _vm._l(_vm.tanques, function(tanque, index) {
+            return _c("tr", { key: index, staticClass: "row m-0" }, [
+              _c("td", { staticClass: "col-1 pool-right" }, [
+                _vm._v(_vm._s(tanque.id))
+              ]),
+              _vm._v(" "),
+              _c("td", { staticClass: "col-3 pool-right" }, [
+                _vm._v(_vm._s(tanque.descricao_tanque))
+              ]),
+              _vm._v(" "),
+              _c("td", { staticClass: "col-2 text-right" }, [
+                _vm._v(_vm._s(tanque.capacidade))
+              ]),
+              _vm._v(" "),
+              _c("td", { staticClass: "col-2 text-right" }, [
+                _vm._v(_vm._s(tanque.posicao))
+              ]),
+              _vm._v(" "),
+              _c("td", { staticClass: "col-2 text-right" }, [
+                _vm._v(_vm._s(tanque.posicao))
+              ]),
+              _vm._v(" "),
+              _c("td", { staticClass: "col-2 text-right" })
+            ])
+          }),
+          0
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-light" }, [
+      _c("tr", { staticClass: "row m-0" }, [
+        _c("th", { staticClass: "col-1" }, [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "col-3" }, [_vm._v("Tanque")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "col-2" }, [_vm._v("Capacidade")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "col-2" }, [_vm._v("Estoque Inicial")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "col-2" }, [_vm._v("Estoque Atual")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "col-2" })
       ])
     ])
   }
@@ -49977,6 +50174,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OsEmAberto_vue_vue_type_template_id_5e77639b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OsEmAberto_vue_vue_type_template_id_5e77639b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/dashboard/SaldoTanques.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/dashboard/SaldoTanques.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SaldoTanques_vue_vue_type_template_id_57b9fd10___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SaldoTanques.vue?vue&type=template&id=57b9fd10& */ "./resources/js/components/dashboard/SaldoTanques.vue?vue&type=template&id=57b9fd10&");
+/* harmony import */ var _SaldoTanques_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SaldoTanques.vue?vue&type=script&lang=js& */ "./resources/js/components/dashboard/SaldoTanques.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SaldoTanques_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SaldoTanques_vue_vue_type_template_id_57b9fd10___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SaldoTanques_vue_vue_type_template_id_57b9fd10___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/dashboard/SaldoTanques.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/dashboard/SaldoTanques.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/dashboard/SaldoTanques.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SaldoTanques_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./SaldoTanques.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/SaldoTanques.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SaldoTanques_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/dashboard/SaldoTanques.vue?vue&type=template&id=57b9fd10&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/dashboard/SaldoTanques.vue?vue&type=template&id=57b9fd10& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SaldoTanques_vue_vue_type_template_id_57b9fd10___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./SaldoTanques.vue?vue&type=template&id=57b9fd10& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/SaldoTanques.vue?vue&type=template&id=57b9fd10&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SaldoTanques_vue_vue_type_template_id_57b9fd10___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SaldoTanques_vue_vue_type_template_id_57b9fd10___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

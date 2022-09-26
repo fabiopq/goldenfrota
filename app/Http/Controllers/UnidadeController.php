@@ -184,4 +184,12 @@ class UnidadeController extends Controller
             return redirect()->back();
         }
     }
+
+    public function getUnidadesJson(Request $request) {
+        $unidades = Unidade::where([                       
+                        ['ativo', '=', 1]
+                    ])->get();
+
+        return response()->json($unidades);
+    }
 }

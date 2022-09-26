@@ -188,6 +188,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'entrada_tanque',
@@ -772,7 +784,12 @@ var render = function() {
                     return _c(
                       "option",
                       { key: index, domProps: { value: tanque.id } },
-                      [_vm._v(_vm._s(tanque.id + " - " + tanque.tanque))]
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(tanque.id + " - " + tanque.tanque)
+                        )
+                      ]
                     )
                   })
                 ],
@@ -976,9 +993,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "thead-light" }, [
       _c("tr", { staticClass: "row m-0" }, [
-        _c("th", { staticClass: "col-md-1" }, [_vm._v("Id")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "col-md-5" }, [_vm._v("Tanque")]),
+        _c("th", { staticClass: "col-md-6" }, [_vm._v("Tanque")]),
         _vm._v(" "),
         _c("th", { staticClass: "col-md-2" }, [_vm._v("Qtd")]),
         _vm._v(" "),

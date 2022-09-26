@@ -210,8 +210,8 @@ class TanqueController extends Controller
             ->where('tanques.ativo', true)->get();
 
         $graficos = array();
-
-        foreach ($tanques as $tanque) {
+         foreach ($tanques as $tanque) {
+           
             $graficos[] = Charts::create('percentage', 'justgage')
                 ->title($tanque->descricao_tanque . ' (' . $tanque->descricao . ')')
                 ->elementLabel('Litros')
@@ -242,7 +242,7 @@ class TanqueController extends Controller
             ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
             ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
             ->where('movimentacao_combustiveis.tanque_id', $tanque->id)
-            ->first();
+            ->toSql();
 
         return ($posicao->posicao) ? $posicao->posicao : 0;
 
@@ -267,6 +267,34 @@ class TanqueController extends Controller
                         ->sum('quantidade_combustivel');
 
         return $entradas - $saidas; */
+    }
+
+    static public function getPosicaoEstoqueData(Tanque $tanque,$request)
+    {
+        
+        $data = date_format(date_create_from_format('d/m/Y H:i:s', $request->data.'23:59:59'), 'Y-m-d H:i:s');
+     
+        $posicao = DB::table('movimentacao_combustiveis')
+            ->select(
+                DB::raw('tanques.descricao_tanque,tanques.capacidade, SUM(
+                    CASE tipo_movimentacao_combustiveis.eh_entrada
+                        WHEN 1 THEN
+                            movimentacao_combustiveis.quantidade
+                        WHEN 0 THEN
+                            movimentacao_combustiveis.quantidade * -1
+                    END
+                ) as posicao'
+                )
+            )
+            ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
+            ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
+            ->where('movimentacao_combustiveis.tanque_id', $tanque->id)
+            ->where('movimentacao_combustiveis.created_at','<', $data)
+            ->first();
+
+        return ($posicao->posicao) ? $posicao->posicao : 0;
+
+        
     }
 
     static public function getCombustivelTanque(Tanque $tanque)

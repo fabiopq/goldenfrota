@@ -19,7 +19,8 @@ class MovimentacaoCombustivel extends Model
         'quantidade',
         'abastecimento_id',
         'ajuste_tanque_id',
-        'afericao_id'
+        'afericao_id',
+        'created_at'
     ];
 
     public function tanque() {
