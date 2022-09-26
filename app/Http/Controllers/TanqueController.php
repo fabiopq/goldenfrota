@@ -242,7 +242,7 @@ class TanqueController extends Controller
             ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
             ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
             ->where('movimentacao_combustiveis.tanque_id', $tanque->id)
-            ->toSql();
+            ->get();
 
         return ($posicao->posicao) ? $posicao->posicao : 0;
 
