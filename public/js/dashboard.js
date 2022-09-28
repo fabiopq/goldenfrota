@@ -1913,6 +1913,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 
 
 
@@ -37383,16 +37384,6 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card bg-light text-dark" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Movimentação de Combustíveis (Últimos 15 dias)")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [_c("mov-tanque")], 1)
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-6" }, [
-          _c("div", { staticClass: "card bg-light text-dark" }, [
             _vm._m(0),
             _vm._v(" "),
             _c(
@@ -37408,6 +37399,16 @@ var render = function() {
               ],
               1
             )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("div", { staticClass: "card bg-light text-dark" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _vm._v("Movimentação de Combustíveis (Últimos 15 dias)")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body" }, [_c("mov-tanque")], 1)
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card bg-light text-dark mt-3" }, [

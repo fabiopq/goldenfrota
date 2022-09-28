@@ -78,14 +78,6 @@
                         </div>
                     </div>
                     <div class="card bg-light text-dark">
-                        <div class="card-header">Movimentação de Combustíveis (Últimos 15 dias)</div>
-                        <div class="card-body">
-                            <mov-tanque></mov-tanque>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card bg-light text-dark">
                         <div class="card-header">Saldo dos Tanques
                             <div class="float-right text-info">
                                 <a href="/entrada_tanque">
@@ -100,6 +92,15 @@
                             </transition>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-light text-dark">
+                        <div class="card-header">Movimentação de Combustíveis (Últimos 15 dias)</div>
+                        <div class="card-body">
+                            <mov-tanque></mov-tanque>
+                        </div>
+                    </div>
+                    
                     <div class="card bg-light text-dark mt-3">
                         <div class="card-header">Últimas entradas de Combustíveis
                             <div class="float-right text-info">
