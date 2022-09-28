@@ -4,6 +4,23 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="row mb-3">
+                       
+                        <div class="col col-md-6">
+                            <transition name="fade" mode="in-out" appear>
+                                <card-info :card-type="'primary'">
+                                    <template slot="card-icon">
+                                        <i class="fas fa-gas-pump fa-4x"></i>
+                                    </template>
+                                    <template slot="card-title">Abastecimentos Hoje</template>
+                                    <template slot="card-body">{{ numAbastecimentosDia }}</template>
+                                    <template slot="card-footer">
+                                        <a href="/abastecimento" class="text-info">
+                                            <i class="fas fa-link"></i> Acessar
+                                        </a>
+                                    </template>
+                                </card-info>
+                            </transition>
+                        </div>
                         <div class="col col-md-6">
                             <transition name="fade" mode="in-out" appear>
                                 <card-info :card-type="'success'">
@@ -19,26 +36,6 @@
                                     </template>
                                 </card-info>
 
-                            </transition>
-                        </div>
-
-
-
-
-                        <div class="col col-md-6">
-                            <transition name="fade" mode="in-out" appear>
-                                <card-info :card-type="'primary'">
-                                    <template slot="card-icon">
-                                        <i class="fas fa-gas-pump fa-4x"></i>
-                                    </template>
-                                    <template slot="card-title">Abastecimentos Hoje</template>
-                                    <template slot="card-body">{{ numAbastecimentosDia }}</template>
-                                    <template slot="card-footer">
-                                        <a href="/abastecimento" class="text-info">
-                                            <i class="fas fa-link"></i> Acessar
-                                        </a>
-                                    </template>
-                                </card-info>
                             </transition>
                         </div>
 

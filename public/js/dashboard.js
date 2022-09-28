@@ -1911,9 +1911,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
 
 
 
@@ -37196,18 +37193,18 @@ var render = function() {
                   [
                     _c(
                       "card-info",
-                      { attrs: { "card-type": "success" } },
+                      { attrs: { "card-type": "primary" } },
                       [
                         _c("template", { slot: "card-icon" }, [
-                          _c("i", { staticClass: "fas fa-car fa-4x" })
+                          _c("i", { staticClass: "fas fa-gas-pump fa-4x" })
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-title" }, [
-                          _vm._v("Veículos na Frota")
+                          _vm._v("Abastecimentos Hoje")
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-body" }, [
-                          _vm._v(_vm._s(_vm.numVeiculosFrota))
+                          _vm._v(_vm._s(_vm.numAbastecimentosDia))
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-footer" }, [
@@ -37215,7 +37212,7 @@ var render = function() {
                             "a",
                             {
                               staticClass: "text-info",
-                              attrs: { href: "/veiculo" }
+                              attrs: { href: "/abastecimento" }
                             },
                             [
                               _c("i", { staticClass: "fas fa-link" }),
@@ -37245,18 +37242,18 @@ var render = function() {
                   [
                     _c(
                       "card-info",
-                      { attrs: { "card-type": "primary" } },
+                      { attrs: { "card-type": "success" } },
                       [
                         _c("template", { slot: "card-icon" }, [
-                          _c("i", { staticClass: "fas fa-gas-pump fa-4x" })
+                          _c("i", { staticClass: "fas fa-car fa-4x" })
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-title" }, [
-                          _vm._v("Abastecimentos Hoje")
+                          _vm._v("Veículos na Frota")
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-body" }, [
-                          _vm._v(_vm._s(_vm.numAbastecimentosDia))
+                          _vm._v(_vm._s(_vm.numVeiculosFrota))
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-footer" }, [
@@ -37264,7 +37261,7 @@ var render = function() {
                             "a",
                             {
                               staticClass: "text-info",
-                              attrs: { href: "/abastecimento" }
+                              attrs: { href: "/veiculo" }
                             },
                             [
                               _c("i", { staticClass: "fas fa-link" }),
