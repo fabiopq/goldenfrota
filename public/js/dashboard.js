@@ -37252,7 +37252,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-title" }, [
-                          _vm._v("Abastecimentos")
+                          _vm._v("Abastecimentos Hoje")
                         ]),
                         _vm._v(" "),
                         _c("template", { slot: "card-body" }, [
