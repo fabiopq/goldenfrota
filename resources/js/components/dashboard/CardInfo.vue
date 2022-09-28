@@ -7,12 +7,12 @@
         'bg-danger' : cardType == 'danger',
         'bg-dark' : cardType == 'dark'}">
             <div class="row">
-                <div class="col-5">
+                <div class="col">
                     <span class="text-light">
                         <slot name="card-icon"></slot>
                     </span>
                 </div>
-                <div class="col-7">
+                <div class="col">
                     <div class="row">
                         <div class="col">
                             <span class="float-right text-light">

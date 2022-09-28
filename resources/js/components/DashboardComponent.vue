@@ -21,6 +21,7 @@
                                 </card-info>
                             </transition>
                         </div>
+                       
                         <div class="col col-md-6">
                             <transition name="fade" mode="in-out" appear>
                                 <card-info :card-type="'success'">
