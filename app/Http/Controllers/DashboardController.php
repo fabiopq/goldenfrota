@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use ConsoleTVs\Charts\Facades\Charts;
 use App\Http\Controllers\TanqueMovimentacaoController;
 
+use function GuzzleHttp\Promise\each;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -87,46 +89,12 @@ class DashboardController extends Controller
 
         return response()->json($entradas);
     }
-    public function saldoTanques2()
+    public function saldoTanques2($data)
     {
-        $tanques = Tanque::select('tanques.*', 'combustiveis.descricao')
-            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-            ->where('tanques.ativo', true)->get();
-
-        $graficos = array();
-         foreach ($tanques as $tanque) {
-           
-            $graficos[] = Charts::create('percentage', 'justgage')
-                ->title($tanque->descricao_tanque . ' (' . $tanque->descricao . ')')
-                ->elementLabel('Litros')
-                ->values([$this->getPosicaoEstoque($tanque), 0, $tanque->capacidade])
-                ->responsive(false)
-                ->height(250);
-            //->width(0);
-        }
-
-        return View('relatorios.tanques.posicao_tanques')->withTitulo('Posição de Estoque - Tanques')->withGraficos($graficos);
-    }
-
-    public function saldoTanques()
-    {
-
-        $tanques =  Tanque::select('tanques.*')
-           
-            ->get();
-
-       
-
-        $dataAtual = '26/09/2022';
-
-
-        $data = date_format(date_create_from_format('d/m/Y H:i:s', $dataAtual . '23:59:59'), 'Y-m-d H:i:s');
-
-       
-            
-            $saldo = DB::table('movimentacao_combustiveis')
-                ->select(
-                    DB::raw('tanques.id, tanques.descricao_tanque,tanques.capacidade,
+        $posicao = DB::table('movimentacao_combustiveis')
+            ->select(
+                DB::raw(
+                    'tanques.id, tanques.descricao_tanque,tanques.capacidade,
                         
                     ROUND(SUM(
                     CASE tipo_movimentacao_combustiveis.eh_entrada
@@ -136,20 +104,92 @@ class DashboardController extends Controller
                             movimentacao_combustiveis.quantidade * -1
                     END
                     ),3) as posicao'
-                    )
                 )
-                ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
-                ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
-                
-                ->where('movimentacao_combustiveis.created_at', '<', $data)
-                ->groupBy('tanques.id')
-                ->get();
-                
-        
-        
-       // return ($posicao->posicao) ? $posicao->posicao : 0;
+            )
+            ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
+            ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
 
-        return response()->json($saldo);
+            ->where('movimentacao_combustiveis.created_at', '<', $data)
+            ->groupBy('tanques.id')
+            ->get();
+
+
+
+
+
+        return ($posicao->posicao) ? $posicao->posicao : 0;
+    }
+
+    public function saldoTanques()
+    {
+
+        $tanques = Tanque::select('tanques.*', 'combustiveis.descricao')
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->where('tanques.ativo', true)->get();
+
+
+        //$dataAtual = (new \DateTime())->format('d/m/Y');
+        //$dataInicial = (new \DateTime('-1 day'))->format('d/m/Y');
+
+        //dd($dataAtual);
+        $dataInicio = date_format(date_create_from_format('d/m/Y H:i:s', (new \DateTime())->format('d/m/Y') . '00:00:00'), 'Y-m-d H:i:s');
+        $dataFim = date_format(date_create_from_format('d/m/Y H:i:s', (new \DateTime())->format('d/m/Y') . '23:59:59'), 'Y-m-d H:i:s');
+
+       
+        // return ($posicao->posicao) ? $posicao->posicao : 0;
+        $result = array();
+        foreach ($tanques as $tanque) {
+            $posicaoInicio = DB::table('movimentacao_combustiveis')
+            ->select(
+                DB::raw(
+                    'ROUND(SUM(
+                CASE tipo_movimentacao_combustiveis.eh_entrada
+                    WHEN 1 THEN
+                        movimentacao_combustiveis.quantidade
+                    WHEN 0 THEN
+                        movimentacao_combustiveis.quantidade * -1
+                END
+                ),3) as posicao_inicial'
+                )
+            )
+            ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
+            ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
+            ->where('movimentacao_combustiveis.created_at', '<', $dataInicio)
+            ->where('movimentacao_combustiveis.tanque_id', '=', $tanque->id)
+            ->groupBy('tanques.id')
+            ->get();
+
+            $posicaoFim =  DB::table('movimentacao_combustiveis')
+            ->select(
+                DB::raw(
+                    'ROUND(SUM(
+                CASE tipo_movimentacao_combustiveis.eh_entrada
+                    WHEN 1 THEN
+                        movimentacao_combustiveis.quantidade
+                    WHEN 0 THEN
+                        movimentacao_combustiveis.quantidade * -1
+                END
+                ),3) as posicao_final'
+                )
+            )
+            ->leftJoin('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
+            ->leftJoin('tipo_movimentacao_combustiveis', 'tipo_movimentacao_combustiveis.id', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id')
+            ->where('movimentacao_combustiveis.created_at', '<', $dataFim)
+            ->where('movimentacao_combustiveis.tanque_id', '=', $tanque->id)
+            ->groupBy('tanques.id')
+            ->get();
+            
+
+            $result[] = [
+                'id' => $tanque->id,
+                'descricao_tanque' => $tanque->descricao_tanque,
+                'capacidade' => $tanque->capacidade,
+                'posicao_inicial' => $posicaoInicio[0]->posicao_inicial,
+                'posicao_final' => $posicaoFim[0]->posicao_final
+            ];
+        }
+
+        return response()->json($result);
     }
 
     public function totalVeiculosFrota()

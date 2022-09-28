@@ -2102,9 +2102,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["cardType"]
 });
@@ -37395,7 +37392,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-6" }, [
-          _c("div", { staticClass: "card bg-light text-dark mt-3" }, [
+          _c("div", { staticClass: "card bg-light text-dark" }, [
             _vm._m(0),
             _vm._v(" "),
             _c(
@@ -37745,7 +37742,7 @@ var render = function() {
                 _vm._v(_vm._s(tanque.id))
               ]),
               _vm._v(" "),
-              _c("td", { staticClass: "col-3 pool-right" }, [
+              _c("td", { staticClass: "col-5 pool-right" }, [
                 _vm._v(_vm._s(tanque.descricao_tanque))
               ]),
               _vm._v(" "),
@@ -37754,14 +37751,12 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("td", { staticClass: "col-2 text-right" }, [
-                _vm._v(_vm._s(tanque.posicao))
+                _vm._v(_vm._s(tanque.posicao_inicial))
               ]),
               _vm._v(" "),
               _c("td", { staticClass: "col-2 text-right" }, [
-                _vm._v(_vm._s(tanque.posicao))
-              ]),
-              _vm._v(" "),
-              _c("td", { staticClass: "col-2 text-right" })
+                _vm._v(_vm._s(tanque.posicao_final))
+              ])
             ])
           }),
           0
@@ -37780,15 +37775,13 @@ var staticRenderFns = [
       _c("tr", { staticClass: "row m-0" }, [
         _c("th", { staticClass: "col-1" }, [_vm._v("ID")]),
         _vm._v(" "),
-        _c("th", { staticClass: "col-3" }, [_vm._v("Tanque")]),
+        _c("th", { staticClass: "col-5" }, [_vm._v("Tanque")]),
         _vm._v(" "),
         _c("th", { staticClass: "col-2" }, [_vm._v("Capacidade")]),
         _vm._v(" "),
         _c("th", { staticClass: "col-2" }, [_vm._v("Estoque Inicial")]),
         _vm._v(" "),
-        _c("th", { staticClass: "col-2" }, [_vm._v("Estoque Atual")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "col-2" })
+        _c("th", { staticClass: "col-2" }, [_vm._v("Estoque Atual")])
       ])
     ])
   }

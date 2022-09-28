@@ -1,14 +1,11 @@
 <template>
     <div class="card">
-        <div
-            class="card-header"
-            :class="{
-                'bg-success': cardType == 'success', 
-                'bg-warning': cardType == 'warning',
-                'bg-primary': cardType == 'primary',
-                'bg-danger' : cardType == 'danger',
-                'bg-dark' : cardType == 'dark'}"
-        >
+        <div class="card-header" :class="{
+        'bg-success': cardType == 'success', 
+        'bg-warning': cardType == 'warning',
+        'bg-primary': cardType == 'primary',
+        'bg-danger' : cardType == 'danger',
+        'bg-dark' : cardType == 'dark'}">
             <div class="row">
                 <div class="col-5">
                     <span class="text-light">
@@ -51,6 +48,6 @@
 export default {
     props: [
         "cardType"
-    ]        
+    ]
 };
 </script>
