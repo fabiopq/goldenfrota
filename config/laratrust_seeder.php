@@ -24,6 +24,7 @@ return [
             'veiculo' => 'c,r,u,d',
             'produto' => 'c,r,u,d',
             'tanque' => 'c,r,u,d',
+            'ticket' => 'c,r,u,d',
             'tipo_bomba' => 'c,r,u,d',
             'tipo_pessoa' => 'c,r,u,d',
             'uf' => 'c,r,u,d',
@@ -64,6 +65,7 @@ return [
             'motorista' => 'c,r,u,d',
             'relatorio-saida-estoque' => 'a',
             'listagem-motoristas' => 'a',
+            
             
 
         ],

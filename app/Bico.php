@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bico extends Model
 {
-    public $fillable = ['num_bico', 'tanque_id', 'bomba_id', 'encerrante', 'permite_insercao', 'ativo'];
+    public $fillable = [
+        'num_bico', 'tanque_id', 'bomba_id', 'encerrante',
+        'permite_insercao', 'endereco', 'ativo'
+    ];
 
-    public function tanque() {
+    public function tanque()
+    {
         return $this->belongsTo(Tanque::class);
     }
 }

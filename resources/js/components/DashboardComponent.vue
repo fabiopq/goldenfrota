@@ -57,6 +57,7 @@
 
                             </transition>
                         </div>
+                        
                         <div class="col col-md-6">
                             <transition name="fade" mode="in-out" appear>
                                 <card-info :card-type="'danger'">
@@ -129,6 +130,7 @@
                             </transition>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -191,17 +193,19 @@ import Axios from "axios";
 import MovTanque from "./dashboard/MovTanque";
 import UltimasEntradasComb from "./dashboard/UltimasEntradasComb";
 import SaldoTanques from "./dashboard/SaldoTanques";
-import CardInfo from "./dashboard/CardInfo";
+import CardInfo from "./dashboard/CardModel";
 import OsEmAberto from './dashboard/OsEmAberto';
+
 
 export default {
     components: {
-        "saldo-tanque": SaldoTanques,
-        "mov-tanque": MovTanque,
-        "ultimas-entradas-comb": UltimasEntradasComb,
-        "card-info": CardInfo,
-        "os-em-aberto": OsEmAberto
-    },
+    "saldo-tanque": SaldoTanques,
+    "mov-tanque": MovTanque,
+    "ultimas-entradas-comb": UltimasEntradasComb,
+    "card-info": CardInfo,
+    "os-em-aberto": OsEmAberto,
+    
+},
     data() {
         return {
             numVeiculosFrota: 0,

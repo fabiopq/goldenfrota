@@ -13,6 +13,7 @@
                 <p>
                   {{ this.modalText }}                  
                 </p>
+                <slot></slot>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirm" @click="confirm">Remover</button>
@@ -25,46 +26,48 @@
 </template>
 
 <script>
+import SaldoTanques from './dashboard/SaldoTanques.vue';
   export default {
-    name: 'modal',
-
+    name: "modal",
     methods: {
-      cancel() {
-        this.$emit(this._eventCancel);
-      },
-      confirm() {
-        this.$emit(this._eventConfirm);
-      }
+        cancel() {
+            this.$emit(this._eventCancel);
+        },
+        confirm() {
+            this.$emit(this._eventConfirm);
+        }
     },
     props: [
-      'modalTitle',
-      'modalText',
-      'eventCancel',
-      'eventConfirm'
+        "modalTitle",
+        "modalText",
+        "eventCancel",
+        "eventConfirm"
     ],
     computed: {
-      _eventCancel: {
-        get() {
-          if (this.eventCancel == undefined) {
-            return 'cancel';
-          } else {
-            return this.eventCancel;
-          }
+        _eventCancel: {
+            get() {
+                if (this.eventCancel == undefined) {
+                    return "cancel";
+                }
+                else {
+                    return this.eventCancel;
+                }
+            }
+        },
+        _eventConfirm: {
+            get() {
+                if (this.eventConfirm == undefined) {
+                    return "confirm";
+                }
+                else {
+                    return this.eventConfirm;
+                }
+            }
         }
-      },
-      _eventConfirm: {
-        get() {
-          if (this.eventConfirm == undefined) {
-            return 'confirm';
-          } else {
-            return this.eventConfirm;
-          }
-        }
-      }
     },
     mounted() {
-      //
-    }
-
-  };
+        //
+    },
+    components: { SaldoTanques }
+};
 </script>

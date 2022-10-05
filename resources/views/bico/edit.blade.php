@@ -60,6 +60,14 @@
                             'inputSize' => 3
                         ],
                         [
+                            'type' => 'text',
+                            'field' => 'endereco',
+                            'label' => 'Endereço',
+                            'required' => true,
+                            'inputValue' => $bico->endereco,
+                            'inputSize' => 2
+                        ],
+                        [
                             'type' => 'select',
                             'field' => 'permite_insercao',
                             'label' => 'Ins. Abast.',

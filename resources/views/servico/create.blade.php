@@ -64,5 +64,10 @@
                 @endcomponent
             @endsection
         @endcomponent
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#meuModal">Primary</button>
     </div>
+    <modal name="meuModal"></modal>
 @endsection
+@push('bottom-scripts')
+    <script src="{{ mix('js/modal.js') }}"></script>
+@endpush

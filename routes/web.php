@@ -151,6 +151,7 @@ Route::middleware(['auth:web'])->group(function() {
 });
 
 Route::resource('/importa', 'ImportaController')->except('show');
+Route::resource('/ticket', 'TicketController');
 
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
