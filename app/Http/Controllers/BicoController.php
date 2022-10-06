@@ -212,11 +212,12 @@ class BicoController extends Controller
     }
 
     public function apiBicos() {
-        return response()->json(  DB::table('bicos')
-        ->select('bicos.*')->get());
-        //->orderBy('marca_veiculo', 'asc')
-        //->orderBy('modelo_veiculo', 'asc')
-        //->tosql();
+        return response()->json( DB::table('bicos')
+        ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao as combustivel')
+        ->join('tanques', 'tanques.id', 'bicos.tanque_id')
+        ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+        ->join('bombas', 'bombas.id', 'bicos.bomba_id')
+        ->get());
         
     }
 
