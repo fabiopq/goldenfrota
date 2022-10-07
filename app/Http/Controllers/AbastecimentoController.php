@@ -31,6 +31,7 @@ class AbastecimentoController extends Controller
 {
     protected $fields = array(
         'id' => 'ID',
+        'num_bico' => 'Bico',
         'data_hora_abastecimento' => ['label' => 'Data/Hora', 'type' => 'datetime'],
         'valor_litro' => ['label' => 'Valor Litro', 'type' => 'decimal', 'decimais' => 3],
         'volume_abastecimento' => ['label' => 'Qtd. Abast.', 'type' => 'decimal', 'decimais' => 2],
