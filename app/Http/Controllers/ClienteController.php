@@ -24,6 +24,18 @@ class ClienteController extends Controller
         'ativo' => ['label' => 'Ativo', 'type' => 'bool']
     );
 
+    function formatCnpjCpf($value)
+    {
+        $CPF_LENGTH = 11;
+        $cnpj_cpf = preg_replace("/\D/", '', $value);
+
+        if (strlen($cnpj_cpf) === $CPF_LENGTH) {
+            return preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "\$1.\$2.\$3-\$4", $cnpj_cpf);
+        }
+
+        return preg_replace("/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/", "\$1.\$2.\$3/\$4-\$5", $cnpj_cpf);
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -92,7 +104,7 @@ class ClienteController extends Controller
                 'fone2' => ['nullable', new telefoneComDDD],
                 'email1' => 'nullable|email',
                 'email2' => 'nullable|email',
-               // 'site' => 'nullable|site',
+                // 'site' => 'nullable|site',
                 'endereco' => 'required|string|min:3|max:200',
                 'numero' => 'required',
                 'bairro' => 'required|string|min:3|max:200',
@@ -190,11 +202,12 @@ class ClienteController extends Controller
                 $cliente->cidade = $request->cidade;
                 $cliente->cep = $request->cep;
                 $cliente->uf_id = $request->uf_id;
+                $cliente->site = $request->site;
                 $cliente->ativo = $request->ativo;
 
 
                 if ($cliente->save()) {
-                    
+
                     event(new NovoRegistroAtualizacaoApp($cliente));
 
                     Session::flash('success', __('messages.update_success', [
@@ -259,16 +272,40 @@ class ClienteController extends Controller
         return View('relatorios.clientes.listagem_clientes')->withClientes(Cliente::all())->withTitulo('Listagem de Clientes')->withParametro(Parametro::first());
     }
 
-    public function apiClientes() {
+    public function apiClientes()
+    {
         return response()->json(Cliente::ativo()->get());
     }
 
-    public function apiCliente($id) {
+    public function apiCliente($id)
+    {
         return response()->json(Cliente::ativo()->where('id', $id)->get());
     }
 
-    public function apiClienteCnpj($id) {
-        return response()->json(Cliente::ativo()->where('cpf_cnpj', $id)->get());
+
+
+    public function mascara($val, $mask)
+    {
+        $maskared = '';
+        $k = 0;
+        for ($i = 0; $i <= strlen($mask) - 1; $i++) {
+            if ($mask[$i] == '#') {
+                if (isset($val[$k])) $maskared .= $val[$k++];
+            } else {
+                if (isset($mask[$i])) {
+                    if ($mask[$i] == $val[$k]) {
+                        $k++;
+                    }
+                    $maskared .= $mask[$i];
+                }
+            }
+        }
+        return $maskared;
     }
 
+    
+    public function apiClienteCnpj($id)
+    {  
+       return response()->json(Cliente::ativo()->where('cpf_cnpj', $id)->get());
+    }
 }

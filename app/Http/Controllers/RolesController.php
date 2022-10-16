@@ -31,10 +31,10 @@ class RolesController extends Controller
         if (Auth::user()->canListarRole()) {
             if ($request->SearchField) {
                 $roles = DB::table('roles')
-                            ->where('name', 'like', '%'.$request->searchField.'%')
-                            ->orWhere('display_name', 'like', '%'.$request->searchField.'%')
-                            ->orWhere('description', 'like', '%'.$request->searchField.'%')
-                            ->paginate();
+                    ->where('name', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('display_name', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('description', 'like', '%' . $request->searchField . '%')
+                    ->paginate();
             } else {
                 $roles = Role::paginate();
             }
@@ -75,7 +75,7 @@ class RolesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
         if (Auth::user()->canCadastrarRole()) {
             $this->validate($request, [
                 'name' => 'required|string|min:5|max:100|unique:roles',
@@ -107,10 +107,10 @@ class RolesController extends Controller
             }
 
             DB::commit();
-            
+
             Session::flash('success', __('messages.create_success', [
                 'model' => __('models.role'),
-                'name' => $request->display_name 
+                'name' => $request->display_name
             ]));
             return redirect()->action('RolesController@index');
         } else {
@@ -128,7 +128,7 @@ class RolesController extends Controller
     public function edit(Role $role)
     {
         if (Auth::user()->canAlterarRole()) {
-            $permissions = Permission::orderBy('id', 'asc')->get();        
+            $permissions = Permission::orderBy('id', 'asc')->get();
 
             foreach ($role->permissions as $permission) {
                 $assigned_permissions[] = $permission->id;
@@ -156,21 +156,21 @@ class RolesController extends Controller
     {
         if (Auth::user()->canAlterarRole()) {
             $this->validate($request, [
-                'name' => 'required|string|min:5|max:100|unique:roles,id,'.$role->id,
-                'display_name' => 'required|string|max:100|unique:roles,id,'.$role->id
+                'name' => 'required|string|min:5|max:100|unique:roles,id,' . $role->id,
+                'display_name' => 'required|string|max:100|unique:roles,id,' . $role->id
             ]);
 
             DB::beginTransaction();
             try {
                 DB::table('roles')
-                        ->where('id', $role->id)
-                        ->update([
-                            'display_name' => $request->display_name,
-                            'description' => $request->description
-                        ]);
-                
+                    ->where('id', $role->id)
+                    ->update([
+                        'display_name' => $request->display_name,
+                        'description' => $request->description
+                    ]);
+
                 $this->updatePermissions($request, $role);
-                        
+
                 DB::commit();
 
                 Session::flash('success', __('messages.update_success', [
@@ -178,7 +178,6 @@ class RolesController extends Controller
                     'name' => $request->display_name
                 ]));
                 return redirect()->action('RolesController@index');
-                
             } catch (\Exception $e) {
                 DB::rollback();
                 Session::flash('error', __('messages.exception', [
@@ -224,24 +223,27 @@ class RolesController extends Controller
             }
         } else {
             Session::flash('error', __('messages.access_denied'));
-            return redirect()->back();   
+            return redirect()->back();
         }
     }
 
-    public function updatePermissions(Request $request, Role $role) {
+    public function updatePermissions(Request $request, Role $role)
+    {
         $this->removeOldPermissions($request, $role);
         $this->addNewPermissions($request, $role);
     }
 
-    public function removeOldPermissions(Request $request, Role $role) {
+    public function removeOldPermissions(Request $request, Role $role)
+    {
         DB::table('permission_role')->where('role_id', $role->id)
-                                    ->whereNotIn('permission_id', $request->permissions)
-                                    ->delete();
+            ->whereNotIn('permission_id', $request->permissions)
+            ->delete();
     }
 
-    public function addNewPermissions(Request $request, Role $role) {
+    public function addNewPermissions(Request $request, Role $role)
+    {
         $actualPermissions = DB::table('permission_role')->select('permission_id')->where('role_id', $role->id)->get();
-        
+
         foreach ($request->permissions as $newPermission) {
             $dbPermission = DB::table('permission_role')->where('role_id', $role->id)->where('permission_id', $newPermission)->first();
             if ($dbPermission === null) {
@@ -255,5 +257,29 @@ class RolesController extends Controller
                 }
             }
         }
+    }
+
+    public function apiRoles()
+    {
+
+        return response()->json(DB::table('permission_role')
+            ->select(
+                'users.id',
+                'users.name as nome',
+                'permission_role.role_id',
+                'roles.name as perfil',
+                'permissions.name as permissao'
+
+            )
+
+            ->join('permissions', 'permission_role.permission_id', 'permissions.id')
+            ->join('roles', 'permission_role.role_id', 'roles.id')
+            ->join('role_user', 'roles.id', 'role_user.role_id')
+            ->join('users', 'role_user.user_id', 'users.id')
+            ->orderBy('permission_role.role_id')
+            //->orderBy('marca_veiculo', 'asc')
+            //->orderBy('modelo_veiculo', 'asc')
+            //->tosql();
+            ->get());
     }
 }
