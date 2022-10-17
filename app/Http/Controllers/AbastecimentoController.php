@@ -883,10 +883,10 @@ class AbastecimentoController extends Controller
             $whereData = 'abastecimentos.data_hora_abastecimento between \'' . $data_inicial . ' 00:00:00' . '\' and \'' .  $data_final . ' 23:59:59' . '\'';
            
         } elseif ($data_inicial) {
-            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . $data_inicial . '00:00:00' . '\'';
+            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . $data_inicial . ' 00:00:00' . '\'';
             
         } elseif ($data_final) {
-            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . $data_final . '23:59:59'. '\'';
+            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . $data_final . ' 23:59:59'. '\'';
            
         } else {
             $whereData = '1 = 1'; //busca qualquer coisa
@@ -921,10 +921,10 @@ class AbastecimentoController extends Controller
             $whereData = 'abastecimentos.data_hora_abastecimento between \'' . $data_inicial . ' 00:00:00' . '\' and \'' .  $data_final . ' 23:59:59' . '\'';
            
         } elseif ($data_inicial) {
-            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . $data_inicial . '00:00:00' . '\'';
+            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . $data_inicial . ' 00:00:00' . '\'';
             
         } elseif ($data_final) {
-            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . $data_final . '23:59:59'. '\'';
+            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . $data_final . ' 23:59:59'. '\'';
            
         } else {
             $whereData = '1 = 1'; //busca qualquer coisa
