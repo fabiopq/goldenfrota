@@ -875,7 +875,24 @@ class AbastecimentoController extends Controller
 
     public function apiAbastecimentos(Request $request)
     {
+        $data_inicial = $request->data_inicial;
+        $data_final = $request->data_final;
+        $parametros = array();
 
+        if ($data_inicial && $data_final) {
+            $whereData = 'abastecimentos.data_hora_abastecimento between \'' . $data_inicial . ' 00:00:00' . '\' and \'' .  $data_final . ' 23:59:59' . '\'';
+           
+        } elseif ($data_inicial) {
+            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . $data_inicial . '00:00:00' . '\'';
+            
+        } elseif ($data_final) {
+            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . $data_final . '23:59:59'. '\'';
+           
+        } else {
+            $whereData = '1 = 1'; //busca qualquer coisa
+        }
+
+//dd($whereData);
         // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
@@ -888,18 +905,36 @@ class AbastecimentoController extends Controller
             //->whereRaw($whereData)
             // ->whereDate('abastecimentos.data_hora_abastecimento', $request->data_inicial)
             //->whereDate('abastecimentos.data_hora_abastecimento', $request->data_final)
-            ->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
+            ->whereRaw($whereData)
+            //->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
             ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
             ->get());
     }
 
     public function apiAbastecimentosSemPlaca(Request $request)
     {
+        $data_inicial = $request->data_inicial;
+        $data_final = $request->data_final;
+        $parametros = array();
+
+        if ($data_inicial && $data_final) {
+            $whereData = 'abastecimentos.data_hora_abastecimento between \'' . $data_inicial . ' 00:00:00' . '\' and \'' .  $data_final . ' 23:59:59' . '\'';
+           
+        } elseif ($data_inicial) {
+            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . $data_inicial . '00:00:00' . '\'';
+            
+        } elseif ($data_final) {
+            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . $data_final . '23:59:59'. '\'';
+           
+        } else {
+            $whereData = '1 = 1'; //busca qualquer coisa
+        }
         return response()->json(DB::table('abastecimentos')
             ->select('abastecimentos.*')
             ->whereNull('abastecimentos.veiculo_id')
             ->orderByDesc('abastecimentos.id')
-            ->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
+            ->whereRaw($whereData)
+            //->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
             ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
             //->where('abastecimentos.id', '<', '104')
 
