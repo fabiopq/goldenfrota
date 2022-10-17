@@ -69,8 +69,8 @@ Route::get('motoristas', 'MotoristaController@apiMotoristas');
 Route::get('tanques', 'TanqueController@apiTanques');
 Route::get('bicos', 'BicoController@apiBicos');
 
-Route::post('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
-Route::post('abastecimentossemplaca', 'AbastecimentoController@apiAbastecimentosSemPlaca');
+Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
+Route::get('abastecimentossemplaca', 'AbastecimentoController@apiAbastecimentosSemPlaca');
 Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 Route::get('veiculoscliente', 'VeiculoController@apiVeiculosClientes');
