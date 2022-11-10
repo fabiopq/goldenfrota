@@ -82,6 +82,7 @@ Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
 
 //Route::post('grupo_produtos', 'GrupoProdutoController@apiStore');
 Route::post('abastecimento', 'AbastecimentoController@apiStore');
+Route::post('atendenteupdade', 'AtendenteController@apiUpdateAtendente');
 Route::post('abastecimentoupdatesemplaca', 'AbastecimentoController@apiUpdateSemPlaca');
 Route::get('users', 'UserController@apiUsers');
 Route::get('user/{username}', 'UserController@apiUsers');

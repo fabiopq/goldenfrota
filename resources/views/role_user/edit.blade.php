@@ -14,18 +14,7 @@
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
-                        [
-                            'type' => 'select',
-                            'field' => 'role_id',
-                            'label' => 'Perfil',
-                            'required' => true,
-                            'items' => $roles,
-                            'inputSize' => 6,
-                            'displayField' => 'display_name',
-                            'keyField' => 'id',
-                            'liveSearch' => true,
-                            'indexSelected' => $roleUser->role_id
-                        ],
+                        
                         [
                             'type' => 'select',
                             'field' => 'user_id',
@@ -37,6 +26,18 @@
                             'keyField' => 'id',
                             'liveSearch' => true,
                             'indexSelected' => $roleUser->user_id
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'role_id',
+                            'label' => 'Perfil',
+                            'required' => true,
+                            'items' => $roles,
+                            'inputSize' => 6,
+                            'displayField' => 'display_name',
+                            'keyField' => 'id',
+                            'liveSearch' => true,
+                            'indexSelected' => $roleUser->role_id
                         ]
                     ]
                 ])

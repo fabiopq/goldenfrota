@@ -879,6 +879,8 @@ class AbastecimentoController extends Controller
         $data_final = $request->data_final;
         $parametros = array();
 
+        //dd($request);
+
         if ($data_inicial && $data_final) {
             $whereData = 'abastecimentos.data_hora_abastecimento between \'' . $data_inicial . ' 00:00:00' . '\' and \'' .  $data_final . ' 23:59:59' . '\'';
            
@@ -891,6 +893,8 @@ class AbastecimentoController extends Controller
         } else {
             $whereData = '1 = 1'; //busca qualquer coisa
         }
+
+        //dd($whereData);
 
 //dd($whereData);
         // parametro de data precisa ser entre as datas. necessario data inicial e final

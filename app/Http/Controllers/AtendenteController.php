@@ -31,19 +31,19 @@ class AtendenteController extends Controller
                 //$atendentes = Atendente::where('nome_atendente', 'like', '%'.$request->searchField.'%')
                 //                ->paginate();
                 $atendentes = DB::table('atendentes')
-                                ->select('atendentes.*',  'veiculos.placa')
-                                ->leftJoin('veiculos', 'veiculos.id', 'atendentes.veiculo_id')
-                                ->where('veiculos.placa', 'like', '%'.$request->searchField.'%')
-                                ->orWhere('atendentes.senha_atendente', 'like', '%'.$request->searchField.'%')
-                                ->orWhere('atendentes.nome_atendente', 'like', '%'.$request->searchField.'%')
-                                /* ->orderBy('abastecimentos.id', 'desc') */
-                                //->orderBy('atendentes.data_hora_abastecimento', 'desc')
-                                ->paginate();
+                    ->select('atendentes.*',  'veiculos.placa')
+                    ->leftJoin('veiculos', 'veiculos.id', 'atendentes.veiculo_id')
+                    ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('atendentes.senha_atendente', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('atendentes.nome_atendente', 'like', '%' . $request->searchField . '%')
+                    /* ->orderBy('abastecimentos.id', 'desc') */
+                    //->orderBy('atendentes.data_hora_abastecimento', 'desc')
+                    ->paginate();
             } else {
                 $atendentes = DB::table('atendentes')
-                ->select('atendentes.*',  'veiculos.placa')
-                ->leftJoin('veiculos', 'veiculos.id', 'atendentes.veiculo_id')
-                ->paginate();
+                    ->select('atendentes.*',  'veiculos.placa')
+                    ->leftJoin('veiculos', 'veiculos.id', 'atendentes.veiculo_id')
+                    ->paginate();
             }
 
             return View('atendente.index')->withAtendentes($atendentes)->withFields($this->fields);
@@ -62,12 +62,12 @@ class AtendenteController extends Controller
     {
         if (Auth::user()->canCadastrarAtendente()) {
             $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
-            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-            ->where('veiculos.ativo', true)
-            ->get();
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->where('veiculos.ativo', true)
+                ->get();
             return View('atendente.create')
-            ->withveiculos($veiculos);
+                ->withveiculos($veiculos);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -122,11 +122,11 @@ class AtendenteController extends Controller
     {
         if (Auth::user()->canAlterarAtendente()) {
             $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
-            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-            ->where('veiculos.ativo', true)
-            ->get();
-            return View('atendente.edit',[
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->where('veiculos.ativo', true)
+                ->get();
+            return View('atendente.edit', [
                 'veiculos' => $veiculos,
                 'atendente' => $atendente
             ]);
@@ -148,9 +148,9 @@ class AtendenteController extends Controller
         if (Auth::user()->canAlterarAtendente()) {
             $this->validate($request, [
                 'nome_atendente' => 'required|string',
-                'usuario_atendente' => 'required|string|max:10|unique:atendentes,usuario_atendente,'.$atendente->id,
+                'usuario_atendente' => 'required|string|max:10|unique:atendentes,usuario_atendente,' . $atendente->id,
                 'senha_atendente' => 'required|string|max:16',
-                'veiculo_id' => 'nullable|numeric|unique:atendentes,veiculo_id,'.$atendente->id
+                'veiculo_id' => 'nullable|numeric|unique:atendentes,veiculo_id,' . $atendente->id
             ]);
 
             try {
@@ -181,9 +181,10 @@ class AtendenteController extends Controller
         }
     }
 
-    public function apiAtendentes() {
-        return response()->json(  DB::table('atendentes')
-        ->select('atendentes.*')->get());
+    public function apiAtendentes()
+    {
+        return response()->json(DB::table('atendentes')
+            ->select('atendentes.*')->get());
     }
 
     /**
@@ -202,7 +203,7 @@ class AtendenteController extends Controller
                         'model' => __('models.atendente'),
                         'name' => $atendente->nome_atendnete
                     ]));
-                    
+
                     return redirect()->action('AtendenteController@index');
                 }
             } catch (\Exception $e) {
@@ -222,9 +223,48 @@ class AtendenteController extends Controller
             Session::flash('error', env('ACCESS_DENIED_MSG'));
             return redirect()->back();
         }
-
-       
     }
 
-    
+    public function apiUpdateAtendente(Request $request)
+    {
+
+
+        $atendente = new Atendente();
+
+        try {
+            $atendente = Atendente::find($request->id);
+            //  dd($abastecimento);
+            
+            $atendente->nome_atendente = $request->nome_atendente;
+            $atendente->usuario_atendente = $request->usuario_atendente;
+            $atendente->senha_atendente = $request->senha_atendente;
+            $atendente->veiculo_id = $request->veiculo_id;
+            
+
+            if ($atendente->veiculo_id) {
+                $atendente->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
+            } else {
+                $atendente->media_veiculo = 0;
+            }
+
+
+            if ($atendente->save()) {
+
+
+                return response()->json(true);
+            } else {
+
+
+
+                return response()->json(false);
+            }
+            /*  } */
+        } catch (\Exception $e) {
+            
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            return redirect()->back();
+        }
+    }
 }

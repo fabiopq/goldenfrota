@@ -14,17 +14,7 @@
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
-                        [
-                            'type' => 'select',
-                            'field' => 'role_id',
-                            'label' => 'Perfil',
-                            'required' => true,
-                            'items' => $roles,
-                            'inputSize' => 6,
-                            'displayField' => 'display_name',
-                            'keyField' => 'id',
-                            'liveSearch' => true
-                        ],
+                        
                         [
                             'type' => 'select',
                             'field' => 'user_id',
@@ -33,6 +23,17 @@
                             'items' => $users,
                             'inputSize' => 6,
                             'displayField' => 'name',
+                            'keyField' => 'id',
+                            'liveSearch' => true
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'role_id',
+                            'label' => 'Perfil',
+                            'required' => true,
+                            'items' => $roles,
+                            'inputSize' => 6,
+                            'displayField' => 'display_name',
                             'keyField' => 'id',
                             'liveSearch' => true
                         ]
