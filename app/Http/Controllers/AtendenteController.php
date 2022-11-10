@@ -230,6 +230,7 @@ class AtendenteController extends Controller
 
 
         $atendente = new Atendente();
+        
 
         try {
             $atendente = Atendente::find($request->id);
@@ -239,18 +240,14 @@ class AtendenteController extends Controller
             $atendente->usuario_atendente = $request->usuario_atendente;
             $atendente->senha_atendente = $request->senha_atendente;
             $atendente->veiculo_id = $request->veiculo_id;
+
+            //dd($atendente);
             
 
-            if ($atendente->veiculo_id) {
-                $atendente->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
-            } else {
-                $atendente->media_veiculo = 0;
-            }
-
-
+            
             if ($atendente->save()) {
 
-
+                dd($atendente);
                 return response()->json(true);
             } else {
 
