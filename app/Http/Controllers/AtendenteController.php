@@ -247,7 +247,7 @@ class AtendenteController extends Controller
             
             if ($atendente->save()) {
 
-                dd($atendente);
+                //dd($atendente);
                 return response()->json(true);
             } else {
 
