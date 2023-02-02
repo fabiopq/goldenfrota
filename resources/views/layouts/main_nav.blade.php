@@ -198,6 +198,9 @@
                     @permission('listar-ordem-servico')
                     <li><a class="dropdown-item" href="{{route('ordem_servico.index')}}">Ordens de Serviço</a></li>
                     @endpermission
+                    @permission('listar-ordem-servico')
+                    <li><a class="dropdown-item" href="{{route('movimentacao_credito.index')}}">Credito</a></li>
+                    @endpermission
                 </ul>
             </li>
             {{--  Relatorios  --}}

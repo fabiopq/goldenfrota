@@ -952,7 +952,15 @@ class AbastecimentoController extends Controller
 
     public function apiStore(Request $request)
     {
-
+        $dataInicio = \DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            //Abastecimento::whereNotNull('id_automacao')
+            Abastecimento::whereNotNull('id')
+                ->orderBy('data_hora_abastecimento', 'desc')
+                ->pluck('data_hora_abastecimento')
+                ->first()
+        );
+        
 
         try {
             DB::beginTransaction();
@@ -981,10 +989,25 @@ class AbastecimentoController extends Controller
             } else {
                 $abastecimento->media_veiculo = 0;
             }
-            Log::debug('Abastecimento Inserido xx: ' . $abastecimento);
+            
             $abastecimento->eh_afericao = (bool)$request->eh_afericao;
             //Log::debug('Abastecimento Inserido: '.$abastecimento);
-            $abastecimento->save();
+            
+           
+            Log::debug('Abastecimento recebido na api : ' . $abastecimento);
+            //Log::debug('data iniciio '. $dataInicio);
+
+            
+                      
+
+          $dataAbastecimento = \DateTime::createFromFormat(
+            'Y-m-d H:i:s',$abastecimento->data_hora_abastecimento);
+          
+
+          if ($dataAbastecimento > $dataInicio) {
+            
+            
+            //$abastecimento->save();
             if ($abastecimento->save()) {
 
                 if ($request->bico_id) {
@@ -1023,6 +1046,11 @@ class AbastecimentoController extends Controller
             } else {
                 return response()->json($abastecimento, 201);
             }
+         }else{
+            Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
+         }
+
+            
         } catch (\Exception $e) {
             DB::rollback();
             Session::flash('error', __('messages.exception', [

@@ -99,7 +99,9 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('produtos_estoque/{estoqueId}/json', 'ProdutoController@obterProdutosPeloEstoque')->name('produto_pelo_estoque');
     Route::get('posicao_estoque_produto/{produtoId}', 'MovimentacaoProdutoController@posicaoEstoqueProduto')->name('posicao_estoque_produto');
     Route::get('produtos_vencendo_vencidos/{veiculo}', 'VencimentoProdutoController@getProdutosVencendoVencidosPorVeiculo');
-
+    Route::resource('/movimentacao_credito', 'MovimentacaoCreditoController');
+   
+   
     //relatorios
     Route::get('relatorios/posicao_tanques', 'TanqueController@relPosicaoTanque')->name('relatorio_posicao_tanques');
     Route::get('relatorios/media_consumo', 'VeiculoController@relMediaConsumo')->name('relatorio_media_consumo');
@@ -152,6 +154,7 @@ Route::middleware(['auth:web'])->group(function() {
 
 Route::resource('/importa', 'ImportaController')->except('show');
 Route::resource('/ticket', 'TicketController');
+
 
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');

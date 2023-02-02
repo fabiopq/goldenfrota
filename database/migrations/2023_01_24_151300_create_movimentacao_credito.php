@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMovimentacaoProdutosTable extends Migration
+class CreateMovimentacaoCredito extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,23 @@ class CreateMovimentacaoProdutosTable extends Migration
      */
     public function up()
     {
-        Schema::create('movimentacao_produtos', function (Blueprint $table) {
+        Schema::create('movimentacao_creditos', function (Blueprint $table) {
             $table->increments('id');
             $table->datetime('data_movimentacao');
-            $table->integer('estoque_id')->unsigned();
-            $table->integer('produto_id')->unsigned();
+            $table->integer('cliente_id')->unsigned();
+            $table->integer('combustivel_id')->unsigned()->nullable();
             $table->integer('tipo_movimentacao_produto_id')->unsigned();
             $table->double('quantidade_movimentada', 10, 3);
-            $table->integer('entrada_estoque_id')->unsigned()->nullable();
-            $table->foreign('estoque_id')->references('id')->on('estoques');
-            $table->foreign('produto_id')->references('id')->on('produtos');
+            $table->double('valor_unitario', 10, 3);
+            $table->double('valor', 10, 3);
+            $table->integer('user_id')->unsigned();
+            $table->text('observacao')->nullable();
+
+            $table->foreign('cliente_id')->references('id')->on('clientes');
+            //$table->foreign('combustivel_id')->references('id')->on('combustiveis');
             $table->foreign('tipo_movimentacao_produto_id')->references('id')->on('tipo_movimentacao_produtos');
+
+            
             $table->timestamps();
         });
     }
@@ -35,6 +41,6 @@ class CreateMovimentacaoProdutosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('movimentacao_produtos');
+        Schema::dropIfExists('movimentacao_creditos');
     }
 }
