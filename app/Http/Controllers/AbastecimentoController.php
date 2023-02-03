@@ -952,14 +952,7 @@ class AbastecimentoController extends Controller
 
     public function apiStore(Request $request)
     {
-        $dataInicio = \DateTime::createFromFormat(
-            'Y-m-d H:i:s',
-            //Abastecimento::whereNotNull('id_automacao')
-            Abastecimento::whereNotNull('id')
-                ->orderBy('data_hora_abastecimento', 'desc')
-                ->pluck('data_hora_abastecimento')
-                ->first()
-        );
+        
         
 
         try {
@@ -996,7 +989,14 @@ class AbastecimentoController extends Controller
            
             Log::debug('Abastecimento recebido na api : ' . $abastecimento);
             //Log::debug('data iniciio '. $dataInicio);
-
+            $dataInicio = \DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                //Abastecimento::whereNotNull('id_automacao')
+                Abastecimento::where('volume_abastecimento', $abastecimento->volume_abastecimento)
+                    ->orderBy('data_hora_abastecimento', 'desc')
+                    ->pluck('data_hora_abastecimento')
+                    ->first()
+            );
             
                       
 
