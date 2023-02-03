@@ -986,7 +986,35 @@ class AbastecimentoController extends Controller
             $abastecimento->eh_afericao = (bool)$request->eh_afericao;
             //Log::debug('Abastecimento Inserido: '.$abastecimento);
             
-           
+            
+            $atendente = Atendente::where('usuario_atendente', '=', trim($request->tag_atendente))->first();
+            
+            //$veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
+            if (!$request->veiculo_id) {  // verifica se nao veio veiculo no arquivo
+                
+
+                if (!$atendente->veiculo_id) { //verifica se no cadastro de atendente nao possui veiculo
+                    //dd($atendente);
+                    $abastecimento->media_veiculo = 0;
+                   // $obs .= 'Veículo [' . trim($registro[14]) . ']: Não encontrado!&#10;';
+                } else {
+                    $abastecimento->veiculo_id = $atendente->veiculo_id;
+
+
+
+                    /* if($veiculo->hodometro_decimal){
+                        $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1); 
+
+                    }else{ // acresenta zero ao km digitado no arquivo de importacao
+                        $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]) . '0',  1); 
+                      
+                    }
+                   */
+                    $veiculo = Veiculo::where('id', '=', $atendente->veiculo_id)->first();
+                    $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                }
+            }
+            dd($abastecimento);
             Log::debug('Abastecimento recebido na api : ' . $abastecimento);
             //Log::debug('data iniciio '. $dataInicio);
             $dataInicio = \DateTime::createFromFormat(

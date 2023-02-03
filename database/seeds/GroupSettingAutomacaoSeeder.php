@@ -25,7 +25,7 @@ class GroupSettingAutomacaoSeeder extends Seeder
             ]
         ]);
 
-        DB::table('settings')->insert([
+        /*DB::table('settings')->insert([
             [
                 'description' => 'Utiliza Preço Cadastro Combustivel',
                 'key' => 'automacao_valor_combustivel',
@@ -42,6 +42,6 @@ class GroupSettingAutomacaoSeeder extends Seeder
             ]
          
         ]);
-
+        */
     }
 }
