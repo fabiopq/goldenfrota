@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GroupSettingNotificationsSeeder::class);
         $this->call(OrdemServicoStatusSeeder::class);
 	    $this->call(GroupSettingAutomacaoSeeder::class);
+        $this->call(TipoMovimentacaoCreditoSeeder::class);
+        $this->call(TipoMovimentacaoProdutoSeeder::class);
     }
 }

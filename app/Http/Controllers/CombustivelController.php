@@ -192,6 +192,12 @@ class CombustivelController extends Controller
         }
     }
 
+    public function getCombustivelJson(Request $request)
+    {
+
+        return response()->json(Combustivel::find($request->id)->first());
+    }
+
     public function apiCombustiveis()
     {
         return response()->json(Combustivel::ativo()->get());

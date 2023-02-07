@@ -27,8 +27,7 @@ class CreateMovimentacaoCredito extends Migration
 
             $table->foreign('cliente_id')->references('id')->on('clientes');
             //$table->foreign('combustivel_id')->references('id')->on('combustiveis');
-            $table->foreign('tipo_movimentacao_produto_id')->references('id')->on('tipo_movimentacao_produtos');
-
+           
             
             $table->timestamps();
         });

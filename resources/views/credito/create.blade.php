@@ -120,51 +120,32 @@
         });
     }
 
-    var buscarModeloVeiculos = function() {
-        var marca = {};
+    var buscarDadosBico = function() {  
+            var produto = {};
 
-        marca.id = $('#marca_veiculo_id').val();
-        marca._token = $('input[name="_token"]').val();
+            produto.id = $('#produto_id').val();
+            produto._token = $('input[name="_token"]').val();
 
-        console.log(marca);
-        $.ajax({
-            url: '{{ route("modelo_veiculos.json") }}',
-            type: 'POST',
-            data: marca,
-            dataType: 'JSON',
-            cache: false,
-            success: function (data) {
-                console.log(data);
-                $("#modelo_veiculo_id")
-                    .removeAttr('disabled')
-                    .find('option')
-                    .remove();
+            $.ajax({
+                url: '{{ route("produto.json") }}',
+                type: 'POST',
+                data: produto,
+                dataType: 'JSON',
+                cache: false,
+                success: function (data) {
+                    
+                    $("#valor_litro").val(data.valor);
+                    $("#volume_abastecimento").focus();
 
 
-                $.each(data, function (i, item) {
-                    $('#modelo_veiculo_id').append($('<option>', { 
-                        value: item.id,
-                        text : item.modelo_veiculo 
-                    }));
-                });
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function (data) {
+                }
+            });
+        }
 
-                @if(old('modelo_veiculo_id'))
-                $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
-                @endif
+        $('#produto_id').on('changed.bs.select', buscarDadosBico);
 
-                $('.selectpicker').selectpicker('refresh');
-            }
-        });
-    }
-
-    $('#cliente_id').on('changed.bs.select', buscarDepartamentos);
-    $('#marca_veiculo_id').on('changed.bs.select', buscarModeloVeiculos);
-    
-    if ($('#marca_veiculo_id').val()) {
-        buscarModeloVeiculos();
-    }
-
-    if ($('#cliente_id').val()) {
-        buscarDepartamentos();
-    }
+   
 @endpush

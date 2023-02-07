@@ -67,7 +67,7 @@
     'field' => 'cpf_cnpj',
     'label' => 'CPF/CNPJ',
     'required' => true,
-    'inputSize' => 6,
+    'inputSize' => 3,
     'inputValue' => $cliente->cpf_cnpj
     ],
     [
@@ -75,13 +75,53 @@
     'field' => 'rg_ie',
     'label' => 'RG/IE',
     'required' => true,
-    'inputSize' => 6,
+    'inputSize' => 3,
     'inputValue' => $cliente->rg_ie,
     'css' => 'text-uppercase'
+    ],
+    [
+    'type' => 'text',
+    'field' => 'tag',
+    'label' => 'TAG',
+    'inputSize' => 4,
+    'inputValue' => $cliente->tag
     ]
+
     ]
     ])
     @endcomponent
+    <div class="card">
+        <div class="card-header">
+            <strong>FINANCEIRO</strong>
+        </div>
+        <div class="card-body">
+            @component('components.form-group', [
+            'inputs' => [
+
+            [
+            'type' => 'select',
+            'field' => 'controla_credito',
+            'label' => 'Controle de Credito',
+            'inputSize' => 2,
+            'indexSelected' => $cliente->controla_credito,
+            'items' => Array('Não', 'Sim'),
+            ],
+            [
+            'type' => 'text',
+            'field' => 'saldo',
+            'label' => 'Saldo Crédito',
+            'required' => true,
+            'inputSize' => 3,
+            'css' => 'text-uppercase',
+            'readOnly' => true ,
+            ],
+
+            ]
+            ])
+            @endcomponent
+
+        </div>
+    </div>
     <div class="card">
         <div class="card-header">
             <strong>CONTATOS</strong>

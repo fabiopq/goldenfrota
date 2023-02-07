@@ -100,15 +100,15 @@ class ClienteController extends Controller
                 'fantasia' => 'nullable|string',
                 'cpf_cnpj' => ['required', new cpfCnpj],
                 'rg_ie' => 'required',
-                'fone1' =>  ['required', new telefoneComDDD],
+                'fone1' =>  ['nullable', new telefoneComDDD],
                 'fone2' => ['nullable', new telefoneComDDD],
                 'email1' => 'nullable|email',
                 'email2' => 'nullable|email',
                 // 'site' => 'nullable|site',
-                'endereco' => 'required|string|min:3|max:200',
+                'endereco' => 'required|string|min:1|max:200',
                 'numero' => 'required',
-                'bairro' => 'required|string|min:3|max:200',
-                'cidade' => 'required|string|min:3|max:200',
+                'bairro' => 'required|string|min:1|max:200',
+                'cidade' => 'required|string|min:1|max:200',
                 'cep' => 'required',
                 'uf_id' => 'required'
             ]);
@@ -146,7 +146,7 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente)
     {
-        //dd($cliente);
+        
         if (Auth::user()->canAlterarCliente()) {
             return View('cliente.edit', [
                 'ufs' => Uf::all(),
@@ -174,19 +174,19 @@ class ClienteController extends Controller
                 'fantasia' => 'nullable|string',
                 'cpf_cnpj' => ['required', new cpfCnpj],
                 'rg_ie' => 'required',
-                'fone1' =>  ['required', new telefoneComDDD],
+                'fone1' =>  ['nullable', new telefoneComDDD],
                 'fone2' => ['nullable', new telefoneComDDD],
                 'email1' => 'nullable|email',
                 'email2' => 'nullable|email',
                 //'site' => 'nullable|site',
-                'endereco' => 'required|string|min:3|max:200',
+                'endereco' => 'required|string|min:1|max:200',
                 'numero' => 'required',
-                'bairro' => 'required|string|min:3|max:200',
-                'cidade' => 'required|string|min:3|max:200',
+                'bairro' => 'required|string|min:1|max:200',
+                'cidade' => 'required|string|min:1|max:200',
                 'cep' => 'required',
                 'uf_id' => 'required'
             ]);
-
+            
             try {
                 $cliente->nome_razao = $request->nome_razao;
                 $cliente->fantasia = $request->fantasia;
@@ -204,8 +204,10 @@ class ClienteController extends Controller
                 $cliente->uf_id = $request->uf_id;
                 $cliente->site = $request->site;
                 $cliente->ativo = $request->ativo;
+                $cliente->controla_credito = $request->controla_credito;
+                $cliente->tag = $request->tag;
 
-
+                //dd($request);
                 if ($cliente->save()) {
 
                     event(new NovoRegistroAtualizacaoApp($cliente));

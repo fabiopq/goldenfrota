@@ -3,7 +3,7 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Adicionar Crédito', 
+            'title' => 'Movimentar Crédito', 
             'routeUrl' => route('movimentacao_credito.store'), 
             'method' => 'POST',
             'formButtons' => [
@@ -49,6 +49,19 @@
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'inputSize' => 7 
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => ' $tipomovimentacao_id',
+                            'label' => 'Tipo Movimentação',
+                            'required' => true,
+                            'items' => $tipomovimentacao,
+                            'autofocus' => true,
+                            'displayField' => 'tipo_movimentacao_credito',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => false,
+                            'inputSize' => 3 
                         ],
                                                
                         
@@ -114,9 +127,7 @@
             @endsection
         @endcomponent
     </div>
-@push('bottom-scripts')
-    <script src="{{ mix('js/entradaestoque.js') }}"></script>
-@endpush
+
 @push('document-ready')
         function CalcValorAbastecimento() {
             var volume, valor_unitario = 0;
@@ -130,13 +141,13 @@
         }
 
         function CalcLitragem() {
-            var volume, valor_unitario = 0;
-            volume = parseFloat($('#quantidade').val().replace(',', '.'));
+            var total, valor_unitario = 0;
+            total = parseFloat($('#valor_total').val().replace(',', '.'));
             valor_unitario = parseFloat($('#valor_litro').val().replace(',', '.'));
-            if ((volume > 0) && (valor_unitario > 0)) {
-                $('#valor_total').val(volume * valor_unitario);
+            if ((total > 0) && (valor_unitario > 0)) {
+                $('#quantidade_movimentada').val(total / valor_unitario);
             } else {
-                $('#valor_total').val(0);
+                $('#quantidade_movimentada').val(0);
             }
         }
 
@@ -179,13 +190,13 @@
                 }
             });
         }
-        $('#quantidade').on('keyup', () => {
+        $('#volume_abastecimento').on('keyup', () => {
             CalcValorAbastecimento(); 
             
         });
         $('#volume_abastecimento').on('blur', () => {
             CalcValorAbastecimento();
-            CalcularEncerranteFinal();
+            
         });
 
         $('#valor_litro').on('keyup', () => {
@@ -195,6 +206,15 @@
         $('#valor_litro').on('blur', () => {
             CalcValorAbastecimento();
         });
+
+        $('#valor_total').on('keyup', () => {
+            CalcLitragem();
+        });
+
+        $('#valor_total').on('blur', () => {
+            CalcLitragem();
+        });
+        
 
         $('#cliente_id').on('changed.bs.select', buscarVeiculos);
         $('#bico_id').on('changed.bs.select', buscarDadosBico);
@@ -210,5 +230,32 @@
                 $('#label__km_veiculo').html('Horas trabalhadas');
             }
         });
+
+        var buscarDadosBico = function() {  
+            var combustivel = {};
+
+            combustivel.id = $('#combustivel_id').val();
+            combustivel._token = $('input[name="_token"]').val();
+
+            $.ajax({
+                url: '{{ route("combustivel.json") }}',
+                type: 'POST',
+                data: combustivel,
+                dataType: 'JSON',
+                cache: false,
+                success: function (data) {
+                    
+                    $("#valor_litro").val(data.valor);
+                    $("#quantidade_movimentada").focus();
+
+
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function (data) {
+                }
+            });
+        }
+
+        $('#combustivel_id').on('changed.bs.select', buscarDadosBico);
 @endpush
 @endsection

@@ -89,6 +89,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
     Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
+    
     Route::post('veiculo/jsonComponent', 'VeiculoController@getVeiculosComponentJson')->name('veiculosComponent.json');
     Route::post('bico/json', 'BicoController@getBicoJson')->name('bico.json');
     Route::post('veiculo_departamento/json', 'VeiculoController@getVeiculosDepartamentoJson')->name('veiculos_departamento.json');
@@ -154,6 +155,7 @@ Route::middleware(['auth:web'])->group(function() {
 
 Route::resource('/importa', 'ImportaController')->except('show');
 Route::resource('/ticket', 'TicketController');
+Route::post('combustivel/json', 'CombustivelController@getCombustivelJson')->name('combustivel.json');
 
 
 //************ */

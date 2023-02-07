@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Bico;
 use App\Cliente;
 use App\Combustivel;
-use App\Veiculo;
+use App\TipoMovimentacaoCredito;
 use App\Atendente;
 use App\Parametro;
 use App\Departamento;
@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\AfericaoController;
 use App\Http\Controllers\MovimentacaoCombustivelController;
 use App\MovimentacaoCredito;
+use CreateTipoMovimentacaoCredito;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use phpDocumentor\Reflection\Types\Boolean;
 
@@ -106,8 +107,9 @@ class MovimentacaoCreditoController extends Controller
             
             $combustiveis = Combustivel::where('ativo',true)->get();
             $clientes = Cliente::where('ativo', true)->get();
+            $tipomovimentacao = TipoMovimentacaoCredito::where('ativo', true)->get();
             return View('movimentacao_credito.create')
-                ->withclientes($clientes)->withcombustiveis($combustiveis);
+                ->withclientes($clientes)->withcombustiveis($combustiveis)->withtipomovimentacao( $tipomovimentacao);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -126,10 +128,15 @@ class MovimentacaoCreditoController extends Controller
         
 
         if (Auth::user()->canCadastrarAbastecimento()) {
-
-            //$this->validate($request, [
-            //    'data_movimentacao' => 'required|date_format:d/m/Y H:i:s',
-            //   ]);
+            
+            $this->validate($request, [
+                'data_movimentacao' => 'required',
+                'cliente_id' => 'required',
+                'quantidade_movimentada' => 'required|numeric|min:0',
+                'valor_litro' => 'required|numeric|min:0',
+                'valor_total' => 'required|numeric|min:0',
+                'combustivel_id' => 'required'
+            ]);
 
 
             try {
@@ -147,6 +154,7 @@ class MovimentacaoCreditoController extends Controller
                 $movimentacao->valor = str_replace(',', '.', $request->valor_total);
                 $movimentacao->user_id = Auth::user()->id;
                 $movimentacao->tipo_movimentacao_produto_id = 1;
+                $movimentacao->observacao = $request->observacao;
              
                 /* Calcula a média do veículo, caso seja informado um veículo */
                 
@@ -172,6 +180,11 @@ class MovimentacaoCreditoController extends Controller
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
+    }
+
+    public function getSaldoCredito($id)
+    {
+        return response()->json(Combustivel::ativo()->where('id', $id)->get());
     }
 
 }

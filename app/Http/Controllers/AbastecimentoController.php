@@ -985,16 +985,18 @@ class AbastecimentoController extends Controller
             
             $abastecimento->eh_afericao = (bool)$request->eh_afericao;
             //Log::debug('Abastecimento Inserido: '.$abastecimento);
+           
             
-            
-            $atendente = Atendente::where('usuario_atendente', '=', trim($request->tag_atendente))->first();
-            
+             
             //$veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
-            if (!$request->veiculo_id) {  // verifica se nao veio veiculo no arquivo
+            if (!$request->veiculo_id) { 
+                 // verifica se nao veio veiculo no arquivo
+                 
+                $atendente = Atendente::where('usuario_atendente', '=', $request->tag_atendente)->first();
                 
-
                 if (!$atendente->veiculo_id) { //verifica se no cadastro de atendente nao possui veiculo
                     //dd($atendente);
+                    Log::debug('atendente  : ' . $abastecimento);
                     $abastecimento->media_veiculo = 0;
                    // $obs .= 'Veículo [' . trim($registro[14]) . ']: Não encontrado!&#10;';
                 } else {
