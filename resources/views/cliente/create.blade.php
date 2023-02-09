@@ -55,21 +55,21 @@
     'field' => 'cpf_cnpj',
     'label' => 'CPF/CNPJ',
     'required' => true,
-    'inputSize' => 4
+    'inputSize' => 2
     ],
     [
     'type' => 'text',
     'field' => 'rg_ie',
     'label' => 'RG/IE',
     'required' => true,
-    'inputSize' => 4,
+    'inputSize' => 2,
     'css' => 'text-uppercase'
     ],
     [
     'type' => 'text',
     'field' => 'tag',
     'label' => 'TAG',
-    'inputSize' => 4
+    'inputSize' => 2
     ]
 
     ]

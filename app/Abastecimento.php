@@ -37,6 +37,10 @@ class Abastecimento extends Model
         return $this->belongsTo(Veiculo::class);
     }
 
+    public function cliente() {
+        return $this->belongsTo(Cliente::class);
+    }
+
     public function movimentacao_combustivel() {
         return $this->hasOne(MovimentacaoCombustivel::class);
     }
@@ -55,5 +59,9 @@ class Abastecimento extends Model
         return $query->where('veiculo_id', $veiculo_id)
             ->orderBy('data_hora_abastecimento', 'desc')
             ->firstOrFail();
+    }
+
+    public function movimentacao_credito() {
+        return $this->hasOne(MovimentacaoCredito::class);
     }
 }

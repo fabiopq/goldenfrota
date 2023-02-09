@@ -6,7 +6,7 @@ use App\Bico;
 use App\Cliente;
 use App\Combustivel;
 use App\TipoMovimentacaoCredito;
-use App\Atendente;
+use App\Veiculos;
 use App\Parametro;
 use App\Departamento;
 use App\Abastecimento;
@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\AfericaoController;
 use App\Http\Controllers\MovimentacaoCombustivelController;
 use App\MovimentacaoCredito;
+use App\Tanque;
+use App\Veiculo;
 use CreateTipoMovimentacaoCredito;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -34,12 +36,15 @@ class MovimentacaoCreditoController extends Controller
     protected $fields = array(
         'id' => 'ID',
         'data_movimentacao' => ['label' => 'Data/Hora', 'type' => 'datetime'],
+        'cliente_id' => 'Cod',
         'nome_razao' => 'Cliente',
+        'tipo_movimentacao_credito' => 'Tipo de Movimentação ',
+        //'tipo_movimentacao_credito' => 'Tipo de Movimentação',
         //'placa' => 'Veículo',
-       // 'valor_litro' => ['label' => 'Valor Litro', 'type' => 'decimal', 'decimais' => 3],
+        // 'valor_litro' => ['label' => 'Valor Litro', 'type' => 'decimal', 'decimais' => 3],
         //'volume_abastecimento' => ['label' => 'Qtd. Abast.', 'type' => 'decimal', 'decimais' => 2],
         'valor' => ['label' => 'Valor', 'type' => 'decimal', 'decimais' => 3],
-        
+
         //'km_veiculo' => ['label' => 'Odômetro/Horímetro', 'type' => 'decimal', 'decimais' => 1],
         //'media_veiculo' => ['label' => 'Média', 'type' => 'decimal', 'decimais' => 2],
         //'nome_atendente' => 'Atendente',
@@ -66,29 +71,29 @@ class MovimentacaoCreditoController extends Controller
 
             if (isset($request->searchField)) {
                 $movimentacao = DB::table('movimentacao_creditos')
-                    ->select('movimentacao_creditos.*', 'clientes.nome_razao')
-                   // ->leftJoin('veiculos', 'veiculos.id', 'movimentacao_creditos.veiculo_id')
+                    ->select('movimentacao_creditos.*', 'clientes.nome_razao', 'tipo_movimentacao_credito.tipo_movimentacao_credito')->leftJoin('tipo_movimentacao_credito', 'tipo_movimentacao_credito.id', 'movimentacao_creditos.tipo_movimentacao_produto_id')
                     //->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'movimentacao_creditos.cliente_id')
                     //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
-                  //  ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
+                    //  ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
                     ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
                     //->orWhere('atendentes.nome_atendente', 'like', '%' . $request->searchField . '%')
                     /* ->orderBy('abastecimentos.id', 'desc') */
-                    ->orderBy('movimentacao_creditos.data_movimentacao', 'desc')
+                    ->orderBy('movimentacao_creditos.id', 'desc')
                     ->paginate();
             } else {
                 $movimentacao = DB::table('movimentacao_creditos')
-                    ->select('movimentacao_creditos.*', 'clientes.nome_razao')
-                   // ->leftJoin('veiculos', 'veiculos.id', 'movimentacao_creditos.veiculo_id')
+                    ->select('movimentacao_creditos.*', 'clientes.nome_razao', 'tipo_movimentacao_credito.tipo_movimentacao_credito')
+                    ->leftJoin('tipo_movimentacao_credito', 'tipo_movimentacao_credito.id', 'movimentacao_creditos.tipo_movimentacao_produto_id')
                     //->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'movimentacao_creditos.cliente_id')
                     //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
                     /* ->orderBy('abastecimentos.id', 'desc') */
-                    ->orderBy('movimentacao_creditos.data_movimentacao', 'desc')
+                    ->orderBy('movimentacao_creditos.id', 'desc')
                     ->paginate();
+                //dd($movimentacao);
             }
 
             return View('movimentacao_credito.index', [
@@ -104,19 +109,19 @@ class MovimentacaoCreditoController extends Controller
     public function create()
     {
         if (Auth::user()->canCadastrarAtendente()) {
-            
-            $combustiveis = Combustivel::where('ativo',true)->get();
+
+            $combustiveis = Combustivel::where('ativo', true)->get();
             $clientes = Cliente::where('ativo', true)->get();
             $tipomovimentacao = TipoMovimentacaoCredito::where('ativo', true)->get();
             return View('movimentacao_credito.create')
-                ->withclientes($clientes)->withcombustiveis($combustiveis)->withtipomovimentacao( $tipomovimentacao);
+                ->withclientes($clientes)->withcombustiveis($combustiveis)->withtipomovimentacao($tipomovimentacao);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
     }
 
-        /**
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -125,10 +130,8 @@ class MovimentacaoCreditoController extends Controller
     public function store(Request $request)
     {
 
-        
-
         if (Auth::user()->canCadastrarAbastecimento()) {
-            
+
             $this->validate($request, [
                 'data_movimentacao' => 'required',
                 'cliente_id' => 'required',
@@ -153,11 +156,12 @@ class MovimentacaoCreditoController extends Controller
                 $movimentacao->valor_unitario = str_replace(',', '.', $request->valor_litro);
                 $movimentacao->valor = str_replace(',', '.', $request->valor_total);
                 $movimentacao->user_id = Auth::user()->id;
-                $movimentacao->tipo_movimentacao_produto_id = 1;
+
+                $movimentacao->tipo_movimentacao_produto_id = $request->tipo_movimentacao_credito_id;
                 $movimentacao->observacao = $request->observacao;
-             
+
                 /* Calcula a média do veículo, caso seja informado um veículo */
-                
+
 
                 if ($movimentacao->save()) {
 
@@ -166,10 +170,7 @@ class MovimentacaoCreditoController extends Controller
                         'name' => $movimentacao->valor
                     ]));
                     return redirect()->action('MovimentacaoCreditoController@index');
-                        
                 }
-
-                                    
             } catch (\Exception $e) {
                 Session::flash('error', __('messages.exception', [
                     'exception' => $e->getMessage()
@@ -187,4 +188,137 @@ class MovimentacaoCreditoController extends Controller
         return response()->json(Combustivel::ativo()->where('id', $id)->get());
     }
 
+    static public function saidaCredito2(Abastecimento $abastecimento)
+    {
+
+        Log::debug('saida credito  : ' . $abastecimento);
+        try {
+
+
+            $veiculo = Veiculo::where('id', '=', $abastecimento->veiculo_id)->first();
+            $combustivel = Combustivel::where('id', '=', $abastecimento->veiculo_id)->first();
+
+
+            if ($veiculo) {
+                try {
+
+                    $bico = Tanque::where('id', '=', $abastecimento->bico_id)->first();
+                    if ($bico) {
+                        $abastecimento->combustivel_id = $bico->combustivel_id;
+                    }
+                } catch (\Exception $e) {
+                    //dd($e);
+                    throw new \Exception($e);
+                }
+
+                Log::debug('movimentacao credito inicio  : ' . $veiculo);
+
+                $movimentacao = new MovimentacaoCredito();
+
+                //$data_movimentacao = \DateTime::createFromFormat('d/m/Y H:i', $abastecimento->data_hora_abastecimento);
+                // $movimentacao->data_movimentacao = $data_movimentacao->format('Y-m-d H:i:s');
+                $movimentacao->data_movimentacao = $abastecimento->data_hora_abastecimento;
+
+                $movimentacao->cliente_id = $veiculo->cliente_id;
+
+                //$movimentacao->veiculo_id = $request->veiculo_id;
+                $movimentacao->combustivel_id = $abastecimento->combustivel_id;
+
+                $movimentacao->quantidade_movimentada = str_replace(',', '.', $abastecimento->volume_abastecimento);
+                $movimentacao->valor_unitario = str_replace(',', '.', $abastecimento->valor_litro);
+                $movimentacao->valor = str_replace(',', '.', $abastecimento->valor_abastecimento);
+
+                //$movimentacao->user_id = Auth::user()->id;
+                $movimentacao->user_id = 1;
+                $movimentacao->tipo_movimentacao_produto_id = 2;
+                $movimentacao->observacao = $abastecimento->observacao;
+                Log::debug('movimentacao credito movimentacao  : ' . $movimentacao);
+                $movimentacao->save();
+            }
+        } catch (\Exception $e) {
+            Log::debug($e);
+            throw new \Exception('Erro ao incluir movimentacao de entrada por aferição para o Abastecimento: ' . $abastecimento->id);
+        }
+    }
+
+    static public function saidaCredito(Abastecimento $abastecimento)
+    {
+        Log::debug($abastecimento);
+        try {
+            //DB::beginTransaction();
+
+            $movimentacao = new MovimentacaoCredito();
+            //dd($request->data_movimentacao);
+            $data_movimentacao = \DateTime::createFromFormat('d/m/Y H:i', $abastecimento->data_hora_abastecimento);
+            $movimentacao->data_movimentacao = $data_movimentacao->format('Y-m-d H:i:s');
+            //$movimentacao->cliente_id = Veiculos::
+            $veiculo = Veiculo::where('veiculo_id', $abastecimento->veiculo_id)->firs();
+
+            //$movimentacao->veiculo_id = $request->veiculo_id;
+            $movimentacao->combustivel_id = $abastecimento->combustivel_id;
+            $movimentacao->quantidade_movimentada = str_replace(',', '.', $abastecimento->quantidade_movimentada);
+            $movimentacao->valor_unitario = str_replace(',', '.', $abastecimento->valor_litro);
+            $movimentacao->valor = str_replace(',', '.', $abastecimento->valor_total);
+            $movimentacao->user_id = Auth::user()->id;
+            $movimentacao->tipo_movimentacao_produto_id = 1;
+            $movimentacao->observacao = $abastecimento->observacao;
+
+            /* Calcula a média do veículo, caso seja informado um veículo */
+
+
+            if ($movimentacao->save()) {
+
+                Session::flash('success', __('messages.create_success', [
+                    'model' => __('models.movimentacao_credito'),
+                    'name' => $movimentacao->valor
+                ]));
+                return redirect()->action('MovimentacaoCreditoController@index');
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            return redirect()->back()->withInput();
+        }
+    }
+
+    static public function saldoCredito(Cliente $cliente)
+    {
+
+        try {
+
+            if ($cliente) {
+                $entradas = DB::table('movimentacao_creditos')
+                    ->select(
+                        DB::raw('SUM(movimentacao_creditos.valor) as valor'),
+                        'movimentacao_creditos.tipo_movimentacao_produto_id'
+
+                    )
+                    ->whereRaw('cliente_id =' . $cliente->id)
+
+                    ->groupBy('tipo_movimentacao_produto_id') // 1- entradas
+
+                    ->distinct()
+                    ->get();
+
+                $saldo = 0;
+
+                foreach ($entradas as $entrada) {
+                    if ($entrada->tipo_movimentacao_produto_id == 1) {
+                        $saldo = $saldo + $entrada->valor;
+                    }
+                    if ($entrada->tipo_movimentacao_produto_id == 2) {
+                        $saldo = $saldo - $entrada->valor;
+                    }
+                }
+
+                return  $saldo;
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            return redirect()->back()->withInput();
+        }
+    }
 }

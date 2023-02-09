@@ -146,12 +146,19 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente)
     {
-        
+
+        $cliente->saldo = MovimentacaoCreditoController::saldoCredito($cliente);
+        //$saldoCredito= array("valor"=>0);
+        //dd($cliente->saldo);
+
+
+
         if (Auth::user()->canAlterarCliente()) {
             return View('cliente.edit', [
                 'ufs' => Uf::all(),
                 'tipoPessoas' => TipoPessoa::all(),
-                'cliente' => $cliente
+                'cliente' => $cliente,
+
             ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
@@ -186,7 +193,7 @@ class ClienteController extends Controller
                 'cep' => 'required',
                 'uf_id' => 'required'
             ]);
-            
+
             try {
                 $cliente->nome_razao = $request->nome_razao;
                 $cliente->fantasia = $request->fantasia;
@@ -305,9 +312,9 @@ class ClienteController extends Controller
         return $maskared;
     }
 
-    
+
     public function apiClienteCnpj($id)
-    {  
-       return response()->json(Cliente::ativo()->where('cpf_cnpj', $id)->get());
+    {
+        return response()->json(Cliente::ativo()->where('cpf_cnpj', $id)->get());
     }
 }

@@ -52,7 +52,7 @@
                         ],
                         [
                             'type' => 'select',
-                            'field' => ' $tipomovimentacao_id',
+                            'field' => 'tipo_movimentacao_credito_id',
                             'label' => 'Tipo Movimentação',
                             'required' => true,
                             'items' => $tipomovimentacao,

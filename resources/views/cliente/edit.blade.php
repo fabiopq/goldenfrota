@@ -54,6 +54,7 @@
     'type' => 'text',
     'field' => 'fantasia',
     'label' => 'Nome Fantasia',
+    
     'inputValue' => $cliente->fantasia,
     'css' => 'text-uppercase'
     ]
@@ -67,7 +68,7 @@
     'field' => 'cpf_cnpj',
     'label' => 'CPF/CNPJ',
     'required' => true,
-    'inputSize' => 3,
+    'inputSize' => 2,
     'inputValue' => $cliente->cpf_cnpj
     ],
     [
@@ -75,7 +76,7 @@
     'field' => 'rg_ie',
     'label' => 'RG/IE',
     'required' => true,
-    'inputSize' => 3,
+    'inputSize' => 2,
     'inputValue' => $cliente->rg_ie,
     'css' => 'text-uppercase'
     ],
@@ -83,7 +84,7 @@
     'type' => 'text',
     'field' => 'tag',
     'label' => 'TAG',
-    'inputSize' => 4,
+    'inputSize' => 2,
     'inputValue' => $cliente->tag
     ]
 
@@ -107,13 +108,14 @@
             'items' => Array('Não', 'Sim'),
             ],
             [
-            'type' => 'text',
-            'field' => 'saldo',
-            'label' => 'Saldo Crédito',
+            'type' => 'number',
+            'field' => 'fone1',
+            'label' => 'Saldo',
             'required' => true,
             'inputSize' => 3,
-            'css' => 'text-uppercase',
-            'readOnly' => true ,
+            'inputValue' => $cliente->saldo,
+            'readOnly' => true,
+
             ],
 
             ]
