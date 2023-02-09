@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(UnidadesTableSeeder::class);
+        $this->call(TipoMovimentacaoCreditoSeeder::class);
         $this->call(TipoPessoasTableSeeder::class);
         $this->call(UfsTableSeeder::class);
         $this->call(LaratrustSeeder::class); /* somente em instalações novas ou no demo */
@@ -23,7 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(GroupSettingNotificationsSeeder::class);
         $this->call(OrdemServicoStatusSeeder::class);
 	    $this->call(GroupSettingAutomacaoSeeder::class);
-        $this->call(TipoMovimentacaoCreditoSeeder::class);
         $this->call(TipoMovimentacaoProdutoSeeder::class);
     }
 }
