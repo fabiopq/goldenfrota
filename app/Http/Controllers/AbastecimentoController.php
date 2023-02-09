@@ -980,26 +980,51 @@ class AbastecimentoController extends Controller
             //Log::debug('Abastecimento Inserido: '.$abastecimento);
 
             //$veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
-            if ($request->veiculo_id) {
+
+            if (!$request->veiculo_id) {
+
+                if ($request->tag_atendente) {
+
+
+                    $atendente = Atendente::where('senha_atendente', '=', $request->tag_atendente)->first();
+                    if ($atendente) {
+                        //dd($atendente);
+                        $abastecimento->atendente_id = $atendente->id;
+                        $veiculo = Veiculo::where('id', '=', $atendente->veiculo_id)->first();
+
+
+                        if ($veiculo) {
+
+                            $abastecimento->veiculo_id = $veiculo->id;
+                        } else {
+
+                            $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
+                        }
+
+                        if ($veiculo) {
+                            $abastecimento->veiculo_id = $veiculo->id;
+                        }
+                    } else {
+                        $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
+
+
+                        if ($veiculo) {
+
+                            $abastecimento->veiculo_id = $veiculo->id;
+                            $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                        }
+                    }
+                }
+            } else {
+                Log::debug('Abastecimento recebido na api : ' . $abastecimento);
                 // verifica se nao veio veiculo no arquivo
+                $abastecimento->veiculo_id = $request->veiculo_id;
+            }
+
+            if ($abastecimento->veiculo_id) {
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
             } else {
                 $abastecimento->media_veiculo = 0;
-                $atendente = Atendente::where('senha_atendente', '=', $request->tag_atendente)->first();
-                 
-                //$cliente = Cliente::where('tag', '=', $request->tag_atendente)->first();
-
-                if ($atendente->veiculo_id) { //verifica se no cadastro de atendente nao possui veiculo
-
-                    $abastecimento->veiculo_id = $atendente->veiculo_id;
-                    Log::debug('atendente  : ' . $atendente);
-                    $abastecimento->media_veiculo = 0;
-                    // $obs .= 'Veículo [' . trim($registro[14]) . ']: Não encontrado!&#10;';
-                } else {
-                    Log::debug('nao possui atendente  : ' . $atendente);
-                    $veiculo = Veiculo::where('id', '=', $atendente->veiculo_id)->first();
-                    $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
-                }
             }
 
             Log::debug('Abastecimento recebido na api : ' . $abastecimento);
@@ -1068,6 +1093,7 @@ class AbastecimentoController extends Controller
                 Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
             }
         } catch (\Exception $e) {
+            dd($e);
             DB::rollback();
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()

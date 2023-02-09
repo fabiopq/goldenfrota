@@ -34,10 +34,10 @@
         <div class="input-group">
             <div id="tipo_abastecimento" class="btn-group btn-group-toggle" data-toggle="buttons" >
                 <buttom class="btn btn-secondary {{$abast_local == 1 ? ' active' : ''}}">
-                    <input type="radio" name="abast_local" id="abast_local" value="1"> Local
+                    <input type="radio" name="abast_local" id="abast_local" value="1"> Entradas
                 </buttom>
                 <buttom class="btn btn-secondary {{$abast_local == 0 ? ' active' : ''}}">
-                    <input type="radio" name="abast_local" id="abast_externo" value="0"> Externo
+                    <input type="radio" name="abast_local" id="abast_externo" value="0"> Saidas
                 </buttom>
                 <buttom class="btn btn-secondary {{$abast_local == -1 ? ' active' : ''}}">
                     <input type="radio" name="abast_local" id="abast_todos" value="-1"> Todos

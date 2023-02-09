@@ -70,6 +70,7 @@ class MovimentacaoCreditoController extends Controller
             }
 
             if (isset($request->searchField)) {
+                //dd($request->searchField);
                 $movimentacao = DB::table('movimentacao_creditos')
                     ->select('movimentacao_creditos.*', 'clientes.nome_razao', 'tipo_movimentacao_credito.tipo_movimentacao_credito')->leftJoin('tipo_movimentacao_credito', 'tipo_movimentacao_credito.id', 'movimentacao_creditos.tipo_movimentacao_produto_id')
                     //->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
@@ -77,7 +78,7 @@ class MovimentacaoCreditoController extends Controller
                     //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
                     //  ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
-                    ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
+                    ->Where('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
                     //->orWhere('atendentes.nome_atendente', 'like', '%' . $request->searchField . '%')
                     /* ->orderBy('abastecimentos.id', 'desc') */
                     ->orderBy('movimentacao_creditos.id', 'desc')
@@ -182,6 +183,119 @@ class MovimentacaoCreditoController extends Controller
             return redirect()->back();
         }
     }
+
+    public function edit(MovimentacaoCredito $movimentacaoCredito)
+    {
+        $combustiveis = Combustivel::where('ativo', true)->get();
+
+
+
+        if (Auth::user()->canAlterarAtendente()) {
+            $combustiveis = Combustivel::where('ativo', true)->get();
+            $clientes = Cliente::where('ativo', true)->get();
+            $tipomovimentacao = TipoMovimentacaoCredito::where('ativo', true)->get();
+            return View('movimentacao_credito.edit', [
+                'clientes' => $clientes,
+                'combustiveis' => $combustiveis,
+                'tipomovimentacao' => $tipomovimentacao,
+                'movimentacaoCredito' => $movimentacaoCredito
+            ]);
+        } else {
+            Session::flash('error', __('messages.access_denied'));
+            return redirect()->back();
+        }
+    }
+
+    public function update(Request $request, MovimentacaoCredito $movimentacaoCredito)
+    {
+       
+       
+        if (Auth::user()->canAlterarAtendente()) {
+           //dd($request);
+            /*$this->validate($request, [
+                
+                'nome_razao' => 'required|string|unique:clientes,id,' . $movimentacaoCredito->id,
+                'fantasia' => 'nullable|string',
+                'cpf_cnpj' => ['required', new cpfCnpj],
+                'rg_ie' => 'required',
+                'fone1' =>  ['nullable', new telefoneComDDD],
+                'fone2' => ['nullable', new telefoneComDDD],
+                'email1' => 'nullable|email',
+                'email2' => 'nullable|email',
+                //'site' => 'nullable|site',
+                'endereco' => 'required|string|min:1|max:200',
+                'numero' => 'required',
+                'bairro' => 'required|string|min:1|max:200',
+                'cidade' => 'required|string|min:1|max:200',
+                'cep' => 'required',
+                'uf_id' => 'required'
+            ]);
+*/
+            try {
+                $movimentacaoCredito->cliente_id = $request->cliente_id;
+                $movimentacaoCredito->combustivel_id = $request->combustivel_id;
+                $movimentacaoCredito->tipo_movimentacao_produto_id = $request->tipo_movimentacao_credito_id;
+                $movimentacaoCredito->quantidade_movimentada = $request->quantidade_movimentada;
+                $movimentacaoCredito->valor_unitario = $request->valor_litro;
+                $movimentacaoCredito->valor = $request->valor_total;
+                //$movimentacaoCredito->user_id = $request->user_id;
+                $movimentacaoCredito->user_id = Auth::user()->id;
+                $movimentacaoCredito->observacao = $request->observacao;
+                
+                //dd($request);
+                if ($movimentacaoCredito->save()) {
+
+                    
+
+                    Session::flash('success', __('messages.update_success', [
+                        'model' => __('models.movimentacaoCredito'),
+                        '$movimentacaoCredito->valor'
+                    ]));
+                    return redirect()->action('MovimentacaoCreditoController@index');
+                }
+            } catch (\Exception $e) {
+                Session::flash('error', __('messages.exception', [
+                    'exception' => $e->getMessage()
+                ]));
+                return redirect()->back()->withInput();
+            }
+        } else {
+            Session::flash('error', __('messages.access_denied'));
+            return redirect()->back();
+        }
+    }
+
+    public function destroy(MovimentacaoCredito $movimentacaoCredito)
+    {
+        if (Auth::user()->canAlterarModeloBomba()) {
+            try {
+                if ($movimentacaoCredito->delete()) {
+                    Session::flash('success', __('messages.delete_success', [
+                        'model' => __('models.movimentacao_credito'),
+                        'name' => $movimentacaoCredito->modelo_bomba
+                    ]));
+                    return redirect()->action('MovimentacaoCreditoController@index');
+                }
+            } catch (\Exception $e) {
+                switch ($e->getCode()) {
+                    case 23000:
+                        Session::flash('error', __('messages.fk_exception'));
+                        break;
+                    default:
+                        Session::flash('error', __('messages.exception', [
+                            'exception' => $e->getMessage()
+                        ]));
+                        break;
+                }
+                return redirect()->action('MovimentacaoCreditoController@index');
+            }
+        } else {
+            Session::flash('error', __('messages.access_denied'));
+            return redirect()->back();
+        }
+    }
+
+
 
     public function getSaldoCredito($id)
     {

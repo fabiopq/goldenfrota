@@ -49,7 +49,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::resource('/estoque', 'EstoqueController')->except('show');
     Route::resource('/parametro', 'ParametroController')->except('show');
     
-    
+     
     Route::resource('/tipo_movimentacao_produto', 'TipoMovimentacaoProdutoController')->except('show');
     Route::resource('/entrada_estoque', 'EntradaEstoqueController');
     Route::resource('/entrada_tanque', 'EntradaTanqueController');
@@ -100,6 +100,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('produtos_estoque/{estoqueId}/json', 'ProdutoController@obterProdutosPeloEstoque')->name('produto_pelo_estoque');
     Route::get('posicao_estoque_produto/{produtoId}', 'MovimentacaoProdutoController@posicaoEstoqueProduto')->name('posicao_estoque_produto');
     Route::get('produtos_vencendo_vencidos/{veiculo}', 'VencimentoProdutoController@getProdutosVencendoVencidosPorVeiculo');
+    //Route::resource('/movimentacao_credito', 'MovimentacaoCreditoController');
     Route::resource('/movimentacao_credito', 'MovimentacaoCreditoController');
    
    
