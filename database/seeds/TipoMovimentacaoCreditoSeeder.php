@@ -38,7 +38,7 @@ class TipoMovimentacaoCreditoSeeder extends Seeder
     public function truncateTipoMovimentacaoCreditoTable() {
         Schema::disableForeignKeyConstraints();
         DB::table('tipo_movimentacao_credito')->truncate();
-        \App\TipoMovimentacaoCombustivel::truncate();
+        \App\TipoMovimentacaoCredito::truncate();
         Schema::enableForeignKeyConstraints();
     }
 }
