@@ -437,16 +437,16 @@ class MovimentacaoCreditoController extends Controller
 
     static public function getSaldoCreditoJson(Request $request)
     {
-
+        
 
         try {
+           
+            $cliente = Cliente::where('id', $request->id)->get();
 
-            $cliente = Cliente::find($request->id)->first();
+            
 
-            Log::debug('variavel saldo  : ' .  $cliente);
-
-            if ($cliente) {
-
+            if ($cliente[0]) {
+                Log::debug('id cliente  : ' .  $cliente);
                 $entradas = DB::table('movimentacao_creditos')
                     ->select(
 
@@ -454,17 +454,18 @@ class MovimentacaoCreditoController extends Controller
                         DB::raw(' SUM(CASE WHEN movimentacao_creditos.tipo_movimentacao_produto_id = 2 THEN valor ELSE 0 END) AS saidas')
 
                     )
-                    ->whereRaw('cliente_id =' . $cliente->id)
+                    ->whereRaw('cliente_id =' . $cliente[0]->id)
 
                     //->groupBy('tipo_movimentacao_produto_id') // 1- entradas
 
                     ->distinct()
                     ->get();
-
+                    Log::debug('id cliente  : ' .  $entradas);
 
                 if ($entradas[0]) {
 
-                    $saldo = round(($entradas[0]->entradas) - ($entradas[0]->saidas),2);
+
+                    $saldo = round(($entradas[0]->entradas) - ($entradas[0]->saidas), 2);
                     // Log::debug('variavel saldo  : ' .  response()->json($entradas));
 
                     return response()->json($saldo);
