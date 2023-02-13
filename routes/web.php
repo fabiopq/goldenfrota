@@ -157,6 +157,7 @@ Route::middleware(['auth:web'])->group(function() {
 Route::resource('/importa', 'ImportaController')->except('show');
 Route::resource('/ticket', 'TicketController');
 Route::post('combustivel/json', 'CombustivelController@getCombustivelJson')->name('combustivel.json');
+Route::post('movimentacao_credito/json', 'MovimentacaoCreditoController@getSaldoCreditoJson')->name('saldocredito.json');
 
 
 //************ */

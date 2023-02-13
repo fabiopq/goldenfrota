@@ -182,6 +182,7 @@ class AbastecimentoController extends Controller
                             MovimentacaoCombustivelController::cadastroAfericao($afericao);
                         } else {
                             /* Se informado o bico, movimenta o estoque do tanque */
+                            MovimentacaoCreditoController::saidaCredito2($abastecimento);
                             MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                         }
 
@@ -969,18 +970,7 @@ class AbastecimentoController extends Controller
             $abastecimento->bico_id = $request->bico_id;
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
-            /* Calcula a média do veículo, caso seja informado um veículo */
-            /* if ($request->veiculo_id) {
-                $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
-            } else {
-                $abastecimento->media_veiculo = 0;
-            }
-            */
-            //$abastecimento->eh_afericao = (bool)$request->eh_afericao;
-            //Log::debug('Abastecimento Inserido: '.$abastecimento);
-
-            //$veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
-
+            
             if (!$request->veiculo_id) {
 
                 if ($request->tag_atendente) {

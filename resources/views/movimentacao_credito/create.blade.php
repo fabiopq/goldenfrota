@@ -28,7 +28,9 @@
                             'field' => 'saldo',
                             'label' => 'Saldo Atual',
                             'required' => true,
-                            'inputSize' => 2                            
+                            'inputSize' => 2,
+                            'readOnly' => true  
+                                                       
                         ],
                         
                     ]
@@ -256,6 +258,36 @@
             });
         }
 
+        var buscarSaldoCredito = function() {  
+            var cliente = {};
+
+            cliente.id = $('#cliente_id').val();
+            cliente._token = $('input[name="_token"]').val();
+
+            $.ajax({
+                url: '{{ route("saldocredito.json") }}',
+                type: 'POST',
+                data: cliente,
+                dataType: 'JSON',
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                    
+                    $("#saldo").val(data);
+                    $("#quantidade_movimentada").focus();
+                    
+                                        
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function (data) {
+                   
+                }
+            });
+        }
+
+
         $('#combustivel_id').on('changed.bs.select', buscarDadosBico);
+
+        $('#cliente_id').on('changed.bs.select', buscarSaldoCredito);
 @endpush
 @endsection

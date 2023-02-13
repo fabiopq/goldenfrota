@@ -208,10 +208,10 @@ class MovimentacaoCreditoController extends Controller
 
     public function update(Request $request, MovimentacaoCredito $movimentacaoCredito)
     {
-       
-       
+
+
         if (Auth::user()->canAlterarAtendente()) {
-           //dd($request);
+            //dd($request);
             /*$this->validate($request, [
                 
                 'nome_razao' => 'required|string|unique:clientes,id,' . $movimentacaoCredito->id,
@@ -241,11 +241,11 @@ class MovimentacaoCreditoController extends Controller
                 //$movimentacaoCredito->user_id = $request->user_id;
                 $movimentacaoCredito->user_id = Auth::user()->id;
                 $movimentacaoCredito->observacao = $request->observacao;
-                
+
                 //dd($request);
                 if ($movimentacaoCredito->save()) {
 
-                    
+
 
                     Session::flash('success', __('messages.update_success', [
                         'model' => __('models.movimentacaoCredito'),
@@ -416,7 +416,6 @@ class MovimentacaoCreditoController extends Controller
                     ->get();
 
                 $saldo = 0;
-
                 foreach ($entradas as $entrada) {
                     if ($entrada->tipo_movimentacao_produto_id == 1) {
                         $saldo = $saldo + $entrada->valor;
@@ -425,8 +424,54 @@ class MovimentacaoCreditoController extends Controller
                         $saldo = $saldo - $entrada->valor;
                     }
                 }
-
+                //dd($entradas);
                 return  $saldo;
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            return redirect()->back()->withInput();
+        }
+    }
+
+    static public function getSaldoCreditoJson(Request $request)
+    {
+
+
+        try {
+
+            $cliente = Cliente::find($request->id)->first();
+
+            Log::debug('variavel saldo  : ' .  $cliente);
+
+            if ($cliente) {
+
+                $entradas = DB::table('movimentacao_creditos')
+                    ->select(
+
+                        DB::raw(' SUM(CASE WHEN movimentacao_creditos.tipo_movimentacao_produto_id = 1 THEN valor ELSE 0 END) AS entradas'),
+                        DB::raw(' SUM(CASE WHEN movimentacao_creditos.tipo_movimentacao_produto_id = 2 THEN valor ELSE 0 END) AS saidas')
+
+                    )
+                    ->whereRaw('cliente_id =' . $cliente->id)
+
+                    //->groupBy('tipo_movimentacao_produto_id') // 1- entradas
+
+                    ->distinct()
+                    ->get();
+
+
+                if ($entradas[0]) {
+
+                    $saldo = round(($entradas[0]->entradas) - ($entradas[0]->saidas),2);
+                    // Log::debug('variavel saldo  : ' .  response()->json($entradas));
+
+                    return response()->json($saldo);
+                    //return  response()->json($entradas);
+                }
+
+                //return response()->json(Combustivel::find($request->id)->first());
             }
         } catch (\Exception $e) {
             Session::flash('error', __('messages.exception', [

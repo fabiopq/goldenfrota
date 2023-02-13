@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use \Illuminate\Support\Facades\Session;
 use App\Events\NovoRegistroAtualizacaoApp;
+use Illuminate\Support\Facades\Log;
 
 class CombustivelController extends Controller
 {
@@ -194,7 +195,7 @@ class CombustivelController extends Controller
 
     public function getCombustivelJson(Request $request)
     {
-
+        
         return response()->json(Combustivel::find($request->id)->first());
     }
 
