@@ -130,173 +130,117 @@
     @endcomponent
 </div>
 
+
 @push('document-ready')
-function CalcValorAbastecimento() {
-var volume, valor_unitario = 0;
-volume = parseFloat($('#quantidade_movimentada').val().replace(',', '.'));
-valor_unitario = parseFloat($('#valor_litro').val().replace(',', '.'));
-if ((volume > 0) && (valor_unitario > 0)) {
-$('#valor_total').val(volume * valor_unitario);
-} else {
-$('#valor_total').val(0);
-}
-}
+        function CalcValorAbastecimento() {
+            var volume, valor_unitario = 0;
+            volume = parseFloat($('#quantidade_movimentada').val().replace(',', '.'));
+            valor_unitario = parseFloat($('#valor_litro').val().replace(',', '.'));
+            if ((volume > 0) && (valor_unitario > 0)) {
+                $('#valor_total').val(volume * valor_unitario);
+            } else {
+                $('#valor_total').val(0);
+            }
+        }
 
-function CalcLitragem() {
-var total, valor_unitario = 0;
-total = parseFloat($('#valor_total').val().replace(',', '.'));
-valor_unitario = parseFloat($('#valor_litro').val().replace(',', '.'));
-if ((total > 0) && (valor_unitario > 0)) {
-$('#quantidade_movimentada').val(total / valor_unitario);
-} else {
-$('#quantidade_movimentada').val(0);
-}
-}
+        function CalcLitragem() {
+            var total, valor_unitario = 0;
+            total = parseFloat($('#valor_total').val().replace(',', '.'));
+            valor_unitario = parseFloat($('#valor_litro').val().replace(',', '.'));
+            if ((total > 0) && (valor_unitario > 0)) {
+                $('#quantidade_movimentada').val(total / valor_unitario);
+            } else {
+                $('#quantidade_movimentada').val(0);
+            }
+        }
 
-var buscarVeiculos = function() {
-var cliente = {};
+           $('#volume_abastecimento').on('keyup', () => {
+            CalcValorAbastecimento(); 
+            
+        });
+        $('#volume_abastecimento').on('blur', () => {
+            CalcValorAbastecimento();
+            
+        });
 
-cliente.id = $('#cliente_id').val();
-cliente._token = $('input[name="_token"]').val();
+        $('#valor_litro').on('keyup', () => {
+            CalcValorAbastecimento();
+        });
 
-$.ajax({
-url: '{{ route("veiculos.json") }}',
-type: 'POST',
-data: cliente,
-dataType: 'JSON',
-cache: false,
-success: function (data) {
-//console.log(data);
-$("#veiculo_id")
-.removeAttr('disabled')
-.find('option')
-.remove();
+        $('#valor_litro').on('blur', () => {
+            CalcValorAbastecimento();
+        });
 
-$('#veiculo_id').append($('<option>', {value: null, text: 'Nada selecionado'}));
+        $('#valor_total').on('keyup', () => {
+            CalcLitragem();
+        });
 
-    $.each(data, function (i, item) {
-    $('#veiculo_id').append($('
-<option>', {
-    value: item.id,
-    'data-tipo-controle-veiculo': item.modelo_veiculo.tipo_controle_veiculo.id,
-    text : item.placa + ' - ' + item.modelo_veiculo.marca_veiculo.marca_veiculo + ' ' + item.modelo_veiculo.modelo_veiculo
-    }));
-    });
+        $('#valor_total').on('blur', () => {
+            CalcLitragem();
+        });
+        
+     
 
-    @if(old('modelo_veiculo_id'))
-    $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
-    @endif
+        var buscarDadosBico = function() {  
+            var combustivel = {};
 
-    $('.selectpicker').selectpicker('refresh');
-    },
-    error: function (data) {
-    }
-    });
-    }
-    $('#volume_abastecimento').on('keyup', () => {
-    CalcValorAbastecimento();
+            combustivel.id = $('#combustivel_id').val();
+            combustivel._token = $('input[name="_token"]').val();
 
-    });
-    $('#volume_abastecimento').on('blur', () => {
-    CalcValorAbastecimento();
-
-    });
-
-    $('#valor_litro').on('keyup', () => {
-    CalcValorAbastecimento();
-    });
-
-    $('#valor_litro').on('blur', () => {
-    CalcValorAbastecimento();
-    });
-
-    $('#valor_total').on('keyup', () => {
-    CalcLitragem();
-    });
-
-    $('#valor_total').on('blur', () => {
-    CalcLitragem();
-    });
+            $.ajax({
+                url: '{{ route("combustivel.json") }}',
+                type: 'POST',
+                data: combustivel,
+                dataType: 'JSON',
+                cache: false,
+                success: function (data) {
+                    
+                    $("#valor_litro").val(data.valor);
+                    $("#quantidade_movimentada").focus();
 
 
-    $('#cliente_id').on('changed.bs.select', buscarVeiculos);
-    $('#bico_id').on('changed.bs.select', buscarDadosBico);
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function (data) {
+                }
+            });
+        }
 
-    if ($('#cliente_id').val()) {
-    buscarVeiculos();
-    }
+        var buscarSaldoCredito = function() {  
+           
+           var cliente = {};
 
-    $('#veiculo_id').on('changed.bs.select', (e) => {
-    if ($('#'+e.target.id).find('option:selected').data('tipo-controle-veiculo') == 1) {
-    $('#label__km_veiculo').html('KM do Veículo');
-    } else {
-    $('#label__km_veiculo').html('Horas trabalhadas');
-    }
-    });
+           cliente.id = $('#cliente_id').val();
+           cliente._token = $('input[name="_token"]').val();
+           
 
-    var buscarDadosBico = function() {
-    var combustivel = {};
-
-    combustivel.id = $('#combustivel_id').val();
-    combustivel._token = $('input[name="_token"]').val();
-
-    $.ajax({
-    url: '{{ route("combustivel.json") }}',
-    type: 'POST',
-    data: combustivel,
-    dataType: 'JSON',
-    cache: false,
-    success: function (data) {
-
-    $("#valor_litro").val(data.valor);
-    $("#quantidade_movimentada").focus();
-
-
-    $('.selectpicker').selectpicker('refresh');
-    },
-    error: function (data) {
-    }
-    });
-    }
-
-    var buscarSaldoCredito = function() {
-
-    var cliente = {};
-
-    cliente.id = $('#cliente_id').val();
-    cliente._token = $('input[name="_token"]').val();
+           $.ajax({
+               url: '{{ route("saldocredito.json") }}',
+               type: 'POST',
+               data: cliente,
+               dataType: 'JSON',
+               cache: false,
+               success: function (data) {
+                   console.log(data);
+                   
+                   $("#saldo").val(data);
+                   $("#quantidade_movimentada").focus();
+                   
+                                       
+                   $('.selectpicker').selectpicker('refresh');
+               },
+               error: function (data) {
+                  
+               }
+           });
+       }
 
 
-    $.ajax({
-    url: '{{ route("saldocredito.json") }}',
-    type: 'POST',
-    data: cliente,
-    dataType: 'JSON',
-    cache: false,
-    success: function (data) {
+       $('#combustivel_id').on('changed.bs.select', buscarDadosBico);
 
+       $('#cliente_id').on('changed.bs.select', buscarSaldoCredito);
 
-    $("#saldo").val(data);
-
-    $("#quantidade_movimentada").focus();
-
-
-    $('.selectpicker').selectpicker('refresh');
-    },
-    error: function (data) {
-
-    }
-    });
-    }
-
-
-    $('#combustivel_id').on('changed.bs.select', buscarDadosBico);
-
-
-    $('#cliente_id').on('changed.bs.select', buscarSaldoCredito);
-
- 
-    
-
-    @endpush
-    @endsection
+       $(window).on("load",  buscarSaldoCredito);
+       
+@endpush
+@endsection
