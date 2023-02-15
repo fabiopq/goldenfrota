@@ -28,6 +28,8 @@ use App\MovimentacaoCredito;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use phpDocumentor\Reflection\Types\Boolean;
 
+use function Psy\bin;
+
 class AbastecimentoController extends Controller
 {
     protected $fields = array(
@@ -967,7 +969,18 @@ class AbastecimentoController extends Controller
             $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
             $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
             $abastecimento->abastecimento_local = false;
-            $abastecimento->bico_id = $request->bico_id;
+
+            //dd($request->bico_id);
+            if($request->bico_id){
+                $abastecimento->bico_id = $request->bico_id;
+            }else{
+                $bico = Bico::where('endereco', '=', $request->bico_endereco)->first();
+                if($bico){
+                    $abastecimento->bico_id = $bico->bico_id;
+                }
+                
+            }
+           // dd($bico);
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
             
