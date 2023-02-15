@@ -305,7 +305,7 @@ class MovimentacaoCreditoController extends Controller
     static public function saidaCredito2(Abastecimento $abastecimento)
     {
 
-        Log::debug('saida credito  : ' . $abastecimento);
+        //Log::debug('saida credito  : ' . $abastecimento);
         try {
 
 
@@ -325,7 +325,7 @@ class MovimentacaoCreditoController extends Controller
                     throw new \Exception($e);
                 }
 
-                Log::debug('movimentacao credito inicio  : ' . $veiculo);
+                //Log::debug('movimentacao credito inicio  : ' . $veiculo);
 
                 $movimentacao = new MovimentacaoCredito();
 
@@ -460,7 +460,7 @@ class MovimentacaoCreditoController extends Controller
 
                     ->distinct()
                     ->get();
-                    Log::debug('id cliente  : ' .  $entradas);
+                   // Log::debug('id cliente  : ' .  $entradas);
 
                 if ($entradas[0]) {
 

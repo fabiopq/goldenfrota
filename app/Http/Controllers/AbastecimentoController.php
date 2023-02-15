@@ -948,7 +948,7 @@ class AbastecimentoController extends Controller
 
     public function apiStore(Request $request)
     {
-
+        Log::debug(response()->json($request));
         try {
             DB::beginTransaction();
 
