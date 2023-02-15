@@ -950,6 +950,7 @@ class AbastecimentoController extends Controller
 
     public function apiStore(Request $request)
     {
+       //dd($request);
         Log::debug(response()->json($request));
         try {
             DB::beginTransaction();
@@ -972,11 +973,15 @@ class AbastecimentoController extends Controller
 
             //dd($request->bico_id);
             if($request->bico_id){
+                
                 $abastecimento->bico_id = $request->bico_id;
             }else{
                 $bico = Bico::where('endereco', '=', $request->bico_endereco)->first();
+                
                 if($bico){
-                    $abastecimento->bico_id = $bico->bico_id;
+                    //dd($bico); 
+                    $abastecimento->bico_id = $bico->id;
+                    
                 }
                 
             }
