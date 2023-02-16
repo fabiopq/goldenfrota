@@ -50,12 +50,14 @@ class Abastecimento extends Model
     }
 
     public function scopeUltimoDoVeiculo($query, $veiculo_id, $dataHoraAbastecimentoAtual = false) {
+        
         if ($dataHoraAbastecimentoAtual) {
             return $query->where('veiculo_id', $veiculo_id)
                 ->where('data_hora_abastecimento', '<', $dataHoraAbastecimentoAtual)
                 ->orderBy('data_hora_abastecimento', 'desc')
                 ->firstOrFail();    
         } 
+        //dd($query);
         return $query->where('veiculo_id', $veiculo_id)
             ->orderBy('data_hora_abastecimento', 'desc')
             ->firstOrFail();

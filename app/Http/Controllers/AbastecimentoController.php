@@ -448,6 +448,7 @@ class AbastecimentoController extends Controller
 
     public function obterMediaVeiculo(Veiculo $veiculo, Abastecimento $abastecimentoAtual, $ehUpdate = false)
     {
+        
         try {
             if (App::environment('local')) {
                 Log::debug('AbastecimentoController::obterMediaVeiculo');
@@ -842,8 +843,10 @@ class AbastecimentoController extends Controller
 
     public function ObterUltimoAbastecimentoVeiculo(Veiculo $veiculo, Abastecimento $abastecimentoAtual = null)
     {
+       
         if ($abastecimentoAtual) {
             try {
+                
                 return Abastecimento::UltimoDoVeiculo($veiculo->id, $abastecimentoAtual->data_hora_abastecimento);
             } catch (ModelNotFoundException $e) {
                 Log::error($e);
@@ -851,7 +854,9 @@ class AbastecimentoController extends Controller
                 return null;
             }
         } else {
+            
             try {
+                
                 return Abastecimento::UltimoDoVeiculo($veiculo->id);
             } catch (ModelNotFoundException $e) {
                 return null;
@@ -951,7 +956,7 @@ class AbastecimentoController extends Controller
     public function apiStore(Request $request)
     {
        //dd($request);
-        Log::debug(response()->json($request));
+       // Log::debug(response()->json($request));
         try {
             DB::beginTransaction();
 
@@ -1030,7 +1035,7 @@ class AbastecimentoController extends Controller
             }
 
             if ($abastecimento->veiculo_id) {
-                $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
+                $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
             } else {
                 $abastecimento->media_veiculo = 0;
             }
@@ -1101,7 +1106,7 @@ class AbastecimentoController extends Controller
                 Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
             }
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
             DB::rollback();
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
