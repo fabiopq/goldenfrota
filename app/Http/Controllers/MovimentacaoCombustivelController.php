@@ -34,6 +34,7 @@ class MovimentacaoCombustivelController extends Controller
 
 
     static public function saidaAbastecimento(Abastecimento $abastecimento) {
+        //dd($abastecimento);
         try {
             $bico = Bico::select('tanque_id')
                             ->where('id', $abastecimento->bico_id)

@@ -1056,19 +1056,23 @@ class AbastecimentoController extends Controller
                 'Y-m-d H:i:s',
                 $abastecimento->data_hora_abastecimento
             );
-
-
+            
+            
             if ($dataAbastecimento > $dataInicio) {
-
-
+                
+                
                 //$abastecimento->save();
                 if ($abastecimento->save()) {
+                    
                     Log::debug('abastecimento salvo  : ' . $abastecimento);
                     //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                     MovimentacaoCreditoController::saidaCredito2($abastecimento);
-                    if ($request->bico_id) {
+                    
+                    if ($abastecimento->bico_id) {
+                        
                         /* Se for aferição, faz a movimentação de saída e entrada por aferição */
-                        if (isset($request->eh_afericao) && ($request->eh_afericao)) {
+                        if (isset($abastecimento->eh_afericao) && ($abastecimento->eh_afericao)) {
+                            
                             $afericao = Afericao::create([
                                 'abastecimento_id' => $abastecimento->id,
                                 'user_id' => Auth::user()->id
@@ -1077,10 +1081,11 @@ class AbastecimentoController extends Controller
                             MovimentacaoCombustivelController::cadastroAfericao($afericao);
                         } else {
                             /* Se informado o bico, movimenta o estoque do tanque */
+                            
                             MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                         }
 
-                        if (!BicoController::atualizarEncerranteBico($request->bico_id, $request->encerrante_final)) {
+                        if (!BicoController::atualizarEncerranteBico($abastecimento->bico_id, $request->encerrante_final)) {
                             throw new \Exception(__('messages.exception', [
                                 'exception' => 'Não foi possível atualizar o encerrante do bico'
                             ]));
