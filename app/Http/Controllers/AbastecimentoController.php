@@ -36,8 +36,8 @@ class AbastecimentoController extends Controller
         'id' => 'ID',
         'num_bico' => 'Bico',
         'data_hora_abastecimento' => ['label' => 'Data/Hora', 'type' => 'datetime'],
-        'valor_litro' => ['label' => 'Valor Litro', 'type' => 'decimal', 'decimais' => 3],
         'volume_abastecimento' => ['label' => 'Qtd. Abast.', 'type' => 'decimal', 'decimais' => 2],
+        'valor_litro' => ['label' => 'Valor Litro', 'type' => 'decimal', 'decimais' => 3],
         'valor_abastecimento' => ['label' => 'Valor Total', 'type' => 'decimal', 'decimais' => 3],
         'placa' => 'Veículo',
         'km_veiculo' => ['label' => 'Odômetro/Horímetro', 'type' => 'decimal', 'decimais' => 1],
@@ -1060,7 +1060,7 @@ class AbastecimentoController extends Controller
             
             if ($dataAbastecimento > $dataInicio) {
                 
-                
+                  
                 //$abastecimento->save();
                 if ($abastecimento->save()) {
                     
@@ -1104,10 +1104,14 @@ class AbastecimentoController extends Controller
                             'exception' => 'Não foi possível atualizar as médias futuras do veículo'
                         ]));
                     }
-                } else {
                     return response()->json($abastecimento, 201);
+                
+                } else {
+                    
+                    return response()->json(["Erro"=>"Abastecimento nao iserido"], 201);
                 }
             } else {
+                return response()->json(["Erro"=>"Data do abastecimento menor que o ultimo abastecimento inserido"], 201);
                 Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
             }
         } catch (\Exception $e) {
@@ -1116,7 +1120,7 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
-            //return response()->json($abastecimento, 201);
+            return response()->json(["Erro"=>"Abastecimento nao iserido"], 201);
         }
     }
 
