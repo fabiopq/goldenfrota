@@ -1070,6 +1070,7 @@ class AbastecimentoController extends Controller
                     
                     if ($abastecimento->bico_id) {
                         
+                        
                         /* Se for aferição, faz a movimentação de saída e entrada por aferição */
                         if (isset($abastecimento->eh_afericao) && ($abastecimento->eh_afericao)) {
                             

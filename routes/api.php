@@ -88,3 +88,4 @@ Route::get('users', 'UserController@apiUsers');
 Route::get('user/{username}', 'UserController@apiUsers');
 Route::post('me', 'AuthController@me');
 Route::get('roles', 'RolesController@apiRoles');
+Route::get('saldos', 'MovimentacaoCreditoController@saldosapi');
