@@ -448,7 +448,7 @@ class AbastecimentoController extends Controller
 
     public function obterMediaVeiculo(Veiculo $veiculo, Abastecimento $abastecimentoAtual, $ehUpdate = false)
     {
-        
+
         try {
             if (App::environment('local')) {
                 Log::debug('AbastecimentoController::obterMediaVeiculo');
@@ -843,10 +843,10 @@ class AbastecimentoController extends Controller
 
     public function ObterUltimoAbastecimentoVeiculo(Veiculo $veiculo, Abastecimento $abastecimentoAtual = null)
     {
-       
+
         if ($abastecimentoAtual) {
             try {
-                
+
                 return Abastecimento::UltimoDoVeiculo($veiculo->id, $abastecimentoAtual->data_hora_abastecimento);
             } catch (ModelNotFoundException $e) {
                 Log::error($e);
@@ -854,13 +854,31 @@ class AbastecimentoController extends Controller
                 return null;
             }
         } else {
-            
+
             try {
-                
+
                 return Abastecimento::UltimoDoVeiculo($veiculo->id);
             } catch (ModelNotFoundException $e) {
                 return null;
             }
+        }
+    }
+
+    public function ObterUltimoAbastecimentoData( Abastecimento $abastecimentoAtual = null)
+    {
+
+        if ($abastecimentoAtual) {
+            try {
+
+                return Abastecimento::UltimoDoBico($abastecimentoAtual->volume_abastecimento, $abastecimentoAtual->data_hora_abastecimento);
+            } catch (ModelNotFoundException $e) {
+                Log::error($e);
+                //throw new \Exception('Não foi possível localizar o último abastecimento deste veículo para cálculo de média...');
+                return null;
+            }
+        } else {
+
+           return null;
         }
     }
 
@@ -955,8 +973,10 @@ class AbastecimentoController extends Controller
 
     public function apiStore(Request $request)
     {
-       //dd($request);
-       // Log::debug(response()->json($request));
+        $this->validate($request, [
+            'data_hora_abastecimento' => 'required|unique:abastecimentos'
+            
+        ]);
         try {
             DB::beginTransaction();
 
@@ -977,23 +997,21 @@ class AbastecimentoController extends Controller
             $abastecimento->abastecimento_local = false;
 
             //dd($request->bico_id);
-            if($request->bico_id){
-                
+            if ($request->bico_id) {
+
                 $abastecimento->bico_id = $request->bico_id;
-            }else{
+            } else {
                 $bico = Bico::where('endereco', '=', $request->bico_endereco)->first();
-                
-                if($bico){
+
+                if ($bico) {
                     //dd($bico); 
                     $abastecimento->bico_id = $bico->id;
-                    
                 }
-                
             }
-           // dd($bico);
+            // dd($bico);
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
-            
+
             if (!$request->veiculo_id) {
 
                 if ($request->tag_atendente) {
@@ -1041,39 +1059,52 @@ class AbastecimentoController extends Controller
             }
 
             Log::debug('Abastecimento recebido na api : ' . $abastecimento);
+            //$veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
+
+             
+       
+
+       // dd($abastecimentos. $abastecimento->volume_abastecimento);
+
+           
             //Log::debug('data iniciio '. $dataInicio);
             $dataInicio = \DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 //Abastecimento::whereNotNull('id_automacao')
-                Abastecimento::where('volume_abastecimento', $abastecimento->volume_abastecimento)
+                Abastecimento::where('volume_abastecimento', '=','7.653')
                     ->orderBy('data_hora_abastecimento', 'desc')
                     ->pluck('data_hora_abastecimento')
                     ->first()
             );
 
+            
+
+            
 
             $dataAbastecimento = \DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 $abastecimento->data_hora_abastecimento
             );
-            
-            
+
+            //dd($dataAbastecimento);
+
+
             if ($dataAbastecimento > $dataInicio) {
-                
-                  
+
+                //dd($abastecimento->data_hora_abastecimento);
                 //$abastecimento->save();
                 if ($abastecimento->save()) {
-                    
+
                     Log::debug('abastecimento salvo  : ' . $abastecimento);
                     //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                     MovimentacaoCreditoController::saidaCredito2($abastecimento);
-                    
+
                     if ($abastecimento->bico_id) {
-                        
-                        
+
+
                         /* Se for aferição, faz a movimentação de saída e entrada por aferição */
                         if (isset($abastecimento->eh_afericao) && ($abastecimento->eh_afericao)) {
-                            
+
                             $afericao = Afericao::create([
                                 'abastecimento_id' => $abastecimento->id,
                                 'user_id' => Auth::user()->id
@@ -1082,7 +1113,7 @@ class AbastecimentoController extends Controller
                             MovimentacaoCombustivelController::cadastroAfericao($afericao);
                         } else {
                             /* Se informado o bico, movimenta o estoque do tanque */
-                            
+
                             MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                         }
 
@@ -1106,13 +1137,12 @@ class AbastecimentoController extends Controller
                         ]));
                     }
                     return response()->json($abastecimento, 201);
-                
                 } else {
-                    
-                    return response()->json(["Erro"=>"Abastecimento nao iserido"], 201);
+
+                    return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
                 }
             } else {
-                return response()->json(["Erro"=>"Data do abastecimento menor que o ultimo abastecimento inserido"], 201);
+                return response()->json(["Erro" => "Data do abastecimento menor que o ultimo abastecimento inserido"], 201);
                 Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
             }
         } catch (\Exception $e) {
@@ -1121,7 +1151,7 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
-            return response()->json(["Erro"=>"Abastecimento nao iserido"], 201);
+            return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
         }
     }
 

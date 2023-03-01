@@ -63,6 +63,20 @@ class Abastecimento extends Model
             ->firstOrFail();
     }
 
+    public function scopeUltimoDoBico($query, $volume_abastecimento, $dataHoraAbastecimentoAtual = false) {
+        
+        if ($dataHoraAbastecimentoAtual) {
+            return $query->where('volume_abastecimento', $volume_abastecimento)
+                ->where('data_hora_abastecimento', '=', $dataHoraAbastecimentoAtual)
+                ->orderBy('data_hora_abastecimento', 'desc')
+                ->firstOrFail();    
+        } 
+        dd($query);
+        return $query->where('volume_abastecimento', $volume_abastecimento)
+            ->orderBy('data_hora_abastecimento', 'desc')
+            ->firstOrFail();
+    }
+
     public function movimentacao_credito() {
         return $this->hasOne(MovimentacaoCredito::class);
     }
