@@ -52,7 +52,7 @@ class VeiculoController extends Controller
                 ->join('grupo_veiculos', 'grupo_veiculos.id', 'veiculos.grupo_veiculo_id')
                 ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                 ->where('placa', 'like', '%' . $request->searchField . '%')
-                ->orWhere('tag', 'like', '%' . $request->searchField . '%')
+                //->orWhere('tag', 'like', '%' . $request->searchField . '%')
                 ->orWhere('nome_razao', 'like', '%' . $request->searchField . '%')
                 ->orderBy('veiculos.id', 'desc')
                 ->paginate();
