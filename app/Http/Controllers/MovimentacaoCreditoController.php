@@ -524,14 +524,17 @@ class MovimentacaoCreditoController extends Controller
             //dd($entradas);
             $i = 0;
             foreach ($entradas as $cliente) {
-                if($cliente->saldo <=0){
-                    $placas = DB::table('veiculos')
-                    ->select('veiculos.id', 'veiculos.placa', 'veiculos.tag','veiculos.cliente_id')
-                    ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
-                    ->distinct()
-                    ->get();
-                $cliente->placas = $placas;
                 
+                if ($cliente->saldo <= 0) {
+                    dd($cliente->saldo);
+                    $placas = DB::table('veiculos')
+                        ->select('veiculos.id', 'veiculos.placa', 'veiculos.tag', 'veiculos.cliente_id')
+                        ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
+                        ->distinct()
+                        ->get();
+                   
+                        $cliente->placas = $placas;
+
 
                     foreach ($cliente->placas as $placa) {
 
@@ -539,20 +542,19 @@ class MovimentacaoCreditoController extends Controller
                         $teste[$i] = $placa;
                         $i++;
                     }
-                
-
                 }
-                
             }
 
 
 
 
 
-            //dd($teste);
-
-            //dd($entradas);
-            return response()->json($teste);
+            if(empty($teste)){
+                return response()->json('lista vazia');
+            }else{
+                return response()->json($teste);
+            }
+            
         } catch (\Exception $e) {
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
