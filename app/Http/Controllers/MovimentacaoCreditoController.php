@@ -526,7 +526,7 @@ class MovimentacaoCreditoController extends Controller
             foreach ($entradas as $cliente) {
                 
                 if ($cliente->saldo <= 0) {
-                    dd($cliente->saldo);
+                   // dd($cliente->saldo);
                     $placas = DB::table('veiculos')
                         ->select('veiculos.id', 'veiculos.placa', 'veiculos.tag', 'veiculos.cliente_id')
                         ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
