@@ -654,15 +654,16 @@ class AbastecimentoController extends Controller
             ->distinct()
             ->get();
         // dd($clientesNullo);
+        
         if ($request->tipo_relatorio == 1) {
             /* relatório Sintético */
 
             foreach ($clientes as $cliente) {
                 $departamentos = DB::table('abastecimentos')
                     ->select('departamentos.*')
-                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    //->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
-                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    //->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                     ->whereRaw('clientes.id is not null')
@@ -673,7 +674,11 @@ class AbastecimentoController extends Controller
                     ->orderBy('departamentos.departamento', 'asc')
                     ->distinct()
                     ->get();
+
+
                 $cliente->departamentos = $departamentos;
+
+               
 
                 foreach ($cliente->departamentos as $departamento) {
                     $abastecimentos = DB::table('abastecimentos')
@@ -695,6 +700,7 @@ class AbastecimentoController extends Controller
                         ->whereRaw($whereParam)
                         ->whereRaw($whereTipoAbastecimento)
                         ->where('departamentos.id', $departamento->id)
+
                         ->groupBy('veiculos.placa')
                         ->get();
                     //->toSql();
@@ -702,7 +708,7 @@ class AbastecimentoController extends Controller
                     $departamento->abastecimentos = $abastecimentos;
                 }
             }
-
+             dd($clientes);
             return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else {
             /* relatório Analítico */
@@ -746,6 +752,7 @@ class AbastecimentoController extends Controller
                     $departamento->abastecimentos = $abastecimentos;
                 }
             }
+
             return View('relatorios.abastecimentos.relatorio_abastecimentos_analitico')->withClientes($clientes)->withClientesNulloAnalitico($clientesNulloAnalitico)->withTitulo('Relatório de Abastecimentos - Analítico')->withParametros($parametros)->withParametro(Parametro::first());
         }
     }
@@ -864,7 +871,7 @@ class AbastecimentoController extends Controller
         }
     }
 
-    public function ObterUltimoAbastecimentoData( Abastecimento $abastecimentoAtual = null)
+    public function ObterUltimoAbastecimentoData(Abastecimento $abastecimentoAtual = null)
     {
 
         if ($abastecimentoAtual) {
@@ -878,7 +885,7 @@ class AbastecimentoController extends Controller
             }
         } else {
 
-           return null;
+            return null;
         }
     }
 
@@ -924,7 +931,7 @@ class AbastecimentoController extends Controller
         // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'veiculos.placa')
+            ->select('abastecimentos.*', 'veiculos.placa','clientes.nome_razao','veiculos.cliente_id')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
@@ -975,7 +982,7 @@ class AbastecimentoController extends Controller
     {
         $this->validate($request, [
             'data_hora_abastecimento' => 'required|unique:abastecimentos'
-            
+
         ]);
         try {
             DB::beginTransaction();
@@ -1061,25 +1068,25 @@ class AbastecimentoController extends Controller
             Log::debug('Abastecimento recebido na api : ' . $abastecimento);
             //$veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
 
-             
-       
 
-       // dd($abastecimentos. $abastecimento->volume_abastecimento);
 
-           
+
+            // dd($abastecimentos. $abastecimento->volume_abastecimento);
+
+
             //Log::debug('data iniciio '. $dataInicio);
             $dataInicio = \DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 //Abastecimento::whereNotNull('id_automacao')
-                Abastecimento::where('volume_abastecimento', '=','7.653')
+                Abastecimento::where('volume_abastecimento', '=', '7.653')
                     ->orderBy('data_hora_abastecimento', 'desc')
                     ->pluck('data_hora_abastecimento')
                     ->first()
             );
 
-            
 
-            
+
+
 
             $dataAbastecimento = \DateTime::createFromFormat(
                 'Y-m-d H:i:s',
