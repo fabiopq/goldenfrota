@@ -603,6 +603,224 @@ class AbastecimentoController extends Controller
             ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+            //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->whereRaw('clientes.id is not null')
+            ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw($whereData)
+            ->whereRaw($whereParam)
+            ->whereRaw($whereTipoAbastecimento)
+            ->orderBy('clientes.nome_razao', 'asc')
+            ->distinct()
+            ->get();
+            //dd($clientes);
+
+        $clientesNullo = DB::table('abastecimentos')
+            ->select(
+
+                DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
+                DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                DB::raw('AVG(abastecimentos.media_veiculo) AS media')
+            )
+            //->select('abastecimentos.*')
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->whereRaw('clientes.id is null')
+            ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw($whereData)
+            ->whereRaw($whereParam)
+            ->whereRaw($whereTipoAbastecimento)
+            ->groupBy('abastecimentos.veiculo_id')
+            //->orderBy('clientes.nome_razao', 'asc')
+            ->distinct()
+            ->get();
+
+        $clientesNulloAnalitico = DB::table('abastecimentos')
+            ->select('abastecimentos.*')
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->whereRaw('clientes.id is null')
+            ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw($whereData)
+            ->whereRaw($whereParam)
+            ->whereRaw($whereTipoAbastecimento)
+
+            // ->orderBy('clientes.nome_razao', 'asc')
+            ->distinct()
+            ->get();
+        // dd($clientesNullo);
+
+        if ($request->tipo_relatorio == 1) {
+            /* relatório Sintético */
+
+
+
+            foreach ($clientes as $cliente) {
+
+
+                $abastecimentos = DB::table('abastecimentos')
+                    ->select(
+                        'veiculos.placa',
+                        DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                        DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
+                        DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                        DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                        DB::raw('AVG(abastecimentos.media_veiculo) AS media')
+                    )
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoAbastecimento)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->groupBy('veiculos.placa')
+                    ->get();
+                //->toSql();
+                //dd($cliente->id);
+                if($abastecimentos){
+                    $cliente->abastecimentos = $abastecimentos;
+                }
+                
+            }
+            //dd($clientes);
+            return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
+        } else {
+            /* relatório Analítico */
+            foreach ($clientes as $cliente) {
+                $departamentos = DB::table('abastecimentos')
+                    ->select('departamentos.*')
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoAbastecimento)
+                    ->where('clientes.id', $cliente->id)
+                    ->orderBy('departamentos.departamento', 'asc')
+                    ->distinct()
+                    ->get();
+                $cliente->departamentos = $departamentos;
+
+                foreach ($cliente->departamentos as $departamento) {
+                    $abastecimentos = DB::table('abastecimentos')
+                        ->select('abastecimentos.*', 'veiculos.placa')
+                        ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                        ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                        ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                        ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                        ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                        ->whereRaw('clientes.id is not null')
+                        ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                        ->whereRaw($whereData)
+                        ->whereRaw($whereParam)
+                        ->whereRaw($whereTipoAbastecimento)
+                        ->where('departamentos.id', $departamento->id)
+                        ->orderBy('veiculos.placa', 'asc')
+                        ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+                        /* ->orderBy('abastecimentos.id', 'desc') */
+                        ->distinct()
+                        ->get();
+                    $departamento->abastecimentos = $abastecimentos;
+                }
+            }
+            //dd($clientes);
+
+            return View('relatorios.abastecimentos.relatorio_abastecimentos_analitico')->withClientes($clientes)->withClientesNulloAnalitico($clientesNulloAnalitico)->withTitulo('Relatório de Abastecimentos - Analítico')->withParametros($parametros)->withParametro(Parametro::first());
+        }
+    }
+    public function relatorioAbastecimentosDepartamento(Request $request)
+    {
+
+        $data_inicial = $request->data_inicial;
+        $data_final = $request->data_final;
+        $parametros = array();
+
+        if ($data_inicial && $data_final) {
+            $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'Período de ' . $data_inicial . ' até ' . $data_final);
+        } elseif ($data_inicial) {
+            $whereData = 'abastecimentos.data_hora_abastecimento >= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'A partir de ' . $data_inicial);
+        } elseif ($data_final) {
+            $whereData = 'abastecimentos.data_hora_abastecimento <= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'Até ' . $data_final);
+        } else {
+            $whereData = '1 = 1'; //busca qualquer coisa
+        }
+
+        switch ($request->tipo_abastecimento) {
+            case 0:
+                $whereTipoAbastecimento = ('abastecimentos.abastecimento_local = 0');
+                array_push($parametros, 'Tipo de Abastecimento: Externo');
+                break;
+            case 1:
+                $whereTipoAbastecimento = ('abastecimentos.abastecimento_local = 1');
+                array_push($parametros, 'Tipo de Abastecimento: Local');
+                break;
+            default:
+                $whereTipoAbastecimento = ('1 = 1');
+                array_push($parametros, 'Tipo de Abastecimento: Todos');
+                break;
+        }
+
+        $cliente_id = $request->cliente_id;
+        $departamento_id = $request->departamento_id;
+        $veiculo_id = $request->veiculo_id;
+
+        if ($veiculo_id > 0) {
+            $whereParam = 'veiculos.id = ' . $veiculo_id;
+        } else {
+            if ($departamento_id > 0) {
+                $whereParam = 'veiculos.departamento_id = ' . $departamento_id;
+            } else {
+                if ($cliente_id > 0) {
+                    $whereParam = 'veiculos.cliente_id = ' . $cliente_id;
+                } else {
+                    $whereParam = '1 = 1';
+                }
+            }
+        }
+
+        if ($cliente_id > 0) {
+            array_push($parametros, 'Cliente: ' . Cliente::find($cliente_id)->nome_razao);
+        }
+
+        if ($departamento_id > 0) {
+            array_push($parametros, 'Departamento: ' . Departamento::find($departamento_id)->departamento);
+        }
+
+        if ($veiculo_id > 0) {
+            $veiculo_param = Veiculo::select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo')
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->where([
+                    ['veiculos.id', '=', $veiculo_id]
+                ])->first();
+            array_push($parametros, 'Veiculo: ' . $veiculo_param->placa . ' - ' . $veiculo_param->marca_veiculo . ' ' . $veiculo_param->modelo_veiculo);
+        }
+
+        $clientes = DB::table('abastecimentos')
+            ->select('clientes.*')
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
             ->whereRaw('clientes.id is not null')
             ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
@@ -654,7 +872,7 @@ class AbastecimentoController extends Controller
             ->distinct()
             ->get();
         // dd($clientesNullo);
-        
+
         if ($request->tipo_relatorio == 1) {
             /* relatório Sintético */
 
@@ -671,6 +889,7 @@ class AbastecimentoController extends Controller
                     ->whereRaw($whereData)
                     ->whereRaw($whereParam)
                     ->whereRaw($whereTipoAbastecimento)
+                    ->where('departamentos.cliente_id', $cliente->id)
                     ->orderBy('departamentos.departamento', 'asc')
                     ->distinct()
                     ->get();
@@ -678,7 +897,7 @@ class AbastecimentoController extends Controller
 
                 $cliente->departamentos = $departamentos;
 
-               
+
 
                 foreach ($cliente->departamentos as $departamento) {
                     $abastecimentos = DB::table('abastecimentos')
@@ -708,7 +927,7 @@ class AbastecimentoController extends Controller
                     $departamento->abastecimentos = $abastecimentos;
                 }
             }
-             dd($clientes);
+            //dd($clientes);
             return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else {
             /* relatório Analítico */
@@ -815,6 +1034,7 @@ class AbastecimentoController extends Controller
                 ->orderBy('abastecimentos.data_hora_abastecimento', 'asc')
                 ->get();
         }
+
 
         return View('relatorios.abastecimentos.relatorio_abastecimentos_bico')
             ->withBicos($bicos)
@@ -931,7 +1151,7 @@ class AbastecimentoController extends Controller
         // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'veiculos.placa','clientes.nome_razao','veiculos.cliente_id')
+            ->select('abastecimentos.*', 'veiculos.placa', 'clientes.nome_razao', 'veiculos.cliente_id')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
