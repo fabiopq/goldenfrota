@@ -612,7 +612,7 @@ class AbastecimentoController extends Controller
             ->orderBy('clientes.nome_razao', 'asc')
             ->distinct()
             ->get();
-            //dd($clientes);
+        //dd($clientes);
 
         $clientesNullo = DB::table('abastecimentos')
             ->select(
@@ -689,55 +689,38 @@ class AbastecimentoController extends Controller
                     ->get();
                 //->toSql();
                 //dd($cliente->id);
-                if($abastecimentos){
+                if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
-                
             }
             //dd($clientes);
             return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else {
             /* relatório Analítico */
             foreach ($clientes as $cliente) {
-                $departamentos = DB::table('abastecimentos')
-                    ->select('departamentos.*')
-                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
-                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
-                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
-                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
-                    ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-                    ->whereRaw('clientes.id is not null')
-                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
-                    ->whereRaw($whereData)
-                    ->whereRaw($whereParam)
-                    ->whereRaw($whereTipoAbastecimento)
-                    ->where('clientes.id', $cliente->id)
-                    ->orderBy('departamentos.departamento', 'asc')
-                    ->distinct()
-                    ->get();
-                $cliente->departamentos = $departamentos;
 
-                foreach ($cliente->departamentos as $departamento) {
+
+                
                     $abastecimentos = DB::table('abastecimentos')
                         ->select('abastecimentos.*', 'veiculos.placa')
                         ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                         ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                         ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                         ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
-                        ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                        //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                         ->whereRaw('clientes.id is not null')
                         ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                         ->whereRaw($whereData)
                         ->whereRaw($whereParam)
                         ->whereRaw($whereTipoAbastecimento)
-                        ->where('departamentos.id', $departamento->id)
+                        ->where('veiculos.cliente_id', $cliente->id)
                         ->orderBy('veiculos.placa', 'asc')
                         ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
                         /* ->orderBy('abastecimentos.id', 'desc') */
                         ->distinct()
                         ->get();
-                    $departamento->abastecimentos = $abastecimentos;
-                }
+                        $cliente->abastecimentos = $abastecimentos;
+                
             }
             //dd($clientes);
 
@@ -837,6 +820,7 @@ class AbastecimentoController extends Controller
                 DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
                 DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
                 DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
                 DB::raw('AVG(abastecimentos.media_veiculo) AS media')
             )
             //->select('abastecimentos.*')
@@ -906,6 +890,7 @@ class AbastecimentoController extends Controller
                             DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
                             DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
                             DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                            DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
                             DB::raw('AVG(abastecimentos.media_veiculo) AS media')
                         )
                         ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
