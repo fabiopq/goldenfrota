@@ -23,10 +23,9 @@ $valorTotal = 0;
                 <div class="card-body">
                     <table class="table table-sm report-table">
                         <thead>
-                            <td width="50%">Cliente</td>
-
-                            <td align="right" width="25%">Consumo Litros</td>
-                            <td align="right" width="25%">Consumo R$</td>
+                            <td width="50%" >Cliente</td>
+                            <td align="right" width="25%" >Consumo Litros</td>
+                            <td align="right" width="25%" >Consumo R$</td>
                         </thead>
                     </table>
                 </div>
