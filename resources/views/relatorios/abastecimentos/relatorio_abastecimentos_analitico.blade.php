@@ -22,7 +22,7 @@ $clienteValor = 0;
 <table class="table table-sm report-table">
     <thead>
         <td class="info" colspan=3>
-            <h4> Cliente: {{ $cliente->nome_razao }} </h4>
+            <h5> Cliente: {{ $cliente->nome_razao }} </h5>
         </td>
     </thead>
     <tbody>
@@ -80,7 +80,7 @@ $clienteValor = 0;
                                         </tr>
                                         @endforeach
                                         <tr class="success">
-                                            <td colspan=2>Total do Departamento</td>
+                                            <td colspan=2>Total do Cliente</td>
                                             <td align="right"></td>
                                             <td align="right"> {{ number_format($departamentoVolume, 3, ',', '.') }}
                                             </td>
@@ -118,7 +118,7 @@ $clienteValor = 0;
 <table class="table table-sm report-table">
     <thead>
         <td class="info" colspan=3>
-            <h4> Cliente: Não Informado </h4>
+            <h5> Cliente: Não Informado </h5>
         </td>
     </thead>
     <tbody>
@@ -181,7 +181,7 @@ $clienteValor = 0;
                                         </tr>
                                         @endforeach
                                         <tr class="success">
-                                            <td colspan=2>Total do Departamento</td>
+                                            <td colspan=2>Total do Cliente</td>
                                             <td align="right"></td>
                                             <td align="right"> {{ number_format($departamentoVolume, 3, ',', '.') }} </td>
                                             <td align="right"> {{ number_format($departamentoValor, 3, ',', '.') }} </td>

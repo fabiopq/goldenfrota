@@ -13,6 +13,27 @@ $volumeTotal = 0;
 $valorTotal = 0;
 @endphp
 {{-- {{dd($clientes)}} --}}
+<div class="panel-sm">
+    <div class="panel-sm">
+
+        <div class="card-body">
+
+            <div class="panel-sm">
+
+                <div class="card-body">
+                    <table class="table table-sm report-table">
+                        <thead>
+                            <td width="50%">Cliente</td>
+
+                            <td align="right" width="25%">Consumo Litros</td>
+                            <td align="right" width="25%">Consumo R$</td>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @foreach($clientes as $cliente)
 @php
 
@@ -23,26 +44,17 @@ $departamentoValor = 0;
 
 $clienteDistancia = 0;
 @endphp
+
 <div class="panel-sm">
     <div class="panel-sm">
-        <div class="card-header report-subtitle-1">
-            <h5> Cliente: {{$cliente->nome_razao}} </h5>
-        </div>
+
         <div class="card-body">
 
             <div class="panel-sm">
 
                 <div class="card-body">
                     <table class="table table-sm report-table">
-                        <thead>
-                            <td>Veículo</td>
-                            <td align="right">KM Inicial</td>
-                            <td align="right">KM Final</td>
-                            <td align="right">Distância Percorrida</td>
-                            <td align="right">Consumo Médio/KM</td>
-                            <td align="right">Consumo Litros</td>
-                            <td align="right">Consumo R$</td>
-                        </thead>
+
                         <tbody>
                             @foreach($cliente->abastecimentos as $abastecimento)
                             @php
@@ -57,23 +69,12 @@ $clienteDistancia = 0;
                             $valorTotal += $abastecimento->valor;
                             @endphp
                             <tr>
-                                <td> {{$abastecimento->placa}} </td>
-                                <td align="right"> {{number_format($abastecimento->km_inicial, 1, ',', '.')}} </td>
-                                <td align="right"> {{number_format($abastecimento->km_final, 1, ',', '.')}} </td>
-                                <td align="right"> {{number_format($abastecimento->km_final - $abastecimento->km_inicial, 1, ',', '.')}} </td>
-                                <td align="right"> {{number_format($abastecimento->media, 2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($abastecimento->consumo, 2, ',', '.')}} </td>
-                                <td align="right"> {{number_format($abastecimento->valor, 2, ',', '.')}} </td>
+                                <td width="50%"> {{$abastecimento->nome_razao}} </td>
+                                <td align="right" width="25%"> {{number_format($abastecimento->consumo, 2, ',', '.')}} </td>
+                                <td align="right" width="25%"> {{number_format($abastecimento->valor, 2, ',', '.')}} </td>
                             </tr>
                             @endforeach
-                            <tr class="success">
-                                <td colspan=2>Total do Cliente</td>
-                                <td align="right"></td>
-                                <td align="right">{{number_format($departamentoDistancia, 1, ',', '.')}} </td>
-                                <td align="right"> </td>
-                                <td align="right">{{number_format($departamentoVolume, 3, ',', '.')}}</td>
-                                <td align="right">{{number_format($departamentoValor, 3, ',', '.')}}</td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>

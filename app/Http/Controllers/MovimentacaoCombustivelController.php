@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\DB;
 
 class MovimentacaoCombustivelController extends Controller
 {
-    static public function entradaTanque(EntradaTanque $entradaTanque) {
+    static public function entradaTanque(EntradaTanque $entradaTanque)
+    {
         try {
             foreach ($entradaTanque->entrada_tanque_items as $item) {
                 $entradaTanque->movimentacao_combustivel()->create([
@@ -26,19 +27,20 @@ class MovimentacaoCombustivelController extends Controller
             }
 
             return true;
-
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
-        } 
+        }
     }
 
 
-    static public function saidaAbastecimento(Abastecimento $abastecimento) {
-        //dd($abastecimento);
+    static public function saidaAbastecimento(Abastecimento $abastecimento)
+    {
+       
+       //dd($abastecimento);
         try {
             $bico = Bico::select('tanque_id')
-                            ->where('id', $abastecimento->bico_id)
-                            ->first();
+                ->where('id', $abastecimento->bico_id)
+                ->first();
 
             $abastecimento->movimentacao_combustivel()->create([
                 'tanque_id' => $bico->tanque_id,
@@ -48,14 +50,14 @@ class MovimentacaoCombustivelController extends Controller
             ]);
 
             return true;
-
         } catch (\Exception $e) {
             dd($e);
             throw new \Exception($e);
-        } 
+        }
     }
 
-    static public function ajustarSaldoTanque(AjusteTanque $ajusteTanque) {
+    static public function ajustarSaldoTanque(AjusteTanque $ajusteTanque)
+    {
         try {
             /* 
                 5: Entrada - Ajuste
@@ -72,11 +74,12 @@ class MovimentacaoCombustivelController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            throw new \Exception('Erro ao ajustar tanque: '.$e->getMessage());
+            throw new \Exception('Erro ao ajustar tanque: ' . $e->getMessage());
         }
     }
 
-    static public function converterAbastecimentoEmAfericao(Afericao $afericao) {
+    static public function converterAbastecimentoEmAfericao(Afericao $afericao)
+    {
         try {
             $abastecimento = $afericao->abastecimento()->first();
             $movimentacao = $abastecimento->movimentacao_combustivel()->first();
@@ -89,15 +92,15 @@ class MovimentacaoCombustivelController extends Controller
             return $movimentacao->save();
 
             return true;
-
         } catch (\Exception $e) {
-            throw new \Exception('Erro ao informar movimentacao de saída por aferição para o Abastecimento: '.$abastecimento->id);
+            throw new \Exception('Erro ao informar movimentacao de saída por aferição para o Abastecimento: ' . $abastecimento->id);
         }
     }
 
-    static public function entradaAfericao(Afericao $afericao) {
+    static public function entradaAfericao(Afericao $afericao)
+    {
         try {
-            
+
             $afericao->movimentacao_combustivel()->create([
                 'tanque_id' => $afericao->abastecimento()->first()->bico()->first()->tanque_id,
                 'tipo_movimentacao_combustivel_id' => '3', /* entrada afericao */
@@ -106,15 +109,15 @@ class MovimentacaoCombustivelController extends Controller
             ]);
 
             return true;
-
         } catch (\Exception $e) {
-            throw new \Exception('Erro ao incluir movimentacao de entrada por aferição para o Abastecimento: '.$abastecimento->id);
+            throw new \Exception('Erro ao incluir movimentacao de entrada por aferição para o Abastecimento: ' . $abastecimento->id);
         }
     }
 
-    static public function saidaAfericao(Afericao $afericao) {
+    static public function saidaAfericao(Afericao $afericao)
+    {
         try {
-            
+
             $afericao->movimentacao_combustivel()->create([
                 'tanque_id' => $afericao->abastecimento()->first()->bico()->first()->tanque_id,
                 'tipo_movimentacao_combustivel_id' => '4', /* saida afericao */
@@ -123,13 +126,13 @@ class MovimentacaoCombustivelController extends Controller
             ]);
 
             return true;
-
         } catch (\Exception $e) {
-            throw new \Exception('Erro ao incluir movimentacao de entrada por aferição para o Abastecimento: '.$abastecimento->id);
+            throw new \Exception('Erro ao incluir movimentacao de entrada por aferição para o Abastecimento: ' . $abastecimento->id);
         }
     }
 
-    static public function cadastroAfericao(Afericao $afericao) {
+    static public function cadastroAfericao(Afericao $afericao)
+    {
         try {
             return (self::saidaAfericao($afericao) && self::entradaAfericao($afericao));
         } catch (\Exception $e) {

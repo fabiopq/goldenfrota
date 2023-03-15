@@ -74,7 +74,11 @@
                                 ],
                                 [
                                     'label' => 'Analítico',
-                                    'value' => 0
+                                    'value' => 2
+                                ],
+                                [
+                                    'label' => 'Resumido',
+                                    'value' => 3
                                 ],
                             ],
                             'inputSize' => 3,
