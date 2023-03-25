@@ -1220,10 +1220,7 @@ class AbastecimentoController extends Controller
 
     public function apiStore(Request $request)
     {
-        $this->validate($request, [
-            'data_hora_abastecimento' => 'required|unique:abastecimentos'
-
-        ]);
+        
         try {
             DB::beginTransaction();
 
@@ -1236,6 +1233,7 @@ class AbastecimentoController extends Controller
 
             //$abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
 
+            $abastecimento->id_automacao = $request->id; //campo com id do abastecimento na memoria
             $abastecimento->veiculo_id = $request->veiculo_id;
             $abastecimento->km_veiculo = $request->km_veiculo;
             $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
@@ -1398,7 +1396,7 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
-            return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
+            return response()->json(["Erro" => "Abastecimento nao iserido"], 301);
         }
     }
 

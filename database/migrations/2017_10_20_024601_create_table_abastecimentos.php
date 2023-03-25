@@ -35,6 +35,7 @@ class CreateTableAbastecimentos extends Migration
             $table->boolean('abastecimento_local')->default(true);
             $table->string('obs_abastecimento')->nullable();
             $table->timestamps();
+            
         });
     }
 
