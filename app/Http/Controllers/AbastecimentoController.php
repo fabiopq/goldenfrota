@@ -1335,7 +1335,7 @@ class AbastecimentoController extends Controller
             //dd($dataAbastecimento);
 
 
-            if ($dataAbastecimento > $dataInicio) {
+           // if ($dataAbastecimento > $dataInicio) {
 
                 //dd($abastecimento->data_hora_abastecimento);
                 //$abastecimento->save();
