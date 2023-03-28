@@ -524,16 +524,16 @@ class MovimentacaoCreditoController extends Controller
             //dd($entradas);
             $i = 0;
             foreach ($entradas as $cliente) {
-                
+
                 if ($cliente->saldo <= 0) {
-                   // dd($cliente->saldo);
+                    // dd($cliente->saldo);
                     $placas = DB::table('veiculos')
                         ->select('veiculos.id', 'veiculos.placa', 'veiculos.tag', 'veiculos.cliente_id')
                         ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
                         ->distinct()
                         ->get();
-                   
-                        $cliente->placas = $placas;
+
+                    $cliente->placas = $placas;
 
 
                     foreach ($cliente->placas as $placa) {
@@ -549,12 +549,64 @@ class MovimentacaoCreditoController extends Controller
 
 
 
-            if(empty($teste)){
+            if (empty($teste)) {
                 return response()->json('lista vazia');
-            }else{
+            } else {
                 return response()->json($teste);
             }
-            
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            return redirect()->back()->withInput();
+        }
+    }
+
+    static public function limitesapi()
+    {
+
+        try {
+
+
+            $entradas = DB::table('movimentacao_creditos')
+                ->select(
+                    'movimentacao_creditos.cliente_id',
+                    'clientes.nome_razao',
+                    DB::raw('SUM(movimentacao_creditos.valor) as saldo')
+
+                )
+                ->leftJoin('clientes', 'clientes.id', 'movimentacao_creditos.cliente_id')
+                // ->leftJoin('veiculos', 'clientes.id', 'veiculos.cliente_id')
+                ->groupBy('cliente_id')
+                ->distinct()
+                ->get();
+
+            //dd($entradas);
+            $i = 0;
+            foreach ($entradas as $cliente) {
+
+                if ($cliente->saldo > 0) {
+                    // dd($cliente->saldo);
+                    
+
+                    $teste[$i] = $cliente;
+
+
+
+
+                    $i++;
+                }
+            }
+
+
+
+
+
+            if (empty($teste)) {
+                return response()->json('lista vazia');
+            } else {
+                return response()->json($teste);
+            }
         } catch (\Exception $e) {
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()

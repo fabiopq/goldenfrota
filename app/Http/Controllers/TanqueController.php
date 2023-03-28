@@ -300,9 +300,9 @@ class TanqueController extends Controller
     static public function getCombustivelTanque(Tanque $tanque)
     {
 
-        Log::debug('Tanque  ' . $tanque);
+        //Log::debug('Tanque  ' . $tanque);
         $combustiveis = Combustivel::ativo()->where('id', $tanque->combustivel_id)->get();
-        Log::debug('combustivel ' . $combustiveis);
+        //Log::debug('combustivel ' . $combustiveis);
         
         return ($combustiveis[0]->descricao);
     }

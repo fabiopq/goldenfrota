@@ -1313,7 +1313,7 @@ class AbastecimentoController extends Controller
 
 
             //Log::debug('data iniciio '. $dataInicio);
-            $dataInicio = \DateTime::createFromFormat(
+            /*$dataInicio = \DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 //Abastecimento::whereNotNull('id_automacao')
                 Abastecimento::where('volume_abastecimento', '=', '7.653')
@@ -1321,15 +1321,16 @@ class AbastecimentoController extends Controller
                     ->pluck('data_hora_abastecimento')
                     ->first()
             );
+*/
 
 
-
-
+/*
 
             $dataAbastecimento = \DateTime::createFromFormat(
                 'Y-m-d H:i:s',
                 $abastecimento->data_hora_abastecimento
             );
+            */
 
             //dd($dataAbastecimento);
 
@@ -1386,10 +1387,10 @@ class AbastecimentoController extends Controller
 
                     return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
                 }
-            } else {
-                return response()->json(["Erro" => "Data do abastecimento menor que o ultimo abastecimento inserido"], 201);
-                Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
-            }
+            //} else {
+            //    return response()->json(["Erro" => "Data do abastecimento menor que o ultimo abastecimento inserido"], 201);
+             //   Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
+           // }
         } catch (\Exception $e) {
             //dd($e);
             DB::rollback();

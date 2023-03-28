@@ -159,6 +159,14 @@ Route::resource('/ticket', 'TicketController');
 Route::post('combustivel/json', 'CombustivelController@getCombustivelJson')->name('combustivel.json');
 Route::post('movimentacao_credito/json', 'MovimentacaoCreditoController@getSaldoCreditoJson')->name('saldocredito.json');
 
+Route::get(
+    'teste/{id}/{arquivo}',
+    function ($id, $arquivo) {
+
+        $file =  storage_path() . '/app' . '/documentos/devedor/' . $id . '/' . $arquivo;
+        return response()->download($file);
+    }
+)->middleware('auth');
 
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
