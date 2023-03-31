@@ -528,9 +528,12 @@ class MovimentacaoCreditoController extends Controller
                 if ($cliente->saldo <= 0) {
                     // dd($cliente->saldo);
                     $placas = DB::table('veiculos')
-                        ->select('veiculos.id', 'veiculos.placa', 'veiculos.tag', 'veiculos.cliente_id')
-                        ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
+                        ->select( 'clientes.id','clientes.nome_razao','veiculos.placa', 'veiculos.tag')
+                        ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+
+                         ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
                         ->distinct()
+                        ->orderBy( 'clientes.id')
                         ->get();
 
                     $cliente->placas = $placas;
