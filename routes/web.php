@@ -158,6 +158,7 @@ Route::resource('/importa', 'ImportaController')->except('show');
 Route::resource('/ticket', 'TicketController');
 Route::post('combustivel/json', 'CombustivelController@getCombustivelJson')->name('combustivel.json');
 Route::post('movimentacao_credito/json', 'MovimentacaoCreditoController@getSaldoCreditoJson')->name('saldocredito.json');
+Route::get('renovar', 'MovimentacaoCreditoController@renovarCredito');
 
 Route::get(
     'teste/{id}/{arquivo}',

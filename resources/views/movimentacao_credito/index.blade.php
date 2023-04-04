@@ -15,6 +15,8 @@
 ],
 
 'searchParms' => 'movimentacao_credito.search_parms'
-]);
+]
+);
 @endcomponent
+
 @endsection

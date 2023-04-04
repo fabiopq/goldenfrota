@@ -109,8 +109,18 @@
             ],
             [
             'type' => 'number',
-            'field' => 'fone1',
-            'label' => 'Saldo',
+            'field' => 'limite',
+            'label' => 'Limite',
+            'required' => true,
+            'inputSize' => 3,
+            'inputValue' => $cliente->limite,
+            'readOnly' => false,
+
+            ],
+            [
+            'type' => 'number',
+            'field' => 'saldo',
+            'label' => 'Consumo do Limite',
             'required' => true,
             'inputSize' => 3,
             'inputValue' => $cliente->saldo,

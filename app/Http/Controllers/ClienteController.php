@@ -147,7 +147,7 @@ class ClienteController extends Controller
     public function edit(Cliente $cliente)
     {
 
-        $cliente->saldo = MovimentacaoCreditoController::saldoCredito($cliente);
+        $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente);
         //$saldoCredito= array("valor"=>0);
         //dd($cliente->saldo);
 
@@ -213,6 +213,7 @@ class ClienteController extends Controller
                 $cliente->ativo = $request->ativo;
                 $cliente->controla_credito = $request->controla_credito;
                 $cliente->tag = $request->tag;
+                $cliente->limite = $request->limite;
 
                 //dd($request);
                 if ($cliente->save()) {

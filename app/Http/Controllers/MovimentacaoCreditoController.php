@@ -6,6 +6,7 @@ use App\Bico;
 use App\Cliente;
 use App\Combustivel;
 use App\TipoMovimentacaoCredito;
+use App\IntegracaoAutomacaoController;
 use App\Veiculos;
 use App\Parametro;
 use App\Departamento;
@@ -315,6 +316,45 @@ class MovimentacaoCreditoController extends Controller
         return response()->json(Combustivel::ativo()->where('id', $id)->get());
     }
 
+    static public function entradaCredito($abastecimento)
+    {
+
+        //Log::debug('saida credito  : ' . $abastecimento);
+        try {
+
+
+
+            //$combustivel = Combustivel::where('id', '=', '1')->first();
+
+            $movimentacao = new MovimentacaoCredito();
+
+            //$data_movimentacao = \DateTime::createFromFormat('d/m/Y H:i', $abastecimento->data_hora_abastecimento);
+            // $movimentacao->data_movimentacao = $data_movimentacao->format('Y-m-d H:i:s');
+            $movimentacao->data_movimentacao =   new \DateTime(now());
+
+            $movimentacao->cliente_id = $abastecimento->cliente_id;
+
+            //$movimentacao->veiculo_id = $request->veiculo_id;
+            $movimentacao->combustivel_id = $abastecimento->combustivel_id;
+
+            $movimentacao->quantidade_movimentada = str_replace(',', '.', $abastecimento->volume_abastecimento);
+
+            $movimentacao->valor_unitario = str_replace(',', '.', $abastecimento->valor_litro);
+            $movimentacao->valor = str_replace(',', '.', $abastecimento->valor_abastecimento);
+
+            //$movimentacao->user_id = Auth::user()->id;
+            $movimentacao->user_id = 1;
+            $movimentacao->tipo_movimentacao_produto_id = 1;
+            $movimentacao->observacao = $abastecimento->observacao;
+            Log::debug('movimentacao credito movimentacao  : ' . $movimentacao);
+            $movimentacao->save();
+        } catch (\Exception $e) {
+            Log::debug($e);
+            throw new \Exception('Erro ao incluir movimentacao de entrada por aferição para o Abastecimento: ' . $abastecimento->id);
+        }
+    }
+
+
     static public function saidaCredito2(Abastecimento $abastecimento)
     {
 
@@ -409,41 +449,47 @@ class MovimentacaoCreditoController extends Controller
         }
     }
 
-    static public function saldoCredito(Cliente $cliente)
+    static public function consumoCreditoMes(Cliente $cliente)
     {
 
         try {
 
             if ($cliente) {
-                $entradas = DB::table('movimentacao_creditos')
+
+                $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
+                $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
+                // echo 'início ' . date('Y-m-d H:i:s', $data_incio);
+                // echo ' fim ' . date('Y-m-d H:i:s', $data_fim);
+                $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
+
+
+               
+
+                $abastecimentos = DB::table('abastecimentos')
                     ->select(
-                        'cliente_id',
-                        DB::raw('SUM(movimentacao_creditos.valor) as saldo')
+                        'clientes.id',
+                        'clientes.nome_razao',
 
-
+                        DB::raw('SUM(abastecimentos.valor_abastecimento)  AS saldo')
                     )
-                    ->whereRaw('cliente_id =' . $cliente->id)
-
-                    ->groupBy('cliente_id') // 1- entradas
-
-                    //->distinct()
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->whereRaw('clientes.id is not null')
+                    //   ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    // ->whereRaw($whereParam)
+                    //// ->whereRaw($whereTipoAbastecimento)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->groupBy('clientes.id')
                     ->get();
-                /*
-                $saldo = 0;
-                foreach ($entradas as $entrada) {
-                    if ($entrada->tipo_movimentacao_produto_id == 1) {
-                        $saldo = $saldo + $entrada->valor;
-                    }
-                    if ($entrada->tipo_movimentacao_produto_id == 2) {
-                        $saldo = $saldo - $entrada->valor;
-                    }
-                }
-                //dd($entradas);
-                */
-                //dd($entradas);
-                if ($entradas[0]->saldo ?? 0) {
+                
 
-                    return  $entradas[0]->saldo;
+                if ($abastecimentos[0]->saldo ?? 0) {
+
+                    return  $abastecimentos[0]->saldo;
                 } else {
                     return '0';
                 }
@@ -507,33 +553,45 @@ class MovimentacaoCreditoController extends Controller
 
         try {
 
+            $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
+            $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
+            // echo 'início ' . date('Y-m-d H:i:s', $data_incio);
+            // echo ' fim ' . date('Y-m-d H:i:s', $data_fim);
+            $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
 
-            $entradas = DB::table('movimentacao_creditos')
+            $abastecimentos = DB::table('abastecimentos')
                 ->select(
-                    'movimentacao_creditos.cliente_id',
+                    'clientes.id',
                     'clientes.nome_razao',
-                    DB::raw('SUM(movimentacao_creditos.valor) as saldo')
 
+                    DB::raw('clientes.limite - SUM(abastecimentos.valor_abastecimento)  AS saldo')
                 )
-                ->leftJoin('clientes', 'clientes.id', 'movimentacao_creditos.cliente_id')
-                // ->leftJoin('veiculos', 'clientes.id', 'veiculos.cliente_id')
-                ->groupBy('cliente_id')
-                ->distinct()
+                ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                ->whereRaw('clientes.id is not null')
+                //   ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                ->whereRaw($whereData)
+                // ->whereRaw($whereParam)
+                //// ->whereRaw($whereTipoAbastecimento)
+                //->where('veiculos.cliente_id', $cliente->id)
+                ->groupBy('clientes.id')
                 ->get();
-
-            //dd($entradas);
             $i = 0;
-            foreach ($entradas as $cliente) {
 
+            foreach ($abastecimentos as $cliente) {
+                // se o saldo cliente for menor ou igual a zero
                 if ($cliente->saldo <= 0) {
                     // dd($cliente->saldo);
                     $placas = DB::table('veiculos')
-                        ->select( 'clientes.id','clientes.nome_razao','veiculos.placa', 'veiculos.tag')
+                        ->select('clientes.id', 'clientes.nome_razao', 'veiculos.placa', 'veiculos.tag')
                         ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
 
-                         ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
+                        ->where('veiculos.cliente_id', '=', $cliente->id)
                         ->distinct()
-                        ->orderBy( 'clientes.id')
+                        ->orderBy('clientes.id')
                         ->get();
 
                     $cliente->placas = $placas;
@@ -565,6 +623,165 @@ class MovimentacaoCreditoController extends Controller
         }
     }
 
+
+
+
+
+    static public function saldosapi_old()
+    {
+
+        try {
+
+
+            $entradas = DB::table('movimentacao_creditos')
+                ->select(
+                    'movimentacao_creditos.cliente_id',
+                    'clientes.nome_razao',
+                    DB::raw('SUM(movimentacao_creditos.valor) as saldo')
+
+                )
+                ->leftJoin('clientes', 'clientes.id', 'movimentacao_creditos.cliente_id')
+                // ->leftJoin('veiculos', 'clientes.id', 'veiculos.cliente_id')
+                ->groupBy('cliente_id')
+                ->distinct()
+                ->get();
+
+            //dd($entradas);
+            $i = 0;
+            foreach ($entradas as $cliente) {
+                // se o saldo cliente for menor ou igual a zero
+                if ($cliente->saldo <= 0) {
+                    // dd($cliente->saldo);
+                    $placas = DB::table('veiculos')
+                        ->select('clientes.id', 'clientes.nome_razao', 'veiculos.placa', 'veiculos.tag')
+                        ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+
+                        ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
+                        ->distinct()
+                        ->orderBy('clientes.id')
+                        ->get();
+
+                    $cliente->placas = $placas;
+
+
+                    foreach ($cliente->placas as $placa) {
+
+
+                        $teste[$i] = $placa;
+                        $i++;
+                    }
+                }
+            }
+
+
+
+
+
+            if (empty($teste)) {
+                return response()->json('lista vazia');
+            } else {
+                return response()->json($teste);
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            return redirect()->back()->withInput();
+        }
+    }
+
+
+
+    static public function renovarCredito()
+    {
+
+        try {
+
+
+            $entradas = DB::table('movimentacao_creditos')
+                ->select(
+                    'movimentacao_creditos.cliente_id',
+                    'clientes.nome_razao',
+                    'clientes.limite',
+                    DB::raw('SUM(movimentacao_creditos.valor) as saldo')
+
+                )
+                ->leftJoin('clientes', 'clientes.id', 'movimentacao_creditos.cliente_id')
+                // ->leftJoin('veiculos', 'clientes.id', 'veiculos.cliente_id')
+                ->groupBy('cliente_id')
+                ->distinct()
+                ->get();
+
+            //dd($entradas);
+            $i = 0;
+
+            foreach ($entradas as $cliente) {
+                // se o saldo cliente for menor ou igual a zero
+
+                //dd($cliente);
+                if ($cliente->limite > 0) {
+
+                    $cliente->combustivel_id = 1;
+                    $cliente->volume_abastecimento = 1;
+                    $cliente->valor_litro = 1;
+                    $cliente->saldo =  number_format($cliente->saldo, 2, '.', '');
+                    $cliente->valor_abastecimento = 0;
+                    $cliente->valor_abastecimento = floatval($cliente->limite) - floatval($cliente->saldo);
+                    $cliente->observacao = '';
+
+
+                    $a = floatval(substr(10, 0, (2 * -1)) . '.' . substr(10, (2 * -1)));
+
+
+
+                    if ($cliente->valor_abastecimento > 0) {
+
+                        //dd($cliente);
+
+                        MovimentacaoCreditoController::entradaCredito($cliente);
+                    }
+                }
+                if ($cliente->saldo <= 0) {
+                    // dd($cliente->saldo);
+                    $placas = DB::table('veiculos')
+                        ->select('clientes.id', 'clientes.nome_razao', 'veiculos.placa', 'veiculos.tag')
+                        ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+
+                        ->where('veiculos.cliente_id', '=', $cliente->cliente_id)
+                        ->distinct()
+                        ->orderBy('clientes.id')
+                        ->get();
+
+                    $cliente->placas = $placas;
+
+
+                    foreach ($cliente->placas as $placa) {
+
+
+                        $teste[$i] = $placa;
+                        $i++;
+                    }
+                }
+            }
+
+
+
+
+
+            if (empty($teste)) {
+                return response()->json('lista vazia');
+            } else {
+                return redirect()->back()->withInput();
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+            return redirect()->back()->withInput();
+        }
+    }
+
+
     static public function limitesapi()
     {
 
@@ -590,7 +807,7 @@ class MovimentacaoCreditoController extends Controller
 
                 if ($cliente->saldo > 0) {
                     // dd($cliente->saldo);
-                    
+
 
                     $teste[$i] = $cliente;
 
@@ -615,6 +832,254 @@ class MovimentacaoCreditoController extends Controller
                 'exception' => $e->getMessage()
             ]));
             return redirect()->back()->withInput();
+        }
+    }
+
+
+    public function parametrosRelatorio()
+    {
+        $clientes = Cliente::all();
+        $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
+            ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+            ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->where('veiculos.ativo', true)
+            ->get();
+        //dd($veiculos);
+        return View('abastecimento.relatorio_param')->withClientes($clientes)->withVeiculos($veiculos);
+    }
+
+    public function relatorioMovimentacaoCredito(Request $request)
+    {
+
+        $data_inicial = $request->data_inicial;
+        $data_final = $request->data_final;
+        $parametros = array();
+
+        if ($data_inicial && $data_final) {
+            $whereData = 'movimentacao_creditos.data_movimentacao between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'Período de ' . $data_inicial . ' até ' . $data_final);
+        } elseif ($data_inicial) {
+            $whereData = 'movimentacao_creditos.data_movimentacao >= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'A partir de ' . $data_inicial);
+        } elseif ($data_final) {
+            $whereData = 'movimentacao_creditos.data_movimentacao <= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
+            array_push($parametros, 'Até ' . $data_final);
+        } else {
+            $whereData = '1 = 1'; //busca qualquer coisa
+        }
+
+        switch ($request->tipo_movimentacao) {
+            case 0:
+                $whereTipoMovimentacao = ('movimentacao_creditos.tipo_movimentacao = 0');
+                array_push($parametros, 'Tipo de Movimentação: Saidas');
+                break;
+            case 1:
+                $whereTipoMovimentacao = ('movimentacao_creditos.tipo_movimentacao  = 1');
+                array_push($parametros, 'Tipo de Movimentação: Entradas');
+                break;
+            default:
+                $whereTipoMovimentacao = ('1 = 1');
+                array_push($parametros, 'Tipo de Movimentação: Todos');
+                break;
+        }
+
+        $cliente_id = $request->cliente_id;
+        $departamento_id = $request->departamento_id;
+        $veiculo_id = $request->veiculo_id;
+
+        if ($veiculo_id > 0) {
+            $whereParam = 'veiculos.id = ' . $veiculo_id;
+        } else {
+            if ($departamento_id > 0) {
+                $whereParam = 'veiculos.departamento_id = ' . $departamento_id;
+            } else {
+                if ($cliente_id > 0) {
+                    $whereParam = 'veiculos.cliente_id = ' . $cliente_id;
+                } else {
+                    $whereParam = '1 = 1';
+                }
+            }
+        }
+
+        if ($cliente_id > 0) {
+            array_push($parametros, 'Cliente: ' . Cliente::find($cliente_id)->nome_razao);
+        }
+
+
+        if ($veiculo_id > 0) {
+            $veiculo_param = Veiculo::select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo')
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->where([
+                    ['veiculos.id', '=', $veiculo_id]
+                ])->first();
+            array_push($parametros, 'Veiculo: ' . $veiculo_param->placa . ' - ' . $veiculo_param->marca_veiculo . ' ' . $veiculo_param->modelo_veiculo);
+        }
+
+        $clientes = DB::table('abastecimentos')
+            ->select('clientes.*')
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+            //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->whereRaw('clientes.id is not null')
+            ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw($whereData)
+            ->whereRaw($whereParam)
+            ->whereRaw($whereTipoMovimentacao)
+            ->orderBy('clientes.nome_razao', 'asc')
+            ->distinct()
+            ->get();
+        //dd($clientes);
+
+        $clientesNullo = DB::table('abastecimentos')
+            ->select(
+
+                DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
+                DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                DB::raw('AVG(abastecimentos.media_veiculo) AS media')
+            )
+            //->select('abastecimentos.*')
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->whereRaw('clientes.id is null')
+            ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw($whereData)
+            ->whereRaw($whereParam)
+            ->whereRaw($whereTipoMovimentacao)
+            ->groupBy('abastecimentos.veiculo_id')
+            //->orderBy('clientes.nome_razao', 'asc')
+            ->distinct()
+            ->get();
+
+        $clientesNulloAnalitico = DB::table('abastecimentos')
+            ->select('abastecimentos.*')
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+            ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->whereRaw('clientes.id is null')
+            ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw($whereData)
+            ->whereRaw($whereParam)
+            ->whereRaw($whereTipoMovimentacao)
+
+            // ->orderBy('clientes.nome_razao', 'asc')
+            ->distinct()
+            ->get();
+        // dd($clientesNullo);
+        //dd($request->tipo_relatorio);
+        if ($request->tipo_relatorio == 1) {
+            /* relatório Sintético */
+
+
+
+            foreach ($clientes as $cliente) {
+
+
+                $abastecimentos = DB::table('abastecimentos')
+                    ->select(
+                        'veiculos.placa',
+                        DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                        DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
+                        DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                        DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                        DB::raw('AVG(abastecimentos.media_veiculo) AS media')
+                    )
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoMovimentacao)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->groupBy('veiculos.placa')
+                    ->get();
+                //->toSql();
+                //dd($cliente->id);
+                if ($abastecimentos) {
+                    $cliente->abastecimentos = $abastecimentos;
+                }
+            }
+            //dd($clientes);
+            return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
+        } else if ($request->tipo_relatorio == 2) {
+            /* relatório Analítico */
+            foreach ($clientes as $cliente) {
+
+
+
+                $abastecimentos = DB::table('abastecimentos')
+                    ->select('abastecimentos.*', 'veiculos.placa')
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoMovimentacao)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->orderBy('veiculos.placa', 'asc')
+                    ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+                    /* ->orderBy('abastecimentos.id', 'desc') */
+                    ->distinct()
+                    ->get();
+                $cliente->abastecimentos = $abastecimentos;
+            }
+            //dd($clientes);
+
+            return View('relatorios.abastecimentos.relatorio_abastecimentos_analitico')->withClientes($clientes)->withClientesNulloAnalitico($clientesNulloAnalitico)->withTitulo('Relatório de Abastecimentos - Analítico')->withParametros($parametros)->withParametro(Parametro::first());
+        } else if ($request->tipo_relatorio == 3) {
+            foreach ($clientes as $cliente) {
+
+
+                $abastecimentos = DB::table('abastecimentos')
+                    ->select(
+                        'clientes.id',
+                        'clientes.nome_razao',
+                        DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                        DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
+                        DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                        DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                        DB::raw('AVG(abastecimentos.media_veiculo) AS media')
+                    )
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoMovimentacao)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->groupBy('clientes.id')
+                    ->get();
+                //->toSql();
+                //dd($cliente->id);
+                if ($abastecimentos) {
+                    $cliente->abastecimentos = $abastecimentos;
+                }
+                //dd($cliente->abastecimentos);
+            }
+
+
+            return View('relatorios.abastecimentos.relatorio_abastecimentos_resumido')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         }
     }
 }

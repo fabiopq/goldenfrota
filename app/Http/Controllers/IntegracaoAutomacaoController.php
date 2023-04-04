@@ -218,7 +218,7 @@ class IntegracaoAutomacaoController extends Controller
         return \DateTime::createFromFormat('d-m-y-H-i-s', $b);
     }
 
-    protected function formataValorDecimal($valor, $numCasas = 2)
+    public function formataValorDecimal($valor, $numCasas = 2)
     {
         if ($numCasas > 0) {
             return floatval(substr($valor, 0, ($numCasas * -1)) . '.' . substr($valor, ($numCasas * -1)));

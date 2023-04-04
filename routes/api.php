@@ -90,3 +90,5 @@ Route::post('me', 'AuthController@me');
 Route::get('roles', 'RolesController@apiRoles');
 Route::get('saldos', 'MovimentacaoCreditoController@saldosapi');
 Route::get('limites', 'MovimentacaoCreditoController@limitesapi');
+
+

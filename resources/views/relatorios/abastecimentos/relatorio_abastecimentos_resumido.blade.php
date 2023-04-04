@@ -23,9 +23,11 @@ $valorTotal = 0;
                 <div class="card-body">
                     <table class="table table-sm report-table">
                         <thead>
-                            <td width="50%" >Cliente</td>
-                            <td align="right" width="25%" >Consumo Litros</td>
-                            <td align="right" width="25%" >Consumo R$</td>
+                            <td width="20%">Cliente</td>
+                            <td align="right" width="20%">Consumo Litros</td>
+                            <td align="right" width="20%">Limite R$</td>
+                            <td align="right" width="20%">Consumo R$</td>
+                            <td align="right" width="20%">Saldo R$</td>
                         </thead>
                     </table>
                 </div>
@@ -68,9 +70,11 @@ $clienteDistancia = 0;
                             $valorTotal += $abastecimento->valor;
                             @endphp
                             <tr>
-                                <td width="50%"> {{$abastecimento->nome_razao}} </td>
-                                <td align="right" width="25%"> {{number_format($abastecimento->consumo, 2, ',', '.')}} </td>
-                                <td align="right" width="25%"> {{number_format($abastecimento->valor, 2, ',', '.')}} </td>
+                                <td width="20%"> {{$abastecimento->nome_razao}} </td>
+                                <td align="right" width="20%"> {{number_format($abastecimento->consumo, 2, ',', '.')}} </td>
+                                <td align="right" width="20%"> {{number_format($abastecimento->limite, 2, ',', '.')}} </td>
+                                <td align="right" width="20%"> {{number_format($abastecimento->valor, 2, ',', '.')}} </td>
+                                <td align="right" width="20%"> {{number_format($abastecimento->limite - $abastecimento->valor, 2, ',', '.')}} </td>
                             </tr>
                             @endforeach
 
@@ -124,33 +128,26 @@ $clienteDistancia = 0;
                 <div class="card-body">
                     <table class="table table-sm report-table">
                         <thead>
-                            <td>Veículo</td>
-                            <td align="right">KM Inicial</td>
-                            <td align="right">KM Final</td>
-                            <td align="right">Distância Percorrida</td>
-                            <td align="right">Consumo Médio/KM</td>
-                            <td align="right">Consumo Litros</td>
-                            <td align="right">Consumo Total</td>
+                            <td width="50%">Cliente</td>
+                            <td align="right" width="25%">Consumo Litros</td>
+                            <td align="right" width="25%">Consumo R$</td>
                         </thead>
                         <tbody>
 
 
                             <tr>
-                                <td> Placa Não Informada </td>
-                                <td align="right"> &nbsp</td>
-                                <td align="right"> &nbsp</td>
-                                <td align="right"> &nbsp</td>
-                                <td align="right"> &nbsp</td>
-                                <td align="right">{{number_format($clienteItem->consumo, 2, ',', '.')}}</td>
-                                <td align="right">{{number_format($clienteItem->valor, 2, ',', '.')}}</td>
+                                <td width="50%"> Placa Não Informada </td>
+                                <td align="right" width="25%"> {{number_format($abastecimento->consumo, 2, ',', '.')}} </td>
+                                <td align="right" width="25%"> {{number_format($abastecimento->valor, 2, ',', '.')}} </td>
+
                             </tr>
                             @endforeach
                             <tr class="success">
-                                <td colspan=2>Total do Departamento</td>
-                                <td align="right"></td>
-                                <td align="right">{{number_format($departamentoDistancia, 1, ',', '.')}} </td>
-                                <td align="right"> </td>
-                                <td align="right">{{number_format($departamentoVolume, 3, ',', '.')}}</td>
+                                <td width="50%">Total Placa Não Informada</td>
+
+                                <td align="right" width="25%">{{number_format($departamentoDistancia, 1, ',', '.')}} </td>
+
+                                <td align="right" width="25%">{{number_format($departamentoVolume, 3, ',', '.')}}</td>
 
                             </tr>
 
@@ -171,7 +168,7 @@ $clienteDistancia = 0;
                 <h5>Total Geral</h5>
             </td>
             <td align="right">
-                <h5>Distância Percorrida: {{number_format($distanciaTotal, 1, ',', '.')}}</h5>
+                <h5></h5>
             </td>
             <td align="right">
                 <h5>Consumo Litros: {{number_format($volumeTotal, 3, ',', '.')}}</h5>

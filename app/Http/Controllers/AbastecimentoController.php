@@ -730,7 +730,7 @@ class AbastecimentoController extends Controller
 
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
-                        'clientes.id','clientes.nome_razao',
+                        'clientes.id','clientes.nome_razao','clientes.limite',
                         DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
                         DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
                         DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
@@ -762,6 +762,7 @@ class AbastecimentoController extends Controller
             return View('relatorios.abastecimentos.relatorio_abastecimentos_resumido')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         }
     }
+    
     public function relatorioAbastecimentosDepartamento(Request $request)
     {
 

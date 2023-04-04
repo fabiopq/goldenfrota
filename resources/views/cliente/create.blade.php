@@ -93,8 +93,17 @@
             ],
             [
             'type' => 'text',
+            'field' => 'limite',
+            'label' => 'Limite',
+            'required' => true,
+            'inputSize' => 3,
+            'css' => 'text-uppercase',
+            'readOnly' => true ,
+            ],
+            [
+            'type' => 'text',
             'field' => 'saldo',
-            'label' => 'Saldo Crédito',
+            'label' => 'Consumo do Limite',
             'required' => true,
             'inputSize' => 3,
             'css' => 'text-uppercase',
