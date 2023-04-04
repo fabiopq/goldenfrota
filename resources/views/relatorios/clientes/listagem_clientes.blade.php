@@ -20,7 +20,7 @@
                 Fone [1]
             </td>
             <td>
-                Fone [2]
+                Limite
             </td>
             <td>
                 Endereço
@@ -46,7 +46,7 @@
                 {{$cliente->fone1}}
             </td>
             <td>
-                {{$cliente->fone2}}
+            {{number_format($cliente->limite, 2, ',', '.')}}
             </td>
             <td>
                 {{$cliente->endereco.', '.$cliente->numero.' - '.$cliente->bairro.' - '.$cliente->cidade.'/'.$cliente->uf->uf}}
