@@ -68,6 +68,3 @@
     </div>
     <modal name="meuModal"></modal>
 @endsection
-@push('bottom-scripts')
-    <script src="{{ mix('js/modal.js') }}"></script>
-@endpush
