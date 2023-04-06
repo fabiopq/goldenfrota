@@ -21,7 +21,6 @@
                 "shasum": ""
             },
             "require": {
-				"consoletvs/charts:5.*"
                 "consoletvs/support": "^2.1.2",
                 "illuminate/support": "5.*",
                 "jenssegers/date": "v3.*",
