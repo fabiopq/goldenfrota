@@ -80,11 +80,14 @@ class ServicoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
+
+    
     {
+        //dd($request);
         if (Auth::user()->canCadastrarServico()) {
             $this->validate($request, [
                 'servico' => 'required|string|min:3|unique:servicos',
-                'descricao' => 'required|string|min:3',
+                'descricao' => 'required|string|min:5',
                 'grupo_servico_id' => 'required',
                 'valor_servico' => 'required'
             ]);
