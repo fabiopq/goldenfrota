@@ -12,6 +12,8 @@ use ConsoleTVs\Charts\Facades\Charts;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
+
+
 class TanqueController extends Controller
 {
     protected $fields = array(
@@ -208,6 +210,8 @@ class TanqueController extends Controller
         $tanques = Tanque::select('tanques.*', 'combustiveis.descricao')
             ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
             ->where('tanques.ativo', true)->get();
+            
+           
 
         $graficos = array();
          foreach ($tanques as $tanque) {
