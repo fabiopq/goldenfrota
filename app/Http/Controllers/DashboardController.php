@@ -12,6 +12,7 @@ use App\MovimentacaoCombustivel;
 use Illuminate\Support\Facades\DB;
 use ConsoleTVs\Charts\Facades\Charts;
 use App\Http\Controllers\TanqueMovimentacaoController;
+use App\Motorista;
 
 use function GuzzleHttp\Promise\each;
 
@@ -205,6 +206,13 @@ class DashboardController extends Controller
         $clientes['clientes_cadastrados'] = Cliente::where('ativo', true)->count();
 
         return response()->json($clientes);
+    }
+
+    public function totalMotoristasCadastrados()
+    {
+        $motoristas['motoristas_cadastrados'] = Motorista::where('ativo', true)->count();
+
+        return response()->json($motoristas);
     }
 
     public function abastecimentosHoje()

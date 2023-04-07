@@ -34,7 +34,7 @@ class MotoristaController extends Controller
      */
     public function index(Request $request)
     {
-        
+       
         
     if (Auth::user()->canListarMotorista()) {
         $data_inicial = $request->data_inicial;

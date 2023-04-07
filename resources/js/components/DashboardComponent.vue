@@ -65,9 +65,9 @@
                                         <i class="fas fa-user-shield fa-4x"></i>
                                     </template>
                                     <template slot="card-title">Motoristas</template>
-                                    <template slot="card-body">{{ numClientes }}</template>
+                                    <template slot="card-body">{{ numMotoristas }}</template>
                                     <template slot="card-footer">
-                                        <a href="/cliente" class="text-info">
+                                        <a href="/motorista" class="text-info">
                                             <i class="fas fa-link"></i> Acessar
                                         </a>
                                     </template>
@@ -210,13 +210,15 @@ export default {
         return {
             numVeiculosFrota: 0,
             numAbastecimentosDia: 0,
-            numClientes: 0
+            numClientes: 0,
+            numMotoristas:0
         };
     },
     async mounted() {
         this.getNumVeiculosFrota();
         this.getAbastecimentosDia();
         this.getNumClientes();
+        this.getNumMotoristas();
     },
     methods: {
         getNumVeiculosFrota() {
@@ -241,6 +243,15 @@ export default {
             Axios.get('/dashboard/clientes_cadastrados')
                 .then(r => {
                     this.numClientes = r.data.clientes_cadastrados;
+                })
+                .catch(e => {
+                    console.log(e);
+                });
+        },
+        getNumMotoristas() {
+            Axios.get('/dashboard/motoristas_cadastrados')
+                .then(r => {
+                    this.numMotoristas = r.data.motoristas_cadastrados;
                 })
                 .catch(e => {
                     console.log(e);

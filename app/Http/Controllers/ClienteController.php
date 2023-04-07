@@ -44,6 +44,7 @@ class ClienteController extends Controller
      */
     public function index(Request $request)
     {
+       
         if (Auth::user()->canListarCliente()) {
             if ($request->searchField) {
                 $clientes = Cliente::where('nome_razao', 'like', '%' . $request->searchField . '%')

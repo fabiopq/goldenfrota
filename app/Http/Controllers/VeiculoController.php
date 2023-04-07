@@ -43,6 +43,8 @@ class VeiculoController extends Controller
      */
     public function index(Request $request)
     {
+        
+       
         if (isset($request->searchField)) {
             $veiculos = DB::table('veiculos')
                 ->select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo', 'clientes.nome_razao', 'grupo_veiculos.grupo_veiculo', 'departamentos.departamento')

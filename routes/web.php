@@ -151,6 +151,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/dashboard/total_veiculos_frota', 'DashboardController@totalVeiculosFrota');
     Route::get('/dashboard/abastecimentos_hoje', 'DashboardController@abastecimentosHoje');
     Route::get('/dashboard/clientes_cadastrados', 'DashboardController@totalClientesCadastrados');
+    Route::get('/dashboard/motoristas_cadastrados', 'DashboardController@totalMotoristasCadastrados');
     Route::get('/dashboard/os_em_aberto', 'DashboardController@osEmAberto');
 });
 

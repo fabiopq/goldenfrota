@@ -51,12 +51,11 @@ table tbody tr td {
 }
 
 .card-body {
-  padding: 0px !important;
+  padding: 5px !important;
 }
 
 table {
   margin-bottom: 0 !important;
-
 }
 
 table thead tr td {
@@ -88,7 +87,6 @@ table tbody tr td {
 }
 
 @media print {
-
   .no-print,
   .no-print * {
     display: none !important;
@@ -157,3 +155,4 @@ table tbody tr td {
     width: 8.33333333%;
   }
 }
+
