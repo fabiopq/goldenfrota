@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use ConsoleTVs\Charts\Facades\Charts;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\ChartJSController;
+
 
 
 
@@ -211,21 +213,22 @@ class TanqueController extends Controller
             ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
             ->where('tanques.ativo', true)->get();
             
-           
+             
 
         $graficos = array();
          foreach ($tanques as $tanque) {
-           
+           /*
             $graficos[] = Charts::create('percentage', 'justgage')
                 ->title($tanque->descricao_tanque . ' (' . $tanque->descricao . ')')
                 ->elementLabel('Litros')
                 ->values([$this->getPosicaoEstoque($tanque), 0, $tanque->capacidade])
                 ->responsive(false)
                 ->height(250);
+                */
             //->width(0);
         }
-
-        return View('relatorios.tanques.posicao_tanques')->withTitulo('Posição de Estoque - Tanques')->withGraficos($graficos);
+        return view('chart', compact('labels', 'data'));
+       // return View('relatorios.tanques.posicao_tanques')->withTitulo('Posição de Estoque - Tanques')->withGraficos($graficos);
     }
 
     static public function getPosicaoEstoque(Tanque $tanque)
