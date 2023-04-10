@@ -1174,7 +1174,7 @@ class AbastecimentoController extends Controller
         // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'combustiveis.descricao', 'veiculos.placa', 'clientes.nome_razao', 'veiculos.cliente_id')
+            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel', 'veiculos.placa', 'clientes.nome_razao', 'veiculos.cliente_id')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
             ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
@@ -1208,7 +1208,7 @@ class AbastecimentoController extends Controller
             $whereData = '1 = 1'; //busca qualquer coisa
         }
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'combustiveis.descricao')
+            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel' )
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
             ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
