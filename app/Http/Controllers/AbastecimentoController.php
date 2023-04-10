@@ -730,7 +730,9 @@ class AbastecimentoController extends Controller
 
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
-                        'clientes.id','clientes.nome_razao','clientes.limite',
+                        'clientes.id',
+                        'clientes.nome_razao',
+                        'clientes.limite',
                         DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
                         DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
                         DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
@@ -757,12 +759,12 @@ class AbastecimentoController extends Controller
                 }
                 //dd($cliente->abastecimentos);
             }
-            
+
 
             return View('relatorios.abastecimentos.relatorio_abastecimentos_resumido')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         }
     }
-    
+
     public function relatorioAbastecimentosDepartamento(Request $request)
     {
 
@@ -1172,12 +1174,15 @@ class AbastecimentoController extends Controller
         // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'veiculos.placa', 'clientes.nome_razao', 'veiculos.cliente_id')
+            ->select('abastecimentos.*', 'combustiveis.descricao', 'veiculos.placa', 'clientes.nome_razao', 'veiculos.cliente_id')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
+            ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
             ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+
             //->whereRaw($whereData)
             // ->whereDate('abastecimentos.data_hora_abastecimento', $request->data_inicial)
             //->whereDate('abastecimentos.data_hora_abastecimento', $request->data_final)
@@ -1203,7 +1208,10 @@ class AbastecimentoController extends Controller
             $whereData = '1 = 1'; //busca qualquer coisa
         }
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*')
+            ->select('abastecimentos.*', 'combustiveis.descricao')
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
+            ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
             ->whereNull('abastecimentos.veiculo_id')
             ->orderByDesc('abastecimentos.id')
             ->whereRaw($whereData)
@@ -1221,7 +1229,7 @@ class AbastecimentoController extends Controller
 
     public function apiStore(Request $request)
     {
-        
+
         try {
             DB::beginTransaction();
 
@@ -1325,7 +1333,7 @@ class AbastecimentoController extends Controller
 */
 
 
-/*
+            /*
 
             $dataAbastecimento = \DateTime::createFromFormat(
                 'Y-m-d H:i:s',
@@ -1336,62 +1344,62 @@ class AbastecimentoController extends Controller
             //dd($dataAbastecimento);
 
 
-           // if ($dataAbastecimento > $dataInicio) {
+            // if ($dataAbastecimento > $dataInicio) {
 
-                //dd($abastecimento->data_hora_abastecimento);
-                //$abastecimento->save();
-                if ($abastecimento->save()) {
+            //dd($abastecimento->data_hora_abastecimento);
+            //$abastecimento->save();
+            if ($abastecimento->save()) {
 
-                    Log::debug('abastecimento salvo  : ' . $abastecimento);
-                    //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
-                    MovimentacaoCreditoController::saidaCredito2($abastecimento);
+                Log::debug('abastecimento salvo  : ' . $abastecimento);
+                //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
+                MovimentacaoCreditoController::saidaCredito2($abastecimento);
 
-                    if ($abastecimento->bico_id) {
+                if ($abastecimento->bico_id) {
 
 
-                        /* Se for aferição, faz a movimentação de saída e entrada por aferição */
-                        if (isset($abastecimento->eh_afericao) && ($abastecimento->eh_afericao)) {
+                    /* Se for aferição, faz a movimentação de saída e entrada por aferição */
+                    if (isset($abastecimento->eh_afericao) && ($abastecimento->eh_afericao)) {
 
-                            $afericao = Afericao::create([
-                                'abastecimento_id' => $abastecimento->id,
-                                'user_id' => Auth::user()->id
-                            ]);
+                        $afericao = Afericao::create([
+                            'abastecimento_id' => $abastecimento->id,
+                            'user_id' => Auth::user()->id
+                        ]);
 
-                            MovimentacaoCombustivelController::cadastroAfericao($afericao);
-                        } else {
-                            /* Se informado o bico, movimenta o estoque do tanque */
+                        MovimentacaoCombustivelController::cadastroAfericao($afericao);
+                    } else {
+                        /* Se informado o bico, movimenta o estoque do tanque */
 
-                            MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
-                        }
-
-                        if (!BicoController::atualizarEncerranteBico($abastecimento->bico_id, $request->encerrante_final)) {
-                            throw new \Exception(__('messages.exception', [
-                                'exception' => 'Não foi possível atualizar o encerrante do bico'
-                            ]));
-                        }
+                        MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                     }
 
-                    //Log::debug('Abastecimento Inserido: '.$abastecimento);
-
-                    DB::commit();
-
-                    event(new NovoAbastecimento($abastecimento));
-
-                    //Ajusta médias futuras
-                    if (!$this->ajustarMediaAbastecimentosFuturos($abastecimento)) {
+                    if (!BicoController::atualizarEncerranteBico($abastecimento->bico_id, $request->encerrante_final)) {
                         throw new \Exception(__('messages.exception', [
-                            'exception' => 'Não foi possível atualizar as médias futuras do veículo'
+                            'exception' => 'Não foi possível atualizar o encerrante do bico'
                         ]));
                     }
-                    return response()->json($abastecimento, 201);
-                } else {
-
-                    return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
                 }
+
+                //Log::debug('Abastecimento Inserido: '.$abastecimento);
+
+                DB::commit();
+
+                event(new NovoAbastecimento($abastecimento));
+
+                //Ajusta médias futuras
+                if (!$this->ajustarMediaAbastecimentosFuturos($abastecimento)) {
+                    throw new \Exception(__('messages.exception', [
+                        'exception' => 'Não foi possível atualizar as médias futuras do veículo'
+                    ]));
+                }
+                return response()->json($abastecimento, 201);
+            } else {
+
+                return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
+            }
             //} else {
             //    return response()->json(["Erro" => "Data do abastecimento menor que o ultimo abastecimento inserido"], 201);
-             //   Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
-           // }
+            //   Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
+            // }
         } catch (\Exception $e) {
             //dd($e);
             DB::rollback();
