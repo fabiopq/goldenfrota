@@ -294,7 +294,7 @@ class AbastecimentoController extends Controller
 
             $this->validate($request, [
                 'data_hora_abastecimento' => 'required|date_format:d/m/Y H:i:s',
-                'veiculo_id' => 'required',
+                'veiculo_id' => 'required|numeric|',
                 //'km_veiculo' => 'required|numeric|min:0',
                 //'volume_abastecimento' => 'required|numeric|min:0',
                 'valor_litro' => 'required|numeric|min:0',
