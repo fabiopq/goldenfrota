@@ -136,7 +136,7 @@ class DashboardController extends Controller
         $dataInicio = date_format(date_create_from_format('d/m/Y H:i:s', (new \DateTime())->format('d/m/Y') . '00:00:00'), 'Y-m-d H:i:s');
         $dataFim = date_format(date_create_from_format('d/m/Y H:i:s', (new \DateTime())->format('d/m/Y') . '23:59:59'), 'Y-m-d H:i:s');
 
-       dd($tanques);
+      // dd($tanques);
         // return ($posicao->posicao) ? $posicao->posicao : 0;
         $result = array();
         foreach ($tanques as $tanque) {
