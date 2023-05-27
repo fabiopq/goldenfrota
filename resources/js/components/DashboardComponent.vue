@@ -11,7 +11,7 @@
                                     <template slot="card-icon">
                                         <i class="fas fa-gas-pump fa-4x"></i>
                                     </template>
-                                    <template slot="card-title">Abastecimentos</template>
+                                    <template slot="card-title">Abastecimentos Hoje</template>
                                     <template slot="card-body">{{ numAbastecimentosDia }}</template>
                                     <template slot="card-footer">
                                         <a href="/abastecimento" class="text-info">

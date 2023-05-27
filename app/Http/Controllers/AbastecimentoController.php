@@ -485,7 +485,8 @@ class AbastecimentoController extends Controller
                             Log::debug('obterMediaVeiculo - Média calculada => ' . ($abastecimentoAtual->km_veiculo - $ultimoAbastecimento->km_veiculo) / $abastecimentoAtual->volume_abastecimento);
                         }
                         if (($abastecimentoAtual->km_veiculo == $ultimoAbastecimento->km_veiculo) && (!$ehUpdate)) {
-                            throw new \Exception('Odômetro/Horímetro informado igual ao do último abastecimento');
+                           return 0;
+                            // throw new \Exception('Odômetro/Horímetro informado igual ao do último abastecimento');
                         }
                         return ($abastecimentoAtual->km_veiculo - $ultimoAbastecimento->km_veiculo) / $abastecimentoAtual->volume_abastecimento;
                     } else {
@@ -510,6 +511,7 @@ class AbastecimentoController extends Controller
                 }
             }
         } catch (\Exception $e) {
+            Log::debug($e);
             throw new \Exception($e->getMessage());
         }
     }
@@ -1208,7 +1210,7 @@ class AbastecimentoController extends Controller
             $whereData = '1 = 1'; //busca qualquer coisa
         }
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel' )
+            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
             ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
@@ -1228,6 +1230,7 @@ class AbastecimentoController extends Controller
     }
 
     public function apiStore(Request $request)
+
     {
 
         try {
@@ -1249,8 +1252,9 @@ class AbastecimentoController extends Controller
             $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
             $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
             $abastecimento->abastecimento_local = false;
-
-            //dd($request->bico_id);
+            $abastecimento->media_veiculo = 0;
+            $abastecimento->motorista_id = $request->motorista_id;
+            
             if ($request->bico_id) {
 
                 $abastecimento->bico_id = $request->bico_id;
@@ -1265,8 +1269,17 @@ class AbastecimentoController extends Controller
             // dd($bico);
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
-
+            
+            if ($request->atendente_id) {
+                    
+                $abastecimento->atendente_id = $request->atendente_id;  
+               
+            }
+            
             if (!$request->veiculo_id) {
+                
+               
+                    
 
                 if ($request->tag_atendente) {
 
@@ -1297,26 +1310,33 @@ class AbastecimentoController extends Controller
 
                             $abastecimento->veiculo_id = $veiculo->id;
                             $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                            
                         }
                     }
                 }
             } else {
+                
+
                 Log::debug('Abastecimento recebido na api : ' . $abastecimento);
                 // verifica se nao veio veiculo no arquivo
+                
                 $abastecimento->veiculo_id = $request->veiculo_id;
+                
             }
 
             if ($abastecimento->veiculo_id) {
+                
+                
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
+                
             } else {
                 $abastecimento->media_veiculo = 0;
             }
-
+            
             Log::debug('Abastecimento recebido na api : ' . $abastecimento);
             //$veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
 
-
-
+            
 
             // dd($abastecimentos. $abastecimento->volume_abastecimento);
 
@@ -1348,8 +1368,9 @@ class AbastecimentoController extends Controller
 
             //dd($abastecimento->data_hora_abastecimento);
             //$abastecimento->save();
+            
             if ($abastecimento->save()) {
-
+                
                 Log::debug('abastecimento salvo  : ' . $abastecimento);
                 //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                 MovimentacaoCreditoController::saidaCredito2($abastecimento);
@@ -1406,6 +1427,7 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
+            Log::debug($e);
             return response()->json(["Erro" => "Abastecimento nao iserido"], 301);
         }
     }

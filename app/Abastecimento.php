@@ -26,7 +26,8 @@ class Abastecimento extends Model
         'data_hora_abastecimento',
         'ativo',
         'abastecimento_local',
-        'eh_afericao'
+        'eh_afericao',
+        'motorista_id'
     ];
 
     public function tanque_movimentacao() {
