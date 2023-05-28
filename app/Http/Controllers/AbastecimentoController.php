@@ -485,7 +485,8 @@ class AbastecimentoController extends Controller
                             Log::debug('obterMediaVeiculo - Média calculada => ' . ($abastecimentoAtual->km_veiculo - $ultimoAbastecimento->km_veiculo) / $abastecimentoAtual->volume_abastecimento);
                         }
                         if (($abastecimentoAtual->km_veiculo == $ultimoAbastecimento->km_veiculo) && (!$ehUpdate)) {
-                           return 0;
+                            Log::debug('Odômetro/Horímetro informado igual ao do último abastecimento');
+                            return 0;
                             // throw new \Exception('Odômetro/Horímetro informado igual ao do último abastecimento');
                         }
                         return ($abastecimentoAtual->km_veiculo - $ultimoAbastecimento->km_veiculo) / $abastecimentoAtual->volume_abastecimento;
@@ -501,7 +502,9 @@ class AbastecimentoController extends Controller
                             Log::debug('obterMediaVeiculo - Controle por Horas trabalhadas');
                         }
                         if (($abastecimentoAtual->km_veiculo == $ultimoAbastecimento->km_veiculo) && (!$ehUpdate)) {
-                            throw new \Exception('Odômetro/Horímetro informado igual ao do último abastecimento');
+                            Log::debug('Odômetro/Horímetro informado igual ao do último abastecimento');
+                            return 0;
+                            // throw new \Exception('Odômetro/Horímetro informado igual ao do último abastecimento');
                         }
                         return $abastecimentoAtual->volume_abastecimento / ($abastecimentoAtual->km_veiculo - $ultimoAbastecimento->km_veiculo);
                     } else {
@@ -511,7 +514,7 @@ class AbastecimentoController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            Log::debug($e);
+           // Log::debug($e);
             throw new \Exception($e->getMessage());
         }
     }
@@ -1427,7 +1430,7 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
-            Log::debug($e);
+            //Log::debug($e);
             return response()->json(["Erro" => "Abastecimento nao iserido"], 301);
         }
     }
