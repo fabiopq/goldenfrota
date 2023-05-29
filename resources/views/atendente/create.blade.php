@@ -49,6 +49,14 @@
                                     'inputValue' => isset($atendente->senha_atendente) ? $atendente->senha_atendente : '',
                                     'inputSize' => 6
                                 ],
+                                [
+                                    'type' => 'password',
+                                    'field' => 'senha_atendente_app',
+                                    'label' => 'Senha APP',
+                                    'required' => false,
+                                    'inputValue' => isset($atendente->senha_atendente_app) ? $atendente->senha_atendente_app : '',
+                                    'inputSize' => 6
+                                ],
                                  [
                                    'type' => 'select',
                                     'field' => 'veiculo_id',

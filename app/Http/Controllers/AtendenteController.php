@@ -120,6 +120,7 @@ class AtendenteController extends Controller
      */
     public function edit(Atendente $atendente)
     {
+        
         if (Auth::user()->canAlterarAtendente()) {
             $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
                 ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
@@ -163,6 +164,7 @@ class AtendenteController extends Controller
                 $atendente->senha_atendente = $request->senha_atendente;
                 $atendente->veiculo_id = $request->veiculo_id;
                 $atendente->ativo = $request->ativo;
+                $atendente->senha_atendente_app = $request->senha_atendente_app;
 
                 if ($atendente->save()) {
                     Session::flash('success', __('messages.update_success', [

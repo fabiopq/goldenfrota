@@ -59,6 +59,14 @@
                                     'inputSize' => 6
                                 ],
                                 [
+                                    'type' => 'password',
+                                    'field' => 'senha_atendente_app',
+                                    'label' => 'Senha APP',
+                                    'required' => true,
+                                    'inputValue' => $atendente->senha_atendente_app,
+                                    'inputSize' => 6
+                                ],
+                                [
                                     'type' => 'select',
                                     'field' => 'veiculo_id',
                                     'label' => 'Veículo (opcional)',
