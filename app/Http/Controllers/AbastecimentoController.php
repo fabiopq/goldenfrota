@@ -1249,7 +1249,10 @@ class AbastecimentoController extends Controller
             //$abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
 
             $abastecimento->id_automacao = $request->id; //campo com id do abastecimento na memoria
-            $abastecimento->veiculo_id = $request->veiculo_id;
+            
+            if ($request->veiculo_id > 0){
+                $abastecimento->veiculo_id = $request->veiculo_id;
+            }
             $abastecimento->km_veiculo = $request->km_veiculo;
             $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
             $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
