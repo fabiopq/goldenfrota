@@ -337,8 +337,6 @@
 
                 @if(old('modelo_veiculo_id'))
                 $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
-                @else
-                $('#modelo_veiculo_id').selectpicker('val', {{$veiculo->modelo_veiculo_id}});
                 @endif
 
                 $('.selectpicker').selectpicker('refresh');
@@ -346,6 +344,15 @@
         });
     }
 
-    buscarDepartamentos();
-    buscarModeloVeiculos();    
+    $('#cliente_id').on('changed.bs.select', buscarDepartamentos);
+    $('#marca_veiculo_id').on('changed.bs.select', buscarModeloVeiculos);
+    
+    if ($('#marca_veiculo_id').val()) {
+        buscarModeloVeiculos();
+    }
+
+    if ($('#cliente_id').val()) {
+        buscarDepartamentos();
+    }
+
 @endpush
