@@ -41,9 +41,10 @@ class AbastecimentoController extends Controller
         'valor_litro' => ['label' => 'Valor Litro', 'type' => 'decimal', 'decimais' => 3],
         'valor_abastecimento' => ['label' => 'Valor Total', 'type' => 'decimal', 'decimais' => 3],
         'placa' => 'Veículo',
-        'km_veiculo' => ['label' => 'Odômetro/Horímetro', 'type' => 'decimal', 'decimais' => 1],
+        'km_veiculo' => ['label' => 'Odômetro', 'type' => 'decimal', 'decimais' => 1],
         'media_veiculo' => ['label' => 'Média', 'type' => 'decimal', 'decimais' => 2],
         'nome_atendente' => 'Atendente',
+        'nome' => 'Motorista',
         'abastecimento_local' => ['label' => 'Abast. Local', 'type' => 'bool'],
         'eh_afericao' => ['label' => 'Aferição', 'type' => 'bool']
         //'ativo' => ['label' => 'Ativo', 'type' => 'bool'],
@@ -73,10 +74,11 @@ class AbastecimentoController extends Controller
 
             if (isset($request->searchField)) {
                 $abastecimentos = DB::table('abastecimentos')
-                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente')
+                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente','motoristas.nome')
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('motoristas', 'motoristas.id', 'abastecimentos.motorista_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
@@ -88,11 +90,12 @@ class AbastecimentoController extends Controller
                     ->paginate();
             } else {
                 $abastecimentos = DB::table('abastecimentos')
-                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente')
+                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente','motoristas.nome')
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    ->leftJoin('motoristas', 'motoristas.id', 'abastecimentos.motorista_id')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
                     /* ->orderBy('abastecimentos.id', 'desc') */
