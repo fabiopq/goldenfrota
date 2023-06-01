@@ -126,12 +126,26 @@
                             'label' => 'Atendente',
                             'required' => true,
                             'items' => $atendentes,
-                            'inputSize' => 12,
+                            'inputSize' => 6,
                             'displayField' => 'nome_atendente',
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'indexSelected' => $abastecimento->atendente_id,
+                            'disabled' => ($abastecimento->eh_afericao)
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'motorista_id',
+                            'label' => 'Motorista',
+                            'required' => true,
+                            'items' => $motoristas,
+                            'inputSize' => 6,
+                            'displayField' => 'nome',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'indexSelected' => $abastecimento->motorista_id,
                             'disabled' => ($abastecimento->eh_afericao)
                         ]
                     ]

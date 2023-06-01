@@ -70,6 +70,7 @@ Route::get('tanques', 'TanqueController@apiTanques');
 Route::get('bicos', 'BicoController@apiBicos');
 
 Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
+Route::get('abastecimentoscodigo', 'AbastecimentoController@apiAbastecimentosCodigo');
 Route::get('abastecimentossemplaca', 'AbastecimentoController@apiAbastecimentosSemPlaca');
 Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');

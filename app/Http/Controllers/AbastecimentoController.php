@@ -24,6 +24,7 @@ use App\Http\Controllers\BicoController;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\AfericaoController;
 use App\Http\Controllers\MovimentacaoCombustivelController;
+use App\Motorista;
 use App\MovimentacaoCredito;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -262,6 +263,9 @@ class AbastecimentoController extends Controller
             $atendentes = Atendente::where('ativo', true)
                 ->orWhere('id', $abastecimento->atendente_id)
                 ->get();
+            $motoristas = Motorista::where('ativo', true)
+                ->orWhere('id', $abastecimento->motorista_id)
+                ->get();
 
             return View('abastecimento.edit', [
                 'abastecimento' => $abastecimento,
@@ -269,7 +273,8 @@ class AbastecimentoController extends Controller
                 'cliente' => $cliente,
                 'bicos' => $bicos,
                 'veiculos' => $veiculos,
-                'atendentes' => $atendentes
+                'atendentes' => $atendentes,
+                'motoristas' => $motoristas
             ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
@@ -311,6 +316,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, true);
                 $abastecimento->atendente_id = $request->atendente_id;
+                $abastecimento->motorista_id = $request->motorista_id;
                 //$abastecimento->bico_id = $request->bico_id;
                 //$abastecimento->encerrante_inicial= $request->encerrante_inicial;
                 //$abastecimento->encerrante_final = $request->encerrante_final;
@@ -514,7 +520,7 @@ class AbastecimentoController extends Controller
                 }
             }
         } catch (\Exception $e) {
-           // Log::debug($e);
+            // Log::debug($e);
             throw new \Exception($e->getMessage());
         }
     }
@@ -1249,8 +1255,8 @@ class AbastecimentoController extends Controller
             //$abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
 
             $abastecimento->id_automacao = $request->id; //campo com id do abastecimento na memoria
-            
-            if ($request->veiculo_id > 0){
+
+            if ($request->veiculo_id > 0) {
                 $abastecimento->veiculo_id = $request->veiculo_id;
             }
             $abastecimento->km_veiculo = $request->km_veiculo;
@@ -1260,7 +1266,7 @@ class AbastecimentoController extends Controller
             $abastecimento->abastecimento_local = false;
             $abastecimento->media_veiculo = 0;
             $abastecimento->motorista_id = $request->motorista_id;
-            
+
             if ($request->bico_id) {
 
                 $abastecimento->bico_id = $request->bico_id;
@@ -1275,17 +1281,16 @@ class AbastecimentoController extends Controller
             // dd($bico);
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
-            
+
             if ($request->atendente_id) {
-                    
-                $abastecimento->atendente_id = $request->atendente_id;  
-               
+
+                $abastecimento->atendente_id = $request->atendente_id;
             }
-            
+
             if (!$request->veiculo_id) {
-                
-               
-                    
+
+
+
 
                 if ($request->tag_atendente) {
 
@@ -1316,33 +1321,30 @@ class AbastecimentoController extends Controller
 
                             $abastecimento->veiculo_id = $veiculo->id;
                             $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
-                            
                         }
                     }
                 }
             } else {
-                
+
 
                 Log::debug('Abastecimento recebido na api : ' . $abastecimento);
                 // verifica se nao veio veiculo no arquivo
-                
+
                 $abastecimento->veiculo_id = $request->veiculo_id;
-                
             }
 
             if ($abastecimento->veiculo_id) {
-                
-                
+
+
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
-                
             } else {
                 $abastecimento->media_veiculo = 0;
             }
-            
+
             Log::debug('Abastecimento recebido na api : ' . $abastecimento);
             //$veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
 
-            
+
 
             // dd($abastecimentos. $abastecimento->volume_abastecimento);
 
@@ -1374,9 +1376,9 @@ class AbastecimentoController extends Controller
 
             //dd($abastecimento->data_hora_abastecimento);
             //$abastecimento->save();
-            
+
             if ($abastecimento->save()) {
-                
+
                 Log::debug('abastecimento salvo  : ' . $abastecimento);
                 //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                 MovimentacaoCreditoController::saidaCredito2($abastecimento);
@@ -1477,5 +1479,42 @@ class AbastecimentoController extends Controller
             ]));
             return redirect()->back();
         }
+    }
+
+    public function apiAbastecimentosCodigo(Request $request)
+    {
+        $data_inicial = $request->data_inicial;
+        $data_final = $request->data_final;
+        $parametros = array();
+
+
+        $whereData = 'abastecimentos.id >' . $request->codigo;
+
+
+        return response()->json(DB::table('abastecimentos')
+            ->select(
+                'abastecimentos.data_hora_abastecimento as DtAbastecimento',
+                'abastecimentos.requisicao_abastecimento as NrDocumento',
+                'abastecimentos.km_veiculo as NrQuilometragem',
+                // 'abastecimentos.km_veiculo as NrOdometro', 
+                'abastecimentos.volume_abastecimento as QtdeLitro',
+                'abastecimentos.valor_abastecimento as VlrTotal',
+                DB::raw('replace(veiculos.placa,"-","") as Placa'),
+                'motoristas.cpf as CpfMotorista',
+                'bicos.id as CdBomba',
+                'combustiveis.descricao as TipoCombustivel'
+            )
+            ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+            ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
+            ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+            ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
+            ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->leftJoin('motoristas', 'motoristas.id', 'abastecimentos.motorista_id')
+            ->whereRaw($whereData)
+            //->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
+            //->orderBy('abastecimentos.id')
+            ->get());
     }
 }
