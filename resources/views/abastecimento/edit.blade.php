@@ -60,11 +60,13 @@
                             'items' => null,
                             'inputSize' => 6,
                             'displayField' => 'placa',
+                            'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'indexSelected' => $abastecimento->veiculo_id,
                             'disabled' => ($abastecimento->eh_afericao)
                         ],
+                        
                         [
                             'type' => 'number',
                             'field' => 'km_veiculo',
