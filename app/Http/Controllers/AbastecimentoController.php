@@ -74,7 +74,7 @@ class AbastecimentoController extends Controller
 
             if (isset($request->searchField)) {
                 $abastecimentos = DB::table('abastecimentos')
-                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente','motoristas.nome')
+                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente', 'motoristas.nome')
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
@@ -90,7 +90,7 @@ class AbastecimentoController extends Controller
                     ->paginate();
             } else {
                 $abastecimentos = DB::table('abastecimentos')
-                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente','motoristas.nome')
+                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente', 'motoristas.nome')
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
@@ -1245,7 +1245,15 @@ class AbastecimentoController extends Controller
 
     {
 
+
+
         try {
+
+            $cfgPreco = DB::table('settings')
+                ->select('settings.value')
+                ->where('settings.key', 'automacao_valor_combustivel')
+                ->first();
+
             DB::beginTransaction();
 
             $abastecimento = new Abastecimento;
@@ -1262,10 +1270,28 @@ class AbastecimentoController extends Controller
             if ($request->veiculo_id > 0) {
                 $abastecimento->veiculo_id = $request->veiculo_id;
             }
+
+            if ($cfgPreco->value) {
+
+                $preco = DB::table('combustiveis')
+                    ->select('combustiveis.valor')
+                    ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
+                    ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
+                    ->where('bicos.id', '=', trim($request->bico_id))
+                    ->first();
+
+                if (!$preco) {
+                } else {
+                    //$abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($request->volume_abastecimento), 3) * $preco->valor);
+                    $abastecimento->valor_abastecimento = ($request->volume_abastecimento * $preco->valor);
+                    $abastecimento->valor_litro = $preco->valor;
+                }
+            } else {
+                $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
+                $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
+            }
             $abastecimento->km_veiculo = $request->km_veiculo;
             $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
-            $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
-            $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
             $abastecimento->abastecimento_local = false;
             $abastecimento->media_veiculo = 0;
             $abastecimento->motorista_id = $request->motorista_id;
@@ -1497,13 +1523,13 @@ class AbastecimentoController extends Controller
         return response()->json(DB::table('abastecimentos')
             ->select(
                 'abastecimentos.data_hora_abastecimento as DtAbastecimento',
-                'abastecimentos.requisicao_abastecimento as NrDocumento',
+                'abastecimentos.id as NrDocumento',
                 'abastecimentos.km_veiculo as NrQuilometragem',
                 // 'abastecimentos.km_veiculo as NrOdometro', 
-               // 'abastecimentos.volume_abastecimento as QtdeLitro',
+                // 'abastecimentos.volume_abastecimento as QtdeLitro',
                 DB::raw('format(abastecimentos.volume_abastecimento,2) as QtdeLitro'),
                 DB::raw('format(abastecimentos.valor_abastecimento,2) as VlrTotal'),
-               // 'abastecimentos.valor_abastecimento as VlrTotal',
+                // 'abastecimentos.valor_abastecimento as VlrTotal',
                 DB::raw('replace(veiculos.placa,"-","") as Placa'),
                 'motoristas.cpf as CpfMotorista',
                 'bicos.id as CdBomba',
