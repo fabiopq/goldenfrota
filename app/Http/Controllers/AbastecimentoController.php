@@ -1245,8 +1245,6 @@ class AbastecimentoController extends Controller
 
     {
 
-
-
         try {
 
             $cfgPreco = DB::table('settings')
@@ -1451,7 +1449,7 @@ class AbastecimentoController extends Controller
                 }
                 return response()->json($abastecimento, 201);
             } else {
-
+                
                 return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
             }
             //} else {
@@ -1464,7 +1462,8 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
-            //Log::debug($e);
+            Log::debug($e);
+           
             return response()->json(["Erro" => "Abastecimento nao iserido"], 301);
         }
     }
