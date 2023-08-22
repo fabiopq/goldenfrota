@@ -1255,6 +1255,8 @@ class AbastecimentoController extends Controller
             DB::beginTransaction();
 
             $abastecimento = new Abastecimento;
+            $veiculo = new Veiculo();
+            $atendente = new Atendente();
             if ($request->data_hora_abastecimento) {
                 $abastecimento->data_hora_abastecimento = $request->data_hora_abastecimento;
             } else {
@@ -1305,104 +1307,55 @@ class AbastecimentoController extends Controller
                     $abastecimento->bico_id = $bico->id;
                 }
             }
-            // dd($bico);
+
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
 
             if ($request->atendente_id) {
 
-                $abastecimento->atendente_id = $request->atendente_id;
-            }
+                $atendente = Atendente::where('id', '=', $request->atendente_id)->first();
+                if ($atendente) {
 
-            if (!$request->veiculo_id) {
-
-
-
-
-                if ($request->tag_atendente) {
-
-
+                    $abastecimento->atendente_id = $request->atendente_id;
+                } else if ($request->tag_atendente) {
                     $atendente = Atendente::where('senha_atendente', '=', $request->tag_atendente)->first();
+
                     if ($atendente) {
-                        //dd($atendente);
+
                         $abastecimento->atendente_id = $atendente->id;
-                        $veiculo = Veiculo::where('id', '=', $atendente->veiculo_id)->first();
-
-
-                        if ($veiculo) {
-
-                            $abastecimento->veiculo_id = $veiculo->id;
-                        } else {
-
-                            $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
-                        }
-
-                        if ($veiculo) {
-                            $abastecimento->veiculo_id = $veiculo->id;
-                        }
-                    } else {
-                        $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
-
-
-                        if ($veiculo) {
-
-                            $abastecimento->veiculo_id = $veiculo->id;
-                            $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
-                        }
                     }
                 }
-            } else {
-
-
-                Log::debug('Abastecimento recebido na api : ' . $abastecimento);
-                // verifica se nao veio veiculo no arquivo
-
-                $abastecimento->veiculo_id = $request->veiculo_id;
             }
 
-            if ($abastecimento->veiculo_id) {
 
+            if ($request->veiculo_id) {
 
-                $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
-            } else {
-                $abastecimento->media_veiculo = 0;
+                $veiculo = Veiculo::where('id', '=', $request->veiculo_id)->first();
+                if ($veiculo) {
+
+                    $abastecimento->veiculo_id = $veiculo->id;
+                } else if ($request->tag_atendente) {
+                    
+                    $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
+                    if ($veiculo) {
+                        $abastecimento->veiculo_id = $veiculo->id;
+                    }
+                }
+                if ($veiculo) {
+
+                    $abastecimento->veiculo_id = $veiculo->id;
+                    $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                    // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
+
+                    Log::debug('Abastecimento recebido na api : ' . $abastecimento);
+                } else {
+                    $abastecimento->veiculo_id = null;
+                    $abastecimento->media_veiculo = 0;
+                }
             }
 
-            Log::debug('Abastecimento recebido na api : ' . $abastecimento);
-            //$veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
+            
 
-
-
-            // dd($abastecimentos. $abastecimento->volume_abastecimento);
-
-
-            //Log::debug('data iniciio '. $dataInicio);
-            /*$dataInicio = \DateTime::createFromFormat(
-                'Y-m-d H:i:s',
-                //Abastecimento::whereNotNull('id_automacao')
-                Abastecimento::where('volume_abastecimento', '=', '7.653')
-                    ->orderBy('data_hora_abastecimento', 'desc')
-                    ->pluck('data_hora_abastecimento')
-                    ->first()
-            );
-*/
-
-
-            /*
-
-            $dataAbastecimento = \DateTime::createFromFormat(
-                'Y-m-d H:i:s',
-                $abastecimento->data_hora_abastecimento
-            );
-            */
-
-            //dd($dataAbastecimento);
-
-
-            // if ($dataAbastecimento > $dataInicio) {
-
-            //dd($abastecimento->data_hora_abastecimento);
-            //$abastecimento->save();
 
             if ($abastecimento->save()) {
 
@@ -1449,7 +1402,7 @@ class AbastecimentoController extends Controller
                 }
                 return response()->json($abastecimento, 201);
             } else {
-                
+
                 return response()->json(["Erro" => "Abastecimento nao iserido"], 201);
             }
             //} else {
@@ -1463,7 +1416,7 @@ class AbastecimentoController extends Controller
                 'exception' => $e->getMessage()
             ]));
             Log::debug($e);
-           
+
             return response()->json(["Erro" => "Abastecimento nao iserido"], 301);
         }
     }
