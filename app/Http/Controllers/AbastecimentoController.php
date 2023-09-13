@@ -1335,7 +1335,7 @@ class AbastecimentoController extends Controller
 
                     $abastecimento->veiculo_id = $veiculo->id;
                 } else if ($request->tag_atendente) {
-                    
+
                     $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
                     if ($veiculo) {
                         $abastecimento->veiculo_id = $veiculo->id;
@@ -1354,10 +1354,21 @@ class AbastecimentoController extends Controller
                 }
             }
 
-            
+
 
 
             if ($abastecimento->save()) {
+
+                if ($veiculo) {
+                    if ($veiculo->km_veiculo) {
+                        $veiculoupdateKm = new Veiculo();
+                        $veiculoupdateKm->id = $veiculo->id;
+                        $veiculoupdateKm->km_veiculo = $veiculo->km_veiculo;
+
+                        $veiculoupdateKm->save();
+                    }
+                }
+
 
                 Log::debug('abastecimento salvo  : ' . $abastecimento);
                 //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
