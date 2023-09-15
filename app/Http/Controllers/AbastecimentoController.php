@@ -1358,16 +1358,13 @@ class AbastecimentoController extends Controller
 
 
             if ($abastecimento->save()) {
-
-                if ($veiculo) {
-                    if ($veiculo->km_veiculo) {
-                        $veiculoupdateKm = new Veiculo();
-                        $veiculoupdateKm->id = $veiculo->id;
-                        $veiculoupdateKm->km_veiculo = $veiculo->km_veiculo;
-
-                        $veiculoupdateKm->save();
-                    }
+                try {
+                    VeiculoController::atualizaKmVeiculo($abastecimento);
+                } catch (\Exception $e) {
+                    Session::flash('error', 'Ocorreu um erro ao atualizar os dados do veiculo. ' . $e->getMessage());
                 }
+
+
 
 
                 Log::debug('abastecimento salvo  : ' . $abastecimento);

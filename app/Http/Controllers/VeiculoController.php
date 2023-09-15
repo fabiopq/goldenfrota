@@ -43,8 +43,8 @@ class VeiculoController extends Controller
      */
     public function index(Request $request)
     {
-        
-       
+
+
         if (isset($request->searchField)) {
             $veiculos = DB::table('veiculos')
                 ->select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo', 'clientes.nome_razao', 'grupo_veiculos.grupo_veiculo', 'departamentos.departamento')
@@ -615,22 +615,18 @@ class VeiculoController extends Controller
     {
         try {
 
+            if ($abastecimento->km_veiculo) {
+                $veiculo = Veiculo::find($abastecimento->veiculo->id);
 
-            $veiculo = Veiculo::find($abastecimento->veiculo->id);
-
-            $veiculo->hodometro = $abastecimento->km_veiculo;
-
-
-
-            if ($veiculo->save()) {
+                $veiculo->hodometro = $abastecimento->km_veiculo;
 
 
-                //Log::info('Depois Update Veiculo: ' . $veiculo . ' importado da Automação.');
 
-                // event(new NovoRegistroAtualizacaoApp($veiculo));
+                if ($veiculo->save()) {
 
 
-                return true;
+                    return true;
+                }
             }
         } catch (\Exception $e) {
             dd($e);
