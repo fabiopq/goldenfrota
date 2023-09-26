@@ -92,5 +92,6 @@ Route::get('roles', 'RolesController@apiRoles');
 Route::get('saldos', 'MovimentacaoCreditoController@saldosapi');
 Route::get('limites', 'MovimentacaoCreditoController@limitesapi');
 Route::get('ultimasentradascomb', 'DashboardController@ultimasEntradasComb');
+Route::get('abastecimentoshoje', 'DashboardController@abastecimentosHoje');
 
 
