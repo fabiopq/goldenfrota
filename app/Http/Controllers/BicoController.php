@@ -217,6 +217,7 @@ class BicoController extends Controller
         ->join('tanques', 'tanques.id', 'bicos.tanque_id')
         ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
         ->join('bombas', 'bombas.id', 'bicos.bomba_id')
+        ->orderBy('bicos.id')
         ->get());
         
     }
