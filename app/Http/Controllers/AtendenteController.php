@@ -188,7 +188,9 @@ class AtendenteController extends Controller
     public function apiAtendentes()
     {
         return response()->json(DB::table('atendentes')
-            ->select('atendentes.*')->get());
+            ->select('atendentes.*')
+            ->where('ativo', true)
+            ->get());
     }
 
     /**
