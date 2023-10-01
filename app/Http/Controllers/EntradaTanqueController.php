@@ -244,55 +244,30 @@ class EntradaTanqueController extends Controller
         $parametros = array();
         $estoquesId = array();
 
-        if ($request->estoque_id == null) {
-            $whereEstoque = 'estoques.ativo = 1';
-            $parametros[] = 'Estoque: Todos';
-        } else {
-            $whereEstoque = 'estoques.id = ' . $request->estoque_id;
-            $parametros[] = 'Estoque: ' . Estoque::find($request->estoque_id)->estoque;
-        }
-
-        if (isset($request->produto_id) && $request->produto_id != null) {
-            $whereProduto = 'produtos.id = ' . $request->produto_id;
-            $whereGrupoProduto = '1 = 1';
-            $parametros[] = 'Produto: ' . Produto::find($request->produto_id)->produto_descricao;
-        } else {
-            if (isset($request->grupo_produto_id) && $request->grupo_produto_id != null) {
-                $whereGrupoProduto = 'grupo_produtos.id = ' . $request->grupo_produto_id;
-                $whereProduto = '1 = 1';
-                $parametros[] = 'Grupo de Produtos: ' . GrupoProduto::find($request->grupo_produto_id)->grupo_produto;
-            } else {
-                $whereGrupoProduto = '1 = 1';
-                $whereProduto = '1 = 1';
-                $parametros[] = 'Grupo de Produtos: Todos';
-            }
-        }
+       
 
         $fornecedor_id = $request->fornecedor_id;
         $combustivel_id = $request->combustivel_id;
 
         if ($fornecedor_id > 0) {
             array_push($parametros, 'Fornecedor: ' . Fornecedor::find($fornecedor_id)->nome_razao);
+            $whereParam = 'fornecedor_id = ' . $request->fornecedor_id;
+        }else{
+            $parametros[] = 'Fornecedor: Todos'; 
+            $whereParam = '1 = 1' ;
         }
 
         if ($combustivel_id > 0) {
             array_push($parametros, 'Combustivel: ' . Combustivel::find($combustivel_id)->descricao);
-        }
-
-        if ($request->fornecedor_id > 0) {
-            $whereParam = 'fornecedor_id = ' . $request->fornecedor_id;
-        }else{
-            $whereParam = '1 = 1' ;
-        }
-
-        if ($request->combustivel_id > 0) {
             $whereCombustivel = 'tanques.combustivel_id = ' . $request->combustivel_id;
         }else{
+            $parametros[] = 'Combutivel: Todos'; 
             $whereCombustivel = '1 = 1' ;
         }
 
+       
 
-
+       
         if ($data_inicial && $data_final) {
             $whereData = 'data_entrada between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
             array_push($parametros, 'Período de ' . $data_inicial . ' até ' . $data_final);
