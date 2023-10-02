@@ -281,8 +281,12 @@ class EntradaTanqueController extends Controller
             $whereData = '1 = 1'; //busca qualquer coisa
         }
 
+      
+
+       
+       
         $entradas = DB::table('entrada_tanques')
-            ->select('entrada_tanques.*', 'fornecedores.nome_razao')
+            ->select('entrada_tanques.*', 'fornecedores.nome_razao','fornecedores.id as fornecedor_id')
             ->leftJoin('fornecedores', 'fornecedores.id', 'entrada_tanques.fornecedor_id')
             ->leftJoin('entrada_tanque_items', 'entrada_tanque_items.entrada_tanque_id', 'entrada_tanques.id')
             ->leftJoin('tanques', 'tanques.id', 'entrada_tanque_items.tanque_id')
@@ -292,6 +296,7 @@ class EntradaTanqueController extends Controller
             ->whereRaw($whereData)
             ->whereRaw($whereParam)
             ->whereRaw($whereCombustivel)
+            ->orderBy('fornecedores.nome_razao', 'asc')
             ->orderBy('entrada_tanques.data_doc', 'asc')
             ->distinct()
             ->get();

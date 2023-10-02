@@ -4,24 +4,21 @@
 @php
 $volumeTotal = 0;
 $valorTotal = 0;
+$fornecedor = 0;
 @endphp
 
 @foreach($entradas as $entrada)
+
 <table class="table table-sm report-table">
-    <thead>
-        <tr class="info">
-            <td>
-                <h4>Fornecedor: {{ $entrada->nome_razao }}</h4>
-            </td>
-        </tr>
-    </thead>
+
     <tbody>
         <tr>
-            <td colspan=5>
+            <td colspan=4>
 
 
                 <table class="table table-sm report-table">
                     <thead>
+
                         <tr class="info">
                             <td colspan=4>
                                 <strong>Fornecedor: {{ $entrada->nome_razao }}</strong>
@@ -30,6 +27,12 @@ $valorTotal = 0;
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                Data
+                            </td>
+                            <td>
+                                Doc.
+                            </td>
                             <td>
                                 Tanque
                             </td>
@@ -48,15 +51,24 @@ $valorTotal = 0;
                             </td>
                         </tr>
                     </thead>
+
+
+
                     <tbody>
                         @foreach($entrada->itens as $produto)
-                        @php
-                            $volumeTotal += $produto->quantidade;
-                            $valorTotal += $produto->quantidade * $produto->valor_unitario;
+                         @php
+                          $volumeTotal += $produto->quantidade;
+                          $valorTotal += $produto->quantidade * $produto->valor_unitario;
                          @endphp
 
 
                         <tr>
+                            <td>
+                                {{ date_format(date_create($entrada->data_doc), 'd/m/Y H:i:s') }}
+                            </td>
+                            <td>
+                                {{ $entrada->nr_docto }}
+                            </td>
                             <td>
                                 {{ $produto->tanque_id }}
                             </td>
@@ -82,6 +94,7 @@ $valorTotal = 0;
         </tr>
     </tbody>
 </table>
+
 @endforeach
 <table class="table table-sm report-table">
     <tbody>
