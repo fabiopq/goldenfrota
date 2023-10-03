@@ -1188,11 +1188,12 @@ class AbastecimentoController extends Controller
         // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel', 'veiculos.placa', 'clientes.nome_razao', 'veiculos.cliente_id')
+            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel', 'veiculos.placa', 'modelo_veiculos.modelo_veiculo','clientes.nome_razao', 'veiculos.cliente_id')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
             ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
             ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+            ->leftJoin('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
