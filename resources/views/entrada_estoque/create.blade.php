@@ -20,7 +20,8 @@
                             'label' => 'Nr. Doc.',
                             'required' => true,
                             'autofocus' => true,
-                            'inputSize' => 3
+                            'inputSize' => 3,
+                            ''
                         ],
                         [
                             'type' => 'text',

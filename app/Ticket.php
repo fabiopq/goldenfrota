@@ -11,12 +11,18 @@ class Ticket extends Model
 {
     protected $fillable = [
         'cliente_id',
+        'cliente_nome',
+        'data_abartura',
+        'data_ultima_alteracao',
+        'atendente_atribuido_id',
         'user_id',
         'titulo',
-        'data_abertura',
-        'data_fechamento',
         'ticket_status_id',
         'ticket_prioridade_id',
+        'problema',
+        'solucao',
+        'ticket_grupo_id',
+        
 
     ];
 

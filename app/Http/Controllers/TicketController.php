@@ -2,19 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Atendente;
 use App\User;
 use App\Cliente;
-use App\Estoque;
-use App\Veiculo;
-use App\Produto;
-use App\Servico;
-use App\Parametro;
-use App\OrdemServico;
-use App\VencimentoProduto;
-use App\Departamento;
-use App\OrdemServicoStatus;
-use App\MovimentacaoProduto;
-use App\OrdemServicoProduto;
+use App\Atendentes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +34,7 @@ class TicketController extends Controller
     {
         $teste = 'a';
         //if (Auth::user()->canListarticket()) {
-            if ($teste) {
+        if ($teste) {
 
             $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
@@ -67,10 +58,10 @@ class TicketController extends Controller
                     ->select('tickets.*', 'clientes.nome_razao', 'users.name', 'ticket_status.status')
                     ->leftJoin('clientes', 'clientes.id', 'tickets.cliente_id')
                     ->leftJoin('users', 'users.id', 'tickets.user_id')
-                    ->leftJoin('ticket_status', 'ticket_status.id', 'ticket_status_id')
+                    ->leftJoin('ticket_status', 'ticket_status.id', 'tickets.ticket_status_id')
                     ->where('tickets.id', $request->searchField)
                     ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
-                    // ->whereRaw('((tickets.ticket_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
+                    // ->whereRaw('((tickets.tickets_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
                     ->whereRaw($whereData)
                     ->orderBy('id', 'desc')
                     ->paginate();
@@ -80,10 +71,10 @@ class TicketController extends Controller
                     ->select('ticket_status.*');
 
                 $tickets = DB::table('tickets')
-                    ->select('tickets.*', 'clientes.nome_razao',  'users.name', 'tickets_status.status')
+                    ->select('tickets.*', 'clientes.nome_razao',  'users.name', 'ticket_status.status')
                     ->leftJoin('clientes', 'clientes.id', 'tickets.cliente_id')
                     ->leftJoin('users', 'users.id', 'tickets.user_id')
-                    ->leftJoin('tickets_status', 'tickets_status.id', 'tickets_status_id')
+                    ->leftJoin('ticket_status', 'ticket_status.id', 'tickets.ticket_status_id')
                     //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
                     ->whereRaw($whereData)
                     ->orderBy('id', 'desc')
@@ -111,13 +102,11 @@ class TicketController extends Controller
     {
         if (Auth::user()->canCadastrarTicket()) {
             $clientes = Cliente::where('ativo', true)->orderBy('nome_razao', 'asc')->get();
-            $ticketStatus = TicketStatus::orderBy('status', 'asc')->get();
+            $ticketStatus = TicketStatus::orderBy('descricao', 'asc')->get();
+            $atendentes = Atendente::orderBy('nome_atendente', 'asc')->get();
 
-            return View('ticket.create', [
-                'clientes' => $clientes,
-
-                'ticketStatus' => $ticketStatus
-            ]);
+            return View('ticket.create')->withClientes($clientes)->withTicketStatus($ticketStatus)
+            ->withAtendentes($atendentes);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();

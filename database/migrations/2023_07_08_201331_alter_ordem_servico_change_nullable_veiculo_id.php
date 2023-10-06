@@ -15,9 +15,10 @@ class AlterOrdemServicoChangeNullableVeiculoId extends Migration
     {
         Schema::table('ordem_servicos', function (Blueprint $table) {
             
-           // $table->integer('veiculo_id')->nullable()->change();
+           // $table->integer('veiculo_id')->change();
            // $table->dropForeign('veiculo_id');
-            $table->dropConstrainedForeignId('veiculo_id');
+           // $table->dropConstrainedForeignId('veiculo_id');
+            //$table->dropForeign('veiculo_id');
         });
     }
 

@@ -11,7 +11,7 @@
 {{-- {{ dd($routeUrl .= (count(Request()->all()) > 0) ? '?'.http_build_query(Request()->all()) : '') }} --}}
 
 @if($title != '')
-    <div class="card-header"><h3>{{__($title)}}</h3></div>
+    <div class="card-header"><h4>{{__($title)}}</h4></div>
 @endif
 <div class="card-body mb-5">
     <form class="form" {{isset($formTarget) ? 'target='.$formTarget : ''}} role="form" method="POST" action="{{$routeUrl}}" {{$fileUpload}}>
