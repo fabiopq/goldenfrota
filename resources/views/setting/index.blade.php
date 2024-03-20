@@ -53,7 +53,8 @@
                                             'field' => 'groups['.$group->id.']['.$setting->key.']',
                                             'label' => $setting->description,
                                             'items' => array('Não', 'Sim'),
-                                            'indexSelected' => $setting->value
+                                            'indexSelected' => $setting->value,
+                                            'inputSize' => 2,
                                         ]
                                     ]
                                 ])

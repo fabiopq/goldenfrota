@@ -54,7 +54,7 @@
     'label' => 'Unidade',
     'required' => true,
     'items' => $unidades,
-    'inputSize' => 4,
+    'inputSize' => 2,
     'displayField' => 'unidade',
     'keyField' => 'id',
     'liveSearch' => true,
@@ -63,13 +63,13 @@
     'type' => 'number',
     'field' => 'valor_custo',
     'label' => 'Preço de Custo',
-    'inputSize' => 4
+    'inputSize' => 2
     ],
     [
     'type' => 'number',
     'field' => 'valor_venda',
     'label' => 'Preço de Venda',
-    'inputSize' => 4
+    'inputSize' => 2
     ]
     ]
     ])
@@ -80,7 +80,7 @@
     'type' => 'select',
     'field' => 'controla_vencimento',
     'label' => 'Controla Vencimento',
-    'inputSize' => 3,
+    'inputSize' => 2,
     'items' => Array('Não', 'Sim'),
     ],
     [
@@ -88,14 +88,14 @@
     'field' => 'vencimento_dias',
     'label' => 'Vencimento em Dias',
     'readOnly' => true,
-    'inputSize' => 3
+    'inputSize' => 2
     ],
     [
     'type' => 'number',
     'field' => 'vencimento_km',
     'label' => 'Vencimento em Km',
     'readOnly' => true,
-    'inputSize' => 3
+    'inputSize' => 2
     ],
     [
     'type' => 'number',
@@ -113,13 +113,13 @@
     'type' => 'text',
     'field' => 'numero_serie',
     'label' => 'Número de Série',
-    'inputSize' => 6
+    'inputSize' => 4
     ],
     [
     'type' => 'text',
     'field' => 'codigo_barras',
     'label' => 'Código de Barras',
-    'inputSize' => 6
+    'inputSize' => 4
     ]
     ]
     ])
@@ -205,10 +205,10 @@ $('#unidade_id').append($('<option>', {
     }
 
 
-    
+
     $('#unidade_id').on('changed.bs.select', buscarUnidades);
 
-    
+
     @endpush
     @push('bottom-scripts')
     <script src="{{ mix('js/estoqueproduto.js') }}"></script>

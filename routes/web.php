@@ -26,6 +26,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::put('/alterar_senha/{user}', 'UserController@changePassword')->name('user.change.password');
 
     Route::resource('/combustivel', 'CombustivelController')->except('show');
+    
     Route::resource('/tipo_bomba', 'TipoBombaController')->except('show');
     Route::resource('/modelo_bomba', 'ModeloBombaController')->except('show');
     Route::resource('/tanque', 'TanqueController')->except('show');
@@ -172,6 +173,8 @@ Route::get(
         return response()->download($file);
     }
 )->middleware('auth');
+
+Route::resource('/posto_abastecimento', 'PostoAbastecimentoController')->except('show');
 
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');

@@ -174,12 +174,14 @@ class AbastecimentoController extends Controller
                     $abastecimento->media_veiculo = 0;
                 }
                 $abastecimento->eh_afericao = (bool)$request->eh_afericao;
-
+                
                 if ($abastecimento->save()) {
-
+                    
                     if ($request->bico_id) {
+                        
                         /* Se for aferição, faz a movimentação de saída e entrada por aferição */
                         if (isset($request->eh_afericao) && ($request->eh_afericao)) {
+                            
                             $afericao = Afericao::create([
                                 'abastecimento_id' => $abastecimento->id,
                                 'user_id' => Auth::user()->id
@@ -188,7 +190,9 @@ class AbastecimentoController extends Controller
                             MovimentacaoCombustivelController::cadastroAfericao($afericao);
                         } else {
                             /* Se informado o bico, movimenta o estoque do tanque */
+                            
                             MovimentacaoCreditoController::saidaCredito2($abastecimento);
+                            
                             MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                         }
 
@@ -536,7 +540,7 @@ class AbastecimentoController extends Controller
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
             ->where('veiculos.ativo', true)
             ->get();
-        //dd($veiculos);
+        
         return View('abastecimento.relatorio_param')->withClientes($clientes)->withVeiculos($veiculos);
     }
 
@@ -626,7 +630,7 @@ class AbastecimentoController extends Controller
             ->orderBy('clientes.nome_razao', 'asc')
             ->distinct()
             ->get();
-        //dd($clientes);
+        
 
         $clientesNullo = DB::table('abastecimentos')
             ->select(
@@ -669,8 +673,7 @@ class AbastecimentoController extends Controller
             // ->orderBy('clientes.nome_razao', 'asc')
             ->distinct()
             ->get();
-        // dd($clientesNullo);
-        //dd($request->tipo_relatorio);
+     
         if ($request->tipo_relatorio == 1) {
             /* relatório Sintético */
 
@@ -702,7 +705,7 @@ class AbastecimentoController extends Controller
                     ->groupBy('veiculos.placa')
                     ->get();
                 //->toSql();
-                //dd($cliente->id);
+                
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
@@ -1188,7 +1191,7 @@ class AbastecimentoController extends Controller
         // parametro de data precisa ser entre as datas. necessario data inicial e final
 
         return response()->json(DB::table('abastecimentos')
-            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel', 'veiculos.placa','clientes.nome_razao', 'veiculos.cliente_id')
+            ->select('abastecimentos.*', 'combustiveis.descricao as combustivel', 'veiculos.placa', 'clientes.nome_razao', 'veiculos.cliente_id')
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
             ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')

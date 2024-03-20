@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class CreateTipoMovimentacaoCredito extends Migration
 {
@@ -19,6 +20,12 @@ class CreateTipoMovimentacaoCredito extends Migration
             $table->boolean('ativo')->default(true);
             $table->timestamps();
         });
+
+        DB::table('tipo_movimentacao_credito')->insert([
+            ['tipo_movimentacao_credito' => 'Entrada', 'ativo' => true],
+            ['tipo_movimentacao_credito' => 'Saida', 'ativo' => true],
+            
+        ]);
         
     }
 

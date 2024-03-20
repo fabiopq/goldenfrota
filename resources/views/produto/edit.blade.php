@@ -57,7 +57,7 @@
                             'label' => 'Unidade',
                             'required' => true,
                             'items' => $unidades,
-                            'inputSize' => 4,
+                            'inputSize' => 2,
                             'displayField' => 'unidade',
                             'keyField' => 'id',
                             'liveSearch' => true,
@@ -67,14 +67,14 @@
                             'type' => 'number',
                             'field' => 'valor_custo',
                             'label' => 'Preço de Custo',
-                            'inputSize' => 4,
+                            'inputSize' => 2,
                             'inputValue' => $produto->valor_custo
                         ],
                         [
                             'type' => 'number',
                             'field' => 'valor_venda',
                             'label' => 'Preço de Venda',
-                            'inputSize' => 4,
+                            'inputSize' => 2,
                             'inputValue' => $produto->valor_venda
                         ]
                     ]
@@ -86,7 +86,7 @@
                             'type' => 'select',
                             'field' => 'controla_vencimento',
                             'label' => 'Controla Vencimento',
-                            'inputSize' => 3,
+                            'inputSize' => 2,
                             'items' => Array('Não', 'Sim'),
                             'indexSelected' => $produto->controla_vencimento
                         ],  
@@ -94,7 +94,7 @@
                             'type' => 'number',
                             'field' => 'vencimento_dias',
                             'label' => 'Vencimento em Dias',
-                            'inputSize' => 3,
+                            'inputSize' => 2,
                             'readOnly' => !$produto->controla_vencimento,
                             'inputValue' => $produto->vencimento_dias
                         ],
@@ -102,7 +102,7 @@
                             'type' => 'number',
                             'field' => 'vencimento_km',
                             'label' => 'Vencimento em Km',
-                            'inputSize' => 3,
+                            'inputSize' => 2,
                             'readOnly' => !$produto->controla_vencimento,
                             'inputValue' => $produto->vencimento_km
                         ],

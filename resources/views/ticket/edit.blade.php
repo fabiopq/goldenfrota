@@ -3,10 +3,10 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Novo Ticket', 
-            'routeUrl' => route('ticket.store'), 
-            'method' => 'POST',
-            'formButtons' => [
+            'title' => 'Alterar Ticket', 
+            'routeUrl' => route('ticket.update', $ticket->id), 
+            'method' => 'PUT',
+                       'formButtons' => [
                 ['type' => 'submit', 'label' => 'Salvar', 'icon' => 'check'],
                 ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
                 ]
@@ -28,22 +28,15 @@
                             'type' => 'select',
                             'field' => 'cliente_id',
                             'label' => 'Cliente',
-                            'required' => false,
+                            'required' => true,
                             'items' => $clientes,
                             'autofocus' => true,
                             'displayField' => 'nome_razao',
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 1 
-                        ],
-                        [
-                            'type' => 'text',
-                            'field' => 'cliente',
-                            'label' => 'Cliente',
-                            'required' => true,
-                            'inputSize' => 4
-                            
+                            'inputSize' => 4,
+                            'indexSelected' => $ticket->cliente_id
                         ],
                         [
                             'type' => 'select',
@@ -56,7 +49,8 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => false,
-                            'inputSize' => 3
+                            'inputSize' => 3,
+                            'indexSelected' => $ticket->ticket_status_id
                         ],
                         [
                             'type' => 'select',
@@ -69,14 +63,16 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => false,
-                            'inputSize' => 3
+                            'inputSize' => 3,
+                            'indexSelected' => $ticket->ticket_prioridade_id
                         ],
                         [
                             'type' => 'text',
                             'field' => 'solicitante',
                             'label' => 'Solicitante',
                             'required' => false,
-                            'inputSize' => 2
+                            'inputSize' => 2,
+                            'inputValue' => $ticket->solicitante,
                             
                         ],                        
                         
@@ -85,7 +81,8 @@
                             'field' => 'titulo',
                             'label' => 'Título',
                             'required' => true,
-                            'inputSize' => 5
+                            'inputSize' => 5,
+                            'inputValue' => $ticket->titulo,
                             
                         ],
                         [
@@ -99,14 +96,13 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 3 
+                            'inputSize' => 3,
+                            'indexSelected' => $ticket->atendente_atribuido_id
                         ],
                     
                     ]
                 ])
                 @endcomponent
-               
-               
                 <div class="card">
                     <div class="card-header">
                         <strong>Detalhes</strong>
@@ -118,18 +114,23 @@
                                     'type' => 'textarea',
                                     'field' => 'problema',
                                     'label' => 'Problema',
-                                    'inputSize' => 6
+                                    'inputSize' => 6,
+                                    'inputValue' => $ticket->problema,
                                 ],
                                 [
                                     'type' => 'textarea',
                                     'field' => 'solucao',
                                     'label' => 'Solução',
-                                    'inputSize' => 6
+                                    'inputSize' => 6,
+                                    'inputValue' => $ticket->solucao,
                                 ]
                             ]             ])
                         @endcomponent
                     </div>
                 </div>
+               
+                
+               
             @endsection
         @endcomponent
         
@@ -139,34 +140,3 @@
                 Abrir modal de demonstração
                 </button>
 @endsection
-@push('document-ready')
-
-
-        
-        var buscarVeiculos = function() {
-            var cliente = {};
-
-            $('#veiculo_id').append($('#cliente_id').val());
-
-           
-            cliente._token = $('input[name="_token"]').val();
-
-           
-        }
-       
-
-        $('#cliente_id').on('changed.bs.select', buscarVeiculos);
-        
-
-        if ($('#cliente_id').val()) {
-            buscarVeiculos();
-        }
-
-        $('#veiculo_id').on('changed.bs.select', (e) => {
-            if ($('#'+e.target.id).find('option:selected').data('tipo-controle-veiculo') == 1) {
-                $('#label__km_veiculo').html('KM do Veículo');
-            } else {
-                $('#label__km_veiculo').html('Horas trabalhadas');
-            }
-        });
-@endpush

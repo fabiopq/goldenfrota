@@ -7,10 +7,9 @@
         'model' => 'ticket',
         'tableTitle' => 'Tickets',
         'displayField' => 'id',
-        'actions' => [
-            ['action' => 'show', 'target' => '_blank'], 'edit', 'destroy'],
-            
-            
-        ]);
+        'actions' => ['edit', 'destroy'],
+        'searchParms' => 'ticket.search_parms', 
+       
+    ]);
     @endcomponent
 @endsection

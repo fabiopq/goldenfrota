@@ -382,13 +382,8 @@ class MovimentacaoCreditoController extends Controller
 
                 $movimentacao = new MovimentacaoCredito();
 
-                //$data_movimentacao = \DateTime::createFromFormat('d/m/Y H:i', $abastecimento->data_hora_abastecimento);
-                // $movimentacao->data_movimentacao = $data_movimentacao->format('Y-m-d H:i:s');
                 $movimentacao->data_movimentacao = $abastecimento->data_hora_abastecimento;
-
                 $movimentacao->cliente_id = $veiculo->cliente_id;
-
-                //$movimentacao->veiculo_id = $request->veiculo_id;
                 $movimentacao->combustivel_id = $abastecimento->combustivel_id;
 
                 $movimentacao->quantidade_movimentada = str_replace(',', '.', $abastecimento->volume_abastecimento);
@@ -399,12 +394,13 @@ class MovimentacaoCreditoController extends Controller
                 $movimentacao->user_id = 1;
                 $movimentacao->tipo_movimentacao_produto_id = 2;
                 $movimentacao->observacao = $abastecimento->observacao;
-                Log::debug('movimentacao credito movimentacao  : ' . $movimentacao);
+                //Log::debug('movimentacao credito movimentacao  : ' . $movimentacao);
+                //DD($movimentacao);
                 $movimentacao->save();
             }
         } catch (\Exception $e) {
             Log::debug($e);
-            throw new \Exception('Erro ao incluir movimentacao de entrada por aferição para o Abastecimento: ' . $abastecimento->id);
+            throw new \Exception('Erro ao incluir movimentacao de credito do abastecimento ' . $abastecimento->id);
         }
     }
 
@@ -415,7 +411,7 @@ class MovimentacaoCreditoController extends Controller
             //DB::beginTransaction();
 
             $movimentacao = new MovimentacaoCredito();
-            //dd($request->data_movimentacao);
+         
             $data_movimentacao = \DateTime::createFromFormat('d/m/Y H:i', $abastecimento->data_hora_abastecimento);
             $movimentacao->data_movimentacao = $data_movimentacao->format('Y-m-d H:i:s');
             //$movimentacao->cliente_id = Veiculos::
@@ -463,7 +459,7 @@ class MovimentacaoCreditoController extends Controller
                 $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
 
 
-               
+
 
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
@@ -485,7 +481,7 @@ class MovimentacaoCreditoController extends Controller
                     ->where('veiculos.cliente_id', $cliente->id)
                     ->groupBy('clientes.id')
                     ->get();
-                
+
 
                 if ($abastecimentos[0]->saldo ?? 0) {
 

@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="card m-0 border-0">
+        
         @component('components.form', [
             'title' => 'Novo Veículo', 
             'routeUrl' => route('veiculo.store'), 
@@ -11,6 +12,7 @@
                 ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
                 ]
             ])
+            
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
@@ -27,6 +29,8 @@
                             'defaultNone' => true,
                             'inputSize' => 8
                         ],
+                        
+                        
                         [
                             'type' => 'select',
                             'field' => 'departamento_id',
@@ -74,6 +78,9 @@
                     ]
                 ])
                 @endcomponent
+               
+               
+                        
                 @component('components.form-group', [
                     'inputs' => [
                         [
@@ -150,7 +157,12 @@
                 @endcomponent
             @endsection
         @endcomponent
-    </div>
+       
+@include('veiculo.modal')
+
+<!-- Modal -->
+
+
 @endsection
 
 @push('document-ready')

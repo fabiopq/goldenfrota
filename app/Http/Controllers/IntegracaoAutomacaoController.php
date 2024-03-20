@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AbastecimentoController;
+use App\PostoAbastecimento;
 
 class IntegracaoAutomacaoController extends Controller
 {
@@ -45,9 +46,11 @@ class IntegracaoAutomacaoController extends Controller
     */
     public function ExportarAtendentes()
     {
+
         try {
             $conteudo = '';
             $atendentes = Atendente::where('ativo', true)->get();
+
             foreach ($atendentes as $atendente) {
                 $conteudo .= '<01;';
                 $conteudo .= substr('                ' . $atendente->senha_atendente, -16) . ';';
@@ -55,7 +58,7 @@ class IntegracaoAutomacaoController extends Controller
                 $conteudo .= '>';
             }
 
-            Log::debug($conteudo);
+            //Log::debug($conteudo);
             $arquivo = $conteudo;
             $conteudo = $this->cryptAPI($conteudo);
 
@@ -65,6 +68,7 @@ class IntegracaoAutomacaoController extends Controller
             Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
             Storage::disk($this->disk())->put('funcionarios_teste.txt', $arquivo);
 
+
             Session::flash('success', 'Dados Exportados com sucesso!');
             return redirect()->action('HomeController@index');
         } catch (\Exception $e) {
@@ -73,6 +77,66 @@ class IntegracaoAutomacaoController extends Controller
             ]));
         }
     }
+
+    public function ExportarAtendentesNew()
+    {
+        $configs = PostoAbastecimento::paginate();
+
+        $i = 1;
+
+        $conteudo = '';
+        $atendentes = Atendente::where('ativo', true)->get();
+
+        foreach ($atendentes as $atendente) {
+            $conteudo .= '<01;';
+            $conteudo .= substr('                ' . $atendente->senha_atendente, -16) . ';';
+            $conteudo .= substr('          ' . $atendente->usuario_atendente, -10);
+            $conteudo .= '>';
+        }
+
+        //Log::debug($conteudo);
+        $arquivo = $conteudo;
+        $conteudo = $this->cryptAPI($conteudo);
+
+        foreach ($configs as $config) {
+
+            if ($config->ftp_server !== null) {
+
+                $this->configFTPs($config, $i);
+                /* Config da conta de FTP */
+
+                // Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
+                $i++;
+            }
+        }
+
+
+        try {
+            $i = 0;
+            foreach ($configs as $config) {
+
+                if ($config->ftp_server !== null) {
+                    $i++;
+                    try {
+                        Storage::disk('ftp' . $i)->put('funcionarios_teste.txt', $arquivo);
+                        Storage::disk('ftp' . $i)->put('funcionarios.hir', $arquivo);
+                    } catch (\Exception $e) {
+                        Session::flash('error', __('messages.exception', [
+                            'exception' => $e->getMessage()
+                        ]));
+                    }
+                }
+            }
+
+            Session::flash('success', 'Dados Exportados com sucesso!');
+            return redirect()->action('HomeController@index');
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+        }
+    }
+
 
     public function ExportarMotoristas()
     {
@@ -288,6 +352,7 @@ class IntegracaoAutomacaoController extends Controller
                 try {
                     $arquivo = Storage::disk($this->disk())->get('abastecimentos.hir');
                     $arquivo = $this->cryptAPI($arquivo);
+                    Storage::disk($this->disk())->put('abastecimentos_hir_teste.txt', $arquivo);
 
 
 
@@ -383,6 +448,8 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->valor_abastecimento = round($abastecimento->volume_abastecimento * $abastecimento->valor_litro, 2);
                                 }
 
+
+
                                 if (!$veiculo) {  // verifica se nao veio veiculo no arquivo
 
 
@@ -431,15 +498,16 @@ class IntegracaoAutomacaoController extends Controller
                                     $abastecimento->inconsistencias_importacao = true;
                                 }
 
+
                                 $dataAbastecimento = $this->formataDataHoraAbastecimento($registro[4] . $registro[5]);
 
 
 
                                 //Log::debug($dataInicio);
 
-
+                                //dd($dataInicio);
                                 if ($dataAbastecimento <= $dataInicio) {
-
+                                    dd($abastecimento);
                                     continue; //pula para o proximo abastecimento
                                 }
                             } catch (\Exception $e) {
@@ -584,6 +652,40 @@ class IntegracaoAutomacaoController extends Controller
                         break;
                 }
             }
+        } catch (\Exception $e) {
+            throw new \Exception('Erro na configuração da Conta FTP. [' . $e->getMessage() . '].');
+        }
+    }
+
+    protected function configFTPs(PostoAbastecimento $config, int $i)
+    {
+        try {
+
+            //$configs = PostoAbastecimento::paginate();
+            //return $configs;
+
+
+
+            Log::debug('configurando ftp  ' . $config->ftp_user);
+
+            Config::set('filesystems.disks.ftp' . $i . '.host', $config->ftp_server);
+
+            Config::set('filesystems.disks.ftp' . $i . '.username', $config->ftp_user);
+
+            Config::set('filesystems.disks.ftp' . $i . '.password', $config->ftp_pass);
+
+            Config::set('filesystems.disks.ftp' . $i . '.port', $config->ftp_port);
+
+            Config::set('filesystems.disks.ftp' . $i . '.root', $config->ftp_root);
+
+            Config::set('filesystems.disks.ftp' . $i . '.passive', $config->ftp_passive);
+
+            Config::set('filesystems.disks.ftp' . $i . '.ssl', $config->ftp_ssl);
+
+            Config::set('filesystems.disks.ftp' . $i . '.timeout', $config->ftp_timeout);
+
+            Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.username'));
+            Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.host'));
         } catch (\Exception $e) {
             throw new \Exception('Erro na configuração da Conta FTP. [' . $e->getMessage() . '].');
         }

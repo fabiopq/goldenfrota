@@ -85,6 +85,7 @@
                     {{--  Configurações administrativas  --}}
                     @role('super')
                     <div class="dropdown-divider"></div>
+                    <li><a class="dropdown-item" href="{{route('posto_abastecimento.index')}}">Posto de Abastecimentos</a></li>
                     <li><a class="dropdown-item" href="{{route('setting.index')}}">Configurações</a></li>            
                     @endrole
                 </ul>
@@ -200,6 +201,9 @@
                     @endpermission
                     @permission('listar-ordem-servico')
                     <li><a class="dropdown-item" href="{{route('movimentacao_credito.index')}}">Credito</a></li>
+                    @endpermission
+                    @permission('listar-ordem-servico')
+                    <li><a class="dropdown-item" href="{{route('ticket.index')}}">Tickets</a></li>
                     @endpermission
                 </ul>
             </li>

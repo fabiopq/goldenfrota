@@ -66,6 +66,7 @@ return [
             'relatorio-saida-estoque' => 'a',
             'listagem-motoristas' => 'a',
             'movimentacao_credito' => 'c,r,u,d',
+            'posto-abastecimento' => 'c,r,u,d',
             
             
 

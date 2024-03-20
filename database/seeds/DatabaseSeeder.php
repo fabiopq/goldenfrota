@@ -1,5 +1,6 @@
 <?php
 
+use App\TicketStatus;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,5 +28,7 @@ class DatabaseSeeder extends Seeder
 	    $this->call(GroupSettingAutomacaoSeeder::class);
         $this->call(TipoMovimentacaoProdutoSeeder::class);
         $this->call(TipoMovimentacaoCreditoSeeder::class);
+        $this->call(TicketPrioridadeSeeder::class);
+        $this->call(TicketStatusdeSeeder::class);
     }
 }

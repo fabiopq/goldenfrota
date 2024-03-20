@@ -77,6 +77,26 @@ return [
             // 'ssl'      => true,
             // 'timeout'  => 30,
         ],
+        'ftp1' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        'ftp2' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
 
     ],
 
