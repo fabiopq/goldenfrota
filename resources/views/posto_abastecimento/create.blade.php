@@ -23,8 +23,7 @@
                             'field' => 'nome',
                             'label' => 'Nome',
                             'required' => true,
-                            
-                            'css' => 'text-uppercase'
+                           
                         ],
                         [
                             'type' => 'text',

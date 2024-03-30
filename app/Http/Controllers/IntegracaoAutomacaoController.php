@@ -573,6 +573,249 @@ class IntegracaoAutomacaoController extends Controller
             return redirect()->back();
         }
     }
+
+    public function ImportarAbastecimentosnew()
+    {
+
+        if (App::environment('local')) {
+            Log::debug('Tarefa agendada: Importação de Abastecimento... [ambiente de desenvolvimento]');
+            //return;
+        }
+
+        // verifica se na configuracao esta habilitado preco do cadastro do combustivel
+        $cfgPreco = DB::table('settings')
+            ->select('settings.value')
+            ->where('settings.key', 'automacao_valor_combustivel')
+            ->first();
+
+
+        try {
+            /* Config da conta de FTP */
+            $configs = PostoAbastecimento::paginate();
+
+            $i = 1;
+
+
+            foreach ($configs as $config) {
+
+                if ($config->ftp_server !== null) {
+
+                    $this->configFTPs($config, $i);
+                    /* Config da conta de FTP */
+
+                    // Storage::disk($this->disk())->put('funcionarios.hir', $conteudo);
+                    $i++;
+                }
+            }
+
+
+            $i = 0;
+            foreach ($configs as $config) {
+
+                if ($config->ftp_server !== null) {
+                    $i++;
+                    try {
+                        $errosImportacao = false;
+                        if (Storage::disk('ftp' . $i)->exists('abastecimentos.hir')) {
+
+                            try {
+                                $arquivo = Storage::disk('ftp' . $i)->get('abastecimentos.hir');
+                                $arquivo = $this->cryptAPI($arquivo);
+                                Storage::disk('ftp' . $i)->put('abastecimentos_hir_teste.txt', $arquivo);
+
+
+
+                                $registros = array();
+
+                                $linhas = explode('>', $arquivo);
+
+                                foreach ($linhas as $linha) {
+                                    $linha = str_replace('<', '', $linha);
+                                    $linha = explode(';', $linha);
+                                    if (count($linha) > 1) {
+                                        $registros[] = $linha;
+                                    }
+                                }
+
+
+                                $dataInicio = \DateTime::createFromFormat(
+                                    'Y-m-d H:i:s',
+                                    Abastecimento::whereNotNull('id_automacao')
+                                        ->orderBy('data_hora_abastecimento', 'desc')
+                                        ->pluck('data_hora_abastecimento')
+                                        ->first()
+                                );
+
+
+                                foreach ($registros as $registro) {
+
+                                    if (count($registro) >= 17) {
+
+                                        try {
+                                            $abastecimento = new Abastecimento;
+                                            $abastecimentoController = new AbastecimentoController;
+                                            $obs = null;
+
+                                            // busca na tabela atendente se existe atendente com a tag do arquivo
+                                            $atendente = Atendente::where('usuario_atendente', '=', trim($registro[12]))->first();
+                                            
+                                            if (!$atendente) {
+                                                $obs .= 'Atendente [' . trim($registro[12]) . ']: Não encontrado!&#10;';
+                                            } else {
+                                                $abastecimento->atendente_id = $atendente->id;
+                                            }
+                                            
+                                            $bico = Bico::where('num_bico', '=', trim($registro[3]))->first();
+
+                                            $preco = DB::table('combustiveis')
+                                                ->select('combustiveis.valor')
+                                                ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
+                                                ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
+                                                ->where('bicos.id', '=', trim($registro[3]))
+                                                ->first();
+
+                                            $veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
+
+                                            if (!$bico) {
+                                                $obs .= 'Bico [' . trim($registro[3]) . ']: Não encontrado!&#10;';
+                                            } else {
+                                                $abastecimento->bico_id = $bico->id;
+                                            }
+
+                                           
+
+                                            // confi->id é o caodigo do posto de abastecimento
+                                            $abastecimento->posto_abastecimentos_id = $config->id;
+                                            $abastecimento->id_automacao = trim($registro[1]);
+                                            $abastecimento->ns_automacao = trim($registro[2]);
+                                            $abastecimento->data_hora_abastecimento = $this->formataDataHoraAbastecimento($registro[4] . $registro[5])->format('Y-m-d H:i:s');
+
+                                            if ($cfgPreco->value) {
+
+                                                if (!$preco) {
+                                                    $abastecimento->valor_abastecimento = $this->formataValorDecimal(trim($registro[6]));
+                                                    $abastecimento->valor_litro = $this->formataValorDecimal(trim($registro[8]), trim($registro[9]));
+                                                } else {
+                                                    $abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($registro[7]), 3) * $preco->valor);
+                                                    $abastecimento->valor_litro = $preco->valor;
+                                                }
+                                            } else {
+                                                $abastecimento->valor_abastecimento = $this->formataValorDecimal(trim($registro[6]));
+                                                $abastecimento->valor_litro = $this->formataValorDecimal(trim($registro[8]), trim($registro[9]));
+                                            }
+
+                                            $abastecimento->volume_abastecimento = $this->formataValorDecimal(trim($registro[7]), 3);
+
+                                            $abastecimento->encerrante_inicial = $this->formataValorDecimal(trim($registro[10]));
+                                            $abastecimento->encerrante_final = $this->formataValorDecimal(trim($registro[11]));
+                                            $abastecimento->km_veiculo = $this->formataValorDecimal(trim($registro[15]), 1);
+                                            /* se valor total zerado, calcula valor total */
+                                            if ($abastecimento->valor_abastecimento == 0) {
+                                                $abastecimento->valor_abastecimento = round($abastecimento->volume_abastecimento * $abastecimento->valor_litro, 2);
+                                            }
+
+
+
+                                            if (!$veiculo) {  // verifica se nao veio veiculo no arquivo
+
+
+                                                if (!$atendente->veiculo_id) { //verifica se no cadastro de atendente nao possui veiculo
+                                                    $abastecimento->media_veiculo = 0;
+                                                    $obs .= 'Veículo [' . trim($registro[14]) . ']: Não encontrado!&#10;';
+                                                } else {
+                                                    $abastecimento->veiculo_id = $atendente->veiculo_id;
+                                                    $veiculo = Veiculo::where('id', '=', $atendente->veiculo_id)->first();
+                                                    $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                                                }
+                                            } else {
+
+                                                $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                                                // Log::debug('Media_Veiculo='.$abastecimento->media_veiculo);
+                                            }
+
+                                            if ($abastecimento->km_veiculo <= 0) {
+                                                $obs .= 'KM não informada para.&#10;';
+                                            }
+
+                                            if ($obs) {
+                                                $obs = 'Inconsistências encontradas, verifique.&#10;' . $obs;
+                                                $abastecimento->obs_abastecimento = $obs;
+                                                $abastecimento->inconsistencias_importacao = true;
+                                            }
+
+
+                                            $dataAbastecimento = $this->formataDataHoraAbastecimento($registro[4] . $registro[5]);
+
+                                            if ($dataAbastecimento <= $dataInicio) {
+
+                                                continue; //pula para o proximo abastecimento
+                                            }
+                                        } catch (\Exception $e) {
+                                            if (App::environment('local')) {
+                                                Log::debug($e);
+                                            } else {
+                                                Log::error($e->getMessage());
+                                            }
+                                        }
+
+
+                                        try {
+
+                                            DB::beginTransaction();
+
+                                            if ($abastecimento->save()) {
+
+
+                                                if (MovimentacaoCombustivelController::saidaAbastecimento($abastecimento)) {
+                                                    DB::commit();
+                                                    Log::info('Novo abastecimento: ' . $abastecimento . ' importado da Automação.');
+                                                } else {
+                                                    throw new \Exception('Erro ao efetuar a movimentação no tanque. [' . implode("|", $registro) . ']');
+                                                }
+                                            } else {
+                                                throw new \Exception('Erro ao inserir o abastecimento. [' . implode("|", $registro) . ']');
+                                            }
+                                        } catch (\Exception $e) {
+                                            $errosImportacao = true;
+                                            DB::rollback();
+                                            if (App::environment('local')) {
+                                                Log::debug($e);
+                                            } else {
+                                                Log::error($e->getMessage());
+                                            }
+                                        }
+                                    } else {
+                                        Log::alert('Erro ao importar registro: ' . implode("|", $registro), []);
+                                    }
+                                }
+                            } finally {
+                                // Elimina o arquivo do servidor apenas se conseguir importar todos os abastecimentos */
+                                if (!$errosImportacao) {
+                                    $this->limparArquivoAbastecimentosServidor();
+                                }
+                            }
+
+                            Session::flash('success', 'Abastecimentos Importados com sucesso!');
+                            return redirect()->action('AbastecimentoController@index');
+                        } else {
+                            Session::flash('success', 'Não existem abastecimentos a serem importados!');
+                            return redirect()->action('AbastecimentoController@index');
+                        }
+                    } catch (\Exception $e) {
+                        Session::flash('error', __('messages.exception', [
+                            'exception' => $e->getMessage()
+                        ]));
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+
+            return redirect()->back();
+        }
+    }
     public function ParamTesteExportarHiro()
     {
 

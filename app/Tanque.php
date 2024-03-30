@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tanque extends Model
 {
-    public $fillable = ['descricao_tanque', 'capacidade', 'combustivel_id', 'ativo'];
+    public $fillable = ['num_tanque','posto_abastecimento_id','descricao_tanque', 'capacidade', 'combustivel_id', 'ativo'];
 
 
     public function combustivel() {

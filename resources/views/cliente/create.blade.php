@@ -32,7 +32,7 @@
     'label' => 'Nome/Razão Sozial',
     'required' => true,
     'inputSize' => 10,
-    'css' => 'text-uppercase'
+    
     ]
     ]
     ])
@@ -43,7 +43,7 @@
     'type' => 'text',
     'field' => 'fantasia',
     'label' => 'Nome Fantasia',
-    'css' => 'text-uppercase'
+    
     ]
     ]
     ])
@@ -63,7 +63,7 @@
     'label' => 'RG/IE',
     'required' => true,
     'inputSize' => 2,
-    'css' => 'text-uppercase'
+    
     ],
     [
     'type' => 'text',
@@ -97,7 +97,6 @@
             'label' => 'Limite',
             'required' => true,
             'inputSize' => 3,
-            'css' => 'text-uppercase',
             'readOnly' => true ,
             ],
             [

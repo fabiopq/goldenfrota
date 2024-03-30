@@ -16,8 +16,18 @@
                     'inputs' => [
                         [
                             'type' => 'text',
+                            'field' => 'num_tanque',
+                            'label' => 'N. Tanque',
+                            'required' => true,
+                            'autofocus' => true,
+                            'inputValue' => isset($tanque->num_tanque) ? $tanque->num_tanque : '',
+                            'inputSize' => 1
+                        ],
+                        
+                        [
+                            'type' => 'text',
                             'field' => 'descricao_tanque',
-                            'label' => 'Tanque',
+                            'label' => 'Tanque Descrição',
                             'required' => true,
                             'autofocus' => true,
                             'inputValue' => $tanque->descricao_tanque,
@@ -34,6 +44,22 @@
                             'keyField' => 'id',
                             'indexSelected' => $tanque->combustivel_id,
                             'liveSearch' => true
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'posto_abastecimento_id',
+                            'label' => 'Posto de Abastecimentos',
+                            'required' => true,
+                            'items' => $postoabastecimentos,
+                            'autofocus' => true,
+                            'displayField' => 'nome',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'inputSize' => 6,
+                            
+                            'indexSelected' => $tanque->posto_abastecimento_id
+
                         ],
                         [
                             'type' => 'select',

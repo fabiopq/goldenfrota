@@ -8,6 +8,7 @@ use App\Parametro;
 use App\TipoPessoa;
 use App\Rules\cpfCnpj;
 use App\Rules\telefoneComDDD;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -44,7 +45,7 @@ class ClienteController extends Controller
      */
     public function index(Request $request)
     {
-       
+
         if (Auth::user()->canListarCliente()) {
             if ($request->searchField) {
                 $clientes = Cliente::where('nome_razao', 'like', '%' . $request->searchField . '%')
@@ -148,7 +149,8 @@ class ClienteController extends Controller
     public function edit(Cliente $cliente)
     {
 
-        $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente);
+
+        $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
         //$saldoCredito= array("valor"=>0);
         //dd($cliente->saldo);
 
@@ -318,5 +320,33 @@ class ClienteController extends Controller
     public function apiClienteCnpj($id)
     {
         return response()->json(Cliente::ativo()->where('cpf_cnpj', $id)->get());
+    }
+
+    public function formSaldo()
+    {
+
+        return View('cliente.saldo')->withTitulo('Saldo do Mês');
+    }
+
+    public function showSaldo(Request $request)
+    {
+
+        
+        $cpf = $request->input('cpf');
+        
+        $cliente = Cliente::where('cpf_cnpj', $cpf)->first();
+        
+        
+        if ($cliente) {
+            $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
+            
+            return response()->json(['saldo' => $cliente->saldo]);
+        } else {
+            return response()->json(['error' => 'Cliente não encontrado'], 404);
+        }
+
+        // $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
+
+        // return View('cliente.modal')->withParametro(Parametro::first())->withTitulo('Saldo do Mês')->withCliente($cliente);
     }
 }

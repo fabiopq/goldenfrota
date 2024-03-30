@@ -120,9 +120,23 @@ class AbastecimentoController extends Controller
      */
     public function create()
     {
+
+
         if (Auth::user()->canCadastrarAbastecimento()) {
+
+            $bicos = Bico::select(
+                DB::raw("concat('Bico: ', bicos.num_bico, ' - ',combustiveis.descricao,' - Posto: ', posto_abastecimentos.nome) as num_bico"),
+                'bicos.id'
+            )
+                ->join('tanques', 'tanques.id', 'bicos.tanque_id')
+                ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+                ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
+
+                ->where('tanques.ativo', true)
+                ->get();
+
             $clientes = Cliente::where('ativo', true)->get();
-            $bicos = Bico::where('permite_insercao', true)->where('ativo', true)->get();
+            // $bicos = Bico::where('permite_insercao', true)->where('ativo', true)->get();
             return View('abastecimento.create')->withClientes($clientes)->withBicos($bicos);
         } else {
             Session::flash('error', __('messages.access_denied'));
@@ -174,14 +188,14 @@ class AbastecimentoController extends Controller
                     $abastecimento->media_veiculo = 0;
                 }
                 $abastecimento->eh_afericao = (bool)$request->eh_afericao;
-                
+
                 if ($abastecimento->save()) {
-                    
+
                     if ($request->bico_id) {
-                        
+
                         /* Se for aferição, faz a movimentação de saída e entrada por aferição */
                         if (isset($request->eh_afericao) && ($request->eh_afericao)) {
-                            
+
                             $afericao = Afericao::create([
                                 'abastecimento_id' => $abastecimento->id,
                                 'user_id' => Auth::user()->id
@@ -190,9 +204,9 @@ class AbastecimentoController extends Controller
                             MovimentacaoCombustivelController::cadastroAfericao($afericao);
                         } else {
                             /* Se informado o bico, movimenta o estoque do tanque */
-                            
+
                             MovimentacaoCreditoController::saidaCredito2($abastecimento);
-                            
+
                             MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                         }
 
@@ -540,7 +554,7 @@ class AbastecimentoController extends Controller
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
             ->where('veiculos.ativo', true)
             ->get();
-        
+
         return View('abastecimento.relatorio_param')->withClientes($clientes)->withVeiculos($veiculos);
     }
 
@@ -630,7 +644,7 @@ class AbastecimentoController extends Controller
             ->orderBy('clientes.nome_razao', 'asc')
             ->distinct()
             ->get();
-        
+
 
         $clientesNullo = DB::table('abastecimentos')
             ->select(
@@ -673,7 +687,7 @@ class AbastecimentoController extends Controller
             // ->orderBy('clientes.nome_razao', 'asc')
             ->distinct()
             ->get();
-     
+
         if ($request->tipo_relatorio == 1) {
             /* relatório Sintético */
 
@@ -705,7 +719,7 @@ class AbastecimentoController extends Controller
                     ->groupBy('veiculos.placa')
                     ->get();
                 //->toSql();
-                
+
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
@@ -1151,6 +1165,8 @@ class AbastecimentoController extends Controller
 
     public function show(Abastecimento $abastecimento)
     {
+       
+       
         if (Auth::user()->canListarOrdemServico()) {
             $combustivel = DB::table('combustiveis')
                 ->select('combustiveis.*')
@@ -1166,6 +1182,8 @@ class AbastecimentoController extends Controller
                 ->withParametro(Parametro::first());
         }
     }
+
+    
 
     public function apiAbastecimentos(Request $request)
     {

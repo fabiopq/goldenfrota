@@ -2,7 +2,7 @@
 
 @section('relatorio')
 @php
- //dd($combustivel[0]->descricao);   
+//dd($combustivel[0]->descricao);
 @endphp
 <div class="container-fluid m-b-10">
     <div class="row">
@@ -35,7 +35,7 @@
                 <label for="#cliente" class="nf-label">Cliente:</label>
                 @if (isset($abastecimento->veiculo->cliente_id))
                 <div id="cliente">{{ $abastecimento->veiculo->cliente_id }} - {{ $abastecimento->veiculo->cliente->nome_razao }}</div>
-                @else   
+                @else
                 <div id="cliente">{{ '' }}</div>
                 @endif
             </div>
@@ -50,11 +50,11 @@
             <div class="card nf-panel">
                 <label for="#veiculo" class="nf-label">Veículo:</label>
                 @if (isset($abastecimento->veiculo->placa))
-                  <div id="veiculo">{{ $abastecimento->veiculo->placa }}</div>   
+                <div id="veiculo">{{ $abastecimento->veiculo->placa }}</div>
                 @else
-                 <div id="veiculo">{{ ''}}</div>  
+                <div id="veiculo">{{ ''}}</div>
                 @endif
-                
+
             </div>
         </div>
         <div class="col col-sm-2 col-md-2 col-lg-2">
@@ -64,11 +64,11 @@
             </div>
         </div>
     </div>
-    {{--  Serviços  --}}
+    {{-- Serviços  --}}
     <div class="row" align="center">
         <div class="col col-sm-12 col-md-12 col-lg-12">
             <div class="card nf-panel">
-                <strong>Combustivel</strong> 
+                <strong>Combustivel</strong>
             </div>
         </div>
     </div>
@@ -104,8 +104,8 @@
             </div>
         </div>
     </div>
-      
-    
+
+
     <div class="row">
         <div class="col col-sm-1 col-md-1 col-lg-1">
             <div class="card nf-panel">
@@ -138,11 +138,11 @@
             </div>
         </div>
     </div>
-    
-   
+
+
     <div class="row">
         <div class="col col-sm-10 col-md-10 col-lg-10">
-            
+
         </div>
         <div class="col col-sm-2 col-md-2 col-lg-2">
             <div class="card nf-panel clearfix">
@@ -185,17 +185,17 @@
             <div class="col col-sm-1 col-md-1 col-lg-1">
             </div>
             <div class="col col-sm-4 col-md-4 col-lg-4" align="center">
-                <strong>{{ $abastecimento->user->name ?? 'Usuário não informado' }}</strong> 
+                <strong>{{ $abastecimento->user->name ?? 'Usuário não informado' }}</strong>
             </div>
             <div class="col col-sm-2 col-md-2 col-lg-2">
             </div>
             <div class="col col-sm-4 col-md-4 col-lg-4" align="center">
                 @if (isset($abastecimento->veiculo->cliente->nome_razao))
-                <strong>{{ $abastecimento->veiculo->cliente->nome_razao }}</strong>  
+                <strong>{{ $abastecimento->veiculo->cliente->nome_razao }}</strong>
                 @else
-                <strong>{{ '' }}</strong>   
+                <strong>{{ '' }}</strong>
                 @endif
-                 
+
             </div>
         </div>
     </div>

@@ -14,10 +14,21 @@
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
+                        
+                        [
+                            'type' => 'text',
+                            'field' => 'num_tanque',
+                            'label' => 'N. Tanque',
+                            'required' => true,
+                            'autofocus' => true,
+                            'inputValue' => isset($tanque->num_tanque) ? $tanque->num_tanque : '',
+                            'inputSize' => 1
+                        ],
+                        
                         [
                             'type' => 'text',
                             'field' => 'descricao_tanque',
-                            'label' => 'Tanque',
+                            'label' => 'Tanque Descrição',
                             'required' => true,
                             'autofocus' => true,
                             'inputValue' => isset($tanque->descricao_tanque) ? $tanque->descricao_tanque : '',
@@ -29,12 +40,27 @@
                             'label' => 'Combustível',
                             'required' => true,
                             'items' => $combustiveis,
-                            'inputSize' => 6,
+                            'inputSize' => 4,
                             'displayField' => 'descricao',
                             'keyField' => 'id',
                             'liveSearch' => true,
                             'indexSelected' => isset($tanque->combustivel_id) ? $tanque->combustivel_id : ''
-                        ]
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'posto_abastecimento_id',
+                            'label' => 'Posto de Abastecimentos',
+                            'required' => true,
+                            'items' => $postoabastecimentos,
+                            'autofocus' => true,
+                            'displayField' => 'nome',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'inputSize' => 6,
+                            'indexSelected' => isset($tanque->posto_abastecimento_id) ? $tanque->posto_abastecimento_id : ''
+
+                        ],
                     ]
                 ])
                 @endcomponent
@@ -55,3 +81,6 @@
         @endcomponent
     </div>
 @endsection
+
+
+

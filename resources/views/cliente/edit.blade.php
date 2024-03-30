@@ -35,7 +35,7 @@
     'required' => true,
     'inputSize' => 9,
     'inputValue' => $cliente->nome_razao,
-    'css' => 'text-uppercase'
+    
     ],
     [
     'type' => 'select',
@@ -78,7 +78,7 @@
     'required' => true,
     'inputSize' => 2,
     'inputValue' => $cliente->rg_ie,
-    'css' => 'text-uppercase'
+    
     ],
     [
     'type' => 'text',

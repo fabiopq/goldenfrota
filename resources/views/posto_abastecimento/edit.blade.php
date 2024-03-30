@@ -20,7 +20,7 @@
                             'label' => 'Nome',
                             'required' => true,
                             'inputValue' => $posto_abastecimento->nome,
-                            'css' => 'text-uppercase'
+                            
                         ],
                         [
                             'type' => 'text',

@@ -41,8 +41,8 @@
                             'label' => 'Tanque',
                             'required' => true,
                             'items' => $tanques,
-                            'inputSize' => 3,
-                            'displayField' => 'descricao_tanque',
+                            'inputSize' => 4,
+                            'displayField' => 'tanque',
                             'keyField' => 'id',
                             'liveSearch' => true,
                             'indexSelected' => isset($bico->tanque_id) ? $bico->tanque_id : ''

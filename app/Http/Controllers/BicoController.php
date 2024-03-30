@@ -25,25 +25,25 @@ class BicoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         if (Auth::user()->canListarBico()) {
             if (isset($request->searchField)) {
                 $bicos = DB::table('bicos')
-                            ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao')
-                            ->join('tanques', 'tanques.id', 'bicos.tanque_id')
-                            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-                            ->join('bombas', 'bombas.id', 'bicos.bomba_id')
-                            ->where('num_bico', $request->searchField)
-                            ->orWhere('combustiveis.descricao', 'like', '%'.$request->searchField.'%')
-                            ->paginate();
+                    ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao')
+                    ->join('tanques', 'tanques.id', 'bicos.tanque_id')
+                    ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+                    ->join('bombas', 'bombas.id', 'bicos.bomba_id')
+                    ->where('num_bico', $request->searchField)
+                    ->orWhere('combustiveis.descricao', 'like', '%' . $request->searchField . '%')
+                    ->paginate();
             } else {
                 $bicos = DB::table('bicos')
-                            ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao')
-                            ->join('tanques', 'tanques.id', 'bicos.tanque_id')
-                            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-                            ->join('bombas', 'bombas.id', 'bicos.bomba_id')
-                            ->paginate();
+                    ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao')
+                    ->join('tanques', 'tanques.id', 'bicos.tanque_id')
+                    ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+                    ->join('bombas', 'bombas.id', 'bicos.bomba_id')
+                    ->paginate();
             }
 
             return View('bico.index')->withBicos($bicos)->withFields($this->fields);
@@ -60,8 +60,22 @@ class BicoController extends Controller
      */
     public function create()
     {
+
+        $tanques = Tanque::select(
+            DB::raw("concat('Tanque: ', tanques.num_tanque, ' - ',combustiveis.descricao,' - Posto: ', posto_abastecimentos.nome) as tanque"),
+            'tanques.id'
+        )
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+
+            ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
+
+            ->where('tanques.ativo', true)
+            ->get();
+
+        // DD($tanques);
+
         if (Auth::user()->canCadastrarBico()) {
-            return View('bico.create')->withTanques(Tanque::all())->withBombas(Bomba::all());
+            return View('bico.create')->withTanques($tanques)->withBombas(Bomba::all());
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -76,12 +90,13 @@ class BicoController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->canCadastrarBico()) { 
+        if (Auth::user()->canCadastrarBico()) {
             $this->validate($request, [
-                'num_bico' => 'required|integer|unique:bicos',
+                'num_bico' => 'required|integer|unique:bicos,num_bico,' . $request->num_bico . ',id,tanque_id,' . $request->tanque_id,
                 'tanque_id' => 'required|integer|exists:tanques,id',
                 'bomba_id' => 'required|integer|exists:bombas,id',
-                'encerrante' => 'required|numeric|min:0'
+                'encerrante' => 'required|numeric|min:0',
+
             ]);
 
             try {
@@ -114,11 +129,23 @@ class BicoController extends Controller
      */
     public function edit(Bico $bico)
     {
+        $tanques = Tanque::select(
+            DB::raw("concat('Tanque: ', tanques.num_tanque, ' - ',combustiveis.descricao,' - Posto: ', posto_abastecimentos.nome) as tanque"),
+            'tanques.id'
+        )
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+
+            ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
+
+            ->where('tanques.ativo', true)
+            ->get();
+
+        
         if (Auth::user()->canAlterarBico()) {
             return View('bico.edit')
-                        ->withBico($bico)
-                        ->withTanques(Tanque::all())
-                        ->withBombas(Bomba::all());
+                ->withBico($bico)
+                ->withTanques($tanques)
+                ->withBombas(Bomba::all());
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -136,10 +163,13 @@ class BicoController extends Controller
     {
         if (Auth::user()->canAlterarBico()) {
             $this->validate($request, [
-                'num_bico' => 'required|integer|unique:bicos,id,'.$bico->id,
+                //'num_bico' => 'required|integer|unique:bicos,id,' . $bico->id,
+                'num_bico' => 'required|unique:bicos,num_bico,' . $bico->id . ',id,tanque_id,' . $request->tanque_id,
+
                 'tanque_id' => 'required|integer|exists:tanques,id',
                 'bomba_id' => 'required|integer|exists:bombas,id',
-                'encerrante' => 'required|numeric|min:0'
+                'encerrante' => 'required|numeric|min:0',
+
             ]);
 
             try {
@@ -185,7 +215,7 @@ class BicoController extends Controller
                         'model' => __('models.bico'),
                         'name' => $bico->num_bico
                     ]));
-                    
+
                     return redirect()->action('BicoController@index');
                 }
             } catch (\Exception $e) {
@@ -207,34 +237,32 @@ class BicoController extends Controller
         }
     }
 
-    public function getBicoJson(Request $request) {
+    public function getBicoJson(Request $request)
+    {
         return response()->json(Bico::find($request->id)->with('tanque.combustivel')->first());
     }
 
-    public function apiBicos() {
-        return response()->json( DB::table('bicos')
-        ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao as combustivel')
-        ->join('tanques', 'tanques.id', 'bicos.tanque_id')
-        ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-        ->join('bombas', 'bombas.id', 'bicos.bomba_id')
-        ->orderBy('bicos.id')
-        ->get());
-        
+    public function apiBicos()
+    {
+        return response()->json(DB::table('bicos')
+            ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao as combustivel')
+            ->join('tanques', 'tanques.id', 'bicos.tanque_id')
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->join('bombas', 'bombas.id', 'bicos.bomba_id')
+            ->orderBy('bicos.id')
+            ->get());
     }
 
-    static public function atualizarEncerranteBico($bicoId, $encerrante) {
+    static public function atualizarEncerranteBico($bicoId, $encerrante)
+    {
         try {
             $bico = Bico::find($bicoId);
             $bico->encerrante = $encerrante;
             return $bico->save();
-
         } catch (\Exception $e) {
-            throw new Exception(__('messages.exception',[
+            throw new Exception(__('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
         }
     }
-
-    
-
 }

@@ -175,6 +175,10 @@ Route::get(
 )->middleware('auth');
 
 Route::resource('/posto_abastecimento', 'PostoAbastecimentoController')->except('show');
+//Route::get('/saldo', 'ClienteController@showSaldo')->except('show');
+Route::get('/cliente/saldo', 'ClienteController@formSaldo');
+Route::post('/cliente/consultar-saldo', 'ClienteController@showSaldo')->name('saldo.json');
+Route::get('/motorista/{motorista}/edit', 'MotoristaController@edit')->name('motorista.edit');
 
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');

@@ -33,6 +33,7 @@ class VeiculoController extends Controller
         'ano' => 'Ano',
         'nome_razao' => 'Cliente',
         'departamento' => 'Departamento',
+        'tag' => 'Tag',
         'ativo' => ['label' => 'Ativo', 'type' => 'bool']
     );
 

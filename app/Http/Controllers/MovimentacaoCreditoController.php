@@ -445,12 +445,12 @@ class MovimentacaoCreditoController extends Controller
         }
     }
 
-    static public function consumoCreditoMes(Cliente $cliente)
+    static public function consumoCreditoMes($id)
     {
 
         try {
 
-            if ($cliente) {
+            if ($id) {
 
                 $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
                 $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
@@ -478,7 +478,7 @@ class MovimentacaoCreditoController extends Controller
                     ->whereRaw($whereData)
                     // ->whereRaw($whereParam)
                     //// ->whereRaw($whereTipoAbastecimento)
-                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->where('veiculos.cliente_id', $id)
                     ->groupBy('clientes.id')
                     ->get();
 

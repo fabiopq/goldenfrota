@@ -19,10 +19,15 @@
             <td>
                 Posição
             </td>
+            <td>
+                Posto Abastecimento
+            </td>
         </tr>
     </thead>
     <tbody>
+       
         @foreach($tanques as $tanque) 
+    
         <tr>
             <td>
                 {{$tanque->id}}
@@ -38,6 +43,9 @@
             </td>
             <td>
                 {{ number_format($tanque->posicao, 3) }}
+            </td>
+            <td>
+                {{$tanque->posto_abastecimento}}
             </td>
         </tr>
         @endforeach
