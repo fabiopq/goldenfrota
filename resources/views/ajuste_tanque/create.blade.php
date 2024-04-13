@@ -24,7 +24,8 @@
                             'inputSize' => 8,
                             'displayField' => 'tanque',
                             'keyField' => 'id',
-                            'defaultNone' => true
+                            'defaultNone' => true,
+                            'liveSearch' => true,
                         ],
                         [
                             'type' => 'number',

@@ -92,6 +92,7 @@
                                     'displayField' => 'num_bico',
                                     'keyField' => 'id',
                                     'defaultNone' => true,
+                                    'liveSearch' => true,
                                 ],
                                 [
                                     'type' => 'number',

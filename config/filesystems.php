@@ -97,6 +97,94 @@ return [
         
             
         ],
+        ,
+        'ftp3' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        ,
+        'ftp4' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        ,
+        'ftp5' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        ,
+        'ftp6' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        ,
+        'ftp7' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        ,
+        'ftp8' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        ,
+        'ftp9' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
+        ,
+        'ftp10' => [
+            'driver'   => 'ftp',
+            'host'     => env('FTP_HOST', ''), 
+            'port'     => env('FTP_PORT', 21),
+            'username' => env('FTP_USER', ''), 
+            'password' => env('FTP_PASS', ''),
+			'passive'  => true,			
+        
+            
+        ],
 
     ],
 

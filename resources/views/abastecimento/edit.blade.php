@@ -171,7 +171,8 @@
                                     'keyField' => 'id',
                                     'defaultNone' => true,
                                     'disabled' => true,
-                                    'indexSelected' => $abastecimento->bico_id
+                                    'indexSelected' => $abastecimento->bico_id,
+                                    'liveSearch' => true,
                                 ],
                                 [
                                     'type' => 'number',
