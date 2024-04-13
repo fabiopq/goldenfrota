@@ -90,6 +90,7 @@ class AbastecimentoController extends Controller
                     ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
                     ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
                     ->orWhere('atendentes.nome_atendente', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('posto_abastecimentos.nome', 'like', '%' . $request->searchField . '%')
                     /* ->orderBy('abastecimentos.id', 'desc') */
                     ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
                     ->paginate();
