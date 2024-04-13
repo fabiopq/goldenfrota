@@ -81,8 +81,9 @@ class AjusteTanqueController extends Controller
     public function create()
     {
         if (Auth::user()->canCadastrarAjusteTanque()) {
-            $tanques = Tanque::select('tanques.id', DB::raw('concat_ws(" - ", tanques.descricao_tanque, combustiveis.descricao) as tanque'))
+            $tanques = Tanque::select('tanques.id', DB::raw('concat_ws(" - ", tanques.descricao_tanque, combustiveis.descricao,posto_abastecimentos.nome) as tanque'))
                             ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+                            ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
                             ->where('tanques.ativo', true)
                             ->orderBy('tanques.descricao_tanque', 'asc')
                             ->get();
