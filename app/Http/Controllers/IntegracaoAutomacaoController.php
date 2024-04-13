@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AbastecimentoController;
 use App\PostoAbastecimento;
-use Maatwebsite\Excel\Facades\Excel;
+
 
 class IntegracaoAutomacaoController extends Controller
 {
