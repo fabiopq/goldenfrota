@@ -96,7 +96,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp3' => [
             'driver'   => 'ftp',
@@ -107,7 +107,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp4' => [
             'driver'   => 'ftp',
@@ -118,7 +118,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp5' => [
             'driver'   => 'ftp',
@@ -129,7 +129,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp6' => [
             'driver'   => 'ftp',
@@ -140,7 +140,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp7' => [
             'driver'   => 'ftp',
@@ -151,7 +151,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp8' => [
             'driver'   => 'ftp',
@@ -162,7 +162,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp9' => [
             'driver'   => 'ftp',
@@ -173,7 +173,7 @@ return [
 			'passive'  => true,			
         
             
-        ],
+        ]
         ,
         'ftp10' => [
             'driver'   => 'ftp',
