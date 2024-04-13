@@ -86,7 +86,7 @@ class TanqueController extends Controller
     {
         if (Auth::user()->canCadastrarTanque()) {
             $this->validate($request, [
-                'descricao_tanque' => 'required|min:3|unique:tanques',
+                'descricao_tanque' => 'required|min:3',
                 'combustivel_id' => 'required',
                 'capacidade' => 'required|numeric',
                 'posto_abastecimento_id' => 'required|numeric',
