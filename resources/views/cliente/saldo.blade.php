@@ -1,76 +1,104 @@
-@extends('layouts.base')
+@php
+    $marcaVeiculos = [];
+    $modelo = [];
+@endphp
+@extends('layouts.app')
 
-
-<div class="panel-sm">
-    <div class="panel-sm">
-        <div class="card-header report-subtitle-1">
-            <h5> Consulta Saldo: </h5>
-        </div>
-        <div class="card-body">
-
-            <div class="panel-sm">
-                <form class="form-horizontal" id="consultar-form">
-                    @csrf
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="cpf">CPF:</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="cpf" class="form-control" id="cpf" placeholder="Digite o CPF do cliente">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="saldo">Saldo:</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="saldo" class="form-control" id="saldo" placeholder="R$ 0,00">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-success">Buscar</button>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-
-        </div>
+@section('content')
+    <div class="card m-0 border-0">
+        @component('components.form', [
+            'title' => 'Relatório de Média de Consumo por Modelo', 
+            'routeUrl' => route('param_relatorio_media_modelo'), 
+            'formTarget' => '_blank',
+            'method' => 'POST',
+            'cancelRoute' => 'home',
+            'formButtons' => [
+                ['type' => 'submit', 'label' => 'Gerar Relatório', 'icon' => 'chart-line'],
+                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
+                ]
+            ])
+            @section('formFields')
+                
+                @component('components.form-group', [
+                    'inputs' => [
+                        [
+                            'type' => 'select',
+                            'field' => 'marca_veiculo_id',
+                            'label' => 'Marca',
+                            'required' => true,
+                            'items' => $marcaVeiculos,
+                            'autofocus' => true,
+                            'displayField' => 'marca_veiculo',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'inputSize' => 6
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'modelo_veiculo_id',
+                            'label' => 'Modelo',
+                            'required' => true,
+                            'items' => $modelo,
+                            'autofocus' => true,
+                            'displayField' => 'modelo_veiculo',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'disabled' => false,
+                            'inputSize' => 6
+                        ]
+                    ]
+                ])
+                @endcomponent
+            @endsection
+        @endcomponent
     </div>
+    @push('document-ready')
+        $(document).ready(function() {
+            var buscarModeloVeiculos = function() {
+                var marca = {};
 
-@push('document-ready')
+                marca.id =1;
+                marca._token = $('input[name="_token"]').val();
+
+                console.log(marca);
+                $.ajax({
+                    url: '{{ route("modelo_veiculos_marca.json") }}',
+                    type: 'POST',
+                    data: marca,
+                    dataType: 'JSON',
+                    
+                    success: function (data) {
+                        console.log(data);
+                        
+                            $('#modelo_veiculo_id').append($('<option>', { 
+                                value: -1,
+                                text : 'Nada Selecionado' 
+                        }));
 
 
-        
-        var buscarDadosBico = function() {  
-            var bico = {};
+                        $.each(data, function (i, item) {
+                            
+                            $('#modelo_veiculo_id').append($('<option>', { 
+                                value: item.id,
+                                text : item.modelo_veiculo 
+                            }));
+                        });
 
-            bico.id = $('#cpf').val();
-            bico._token = $('input[name="_token"]').val();
+                        @if(old('modelo_veiculo_id'))
+                        $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
+                        @endif
 
-            $.ajax({
-                url: '{{ route("saldo.json") }}',
-                type: 'POST',
-                data: bico,
-                dataType: 'JSON',
-                cache: false,
-                success: function (data) {
-                    $("#saldo").val(data.saldo);
-                   
-                    $("#saldo").focus();
+                        $('.selectpicker').selectpicker('refresh');
+                    }
+                });
+            }
+            $('#marca_veiculo_id').click(buscarModeloVeiculos);
+            
 
-
-                },
-                error: function (data) {
-                }
-            });
-        }
-
-        $('#cpf').on('keyup', () => {
-            buscarDadosBico(); 
+            
             
         });
-        $('#cpf').on('blur', () => {
-            buscarDadosBico(); 
-            
-        });
- 
-@endpush
+    @endpush
+@endsection

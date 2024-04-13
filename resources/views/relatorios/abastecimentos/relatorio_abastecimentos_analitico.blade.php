@@ -42,6 +42,7 @@ $clienteValor = 0;
                                     <thead>
                                         <td>Veículo</td>
                                         <td>Data/Hora Abastecimento</td>
+                                        <td>Posto</td>
                                         <td align="right">Valor Litro</td>
                                         <td align="right">Volume Abastecido</td>
                                         <td align="right">Valor Abastecimento</td>
@@ -62,6 +63,8 @@ $clienteValor = 0;
                                             <td> {{ $abastecimento->placa }} </td>
                                             <td> {{ date_format(date_create($abastecimento->data_hora_abastecimento), 'd/m/Y H:i:s') }}
                                             </td>
+                                            <td> {{ $abastecimento->nome }} </td>
+                                         
                                             <td align="right">
                                                 {{ number_format($abastecimento->valor_litro, 3, ',', '.') }}
                                             </td>
@@ -81,6 +84,7 @@ $clienteValor = 0;
                                         @endforeach
                                         <tr class="success">
                                             <td colspan=2>Total do Cliente</td>
+                                            <td align="right"></td>
                                             <td align="right"></td>
                                             <td align="right"> {{ number_format($departamentoVolume, 3, ',', '.') }}
                                             </td>
@@ -139,6 +143,7 @@ $clienteValor = 0;
                                     <thead>
                                         <td>Veículo</td>
                                         <td>Data/Hora Abastecimento</td>
+                                        <td>Posto</td>
                                         <td align="right">Valor Litro</td>
                                         <td align="right">Volume Abastecido</td>
                                         <td align="right">Valor Abastecimento</td>
@@ -163,6 +168,7 @@ $clienteValor = 0;
                                             <td> Não Informada </td>
                                             <td> {{ date_format(date_create($clienteItem->data_hora_abastecimento), 'd/m/Y H:i:s') }}
                                             </td>
+                                            <td> {{ $abastecimento->nome }} </td>
                                             <td align="right">
                                                 {{ number_format($clienteItem->valor_litro, 3, ',', '.') }}
                                             </td>
@@ -182,6 +188,7 @@ $clienteValor = 0;
                                         @endforeach
                                         <tr class="success">
                                             <td colspan=2>Total do Cliente</td>
+                                            <td align="right"></td>
                                             <td align="right"></td>
                                             <td align="right"> {{ number_format($departamentoVolume, 3, ',', '.') }} </td>
                                             <td align="right"> {{ number_format($departamentoValor, 3, ',', '.') }} </td>

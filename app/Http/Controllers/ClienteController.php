@@ -329,10 +329,23 @@ class ClienteController extends Controller
     }
 
     public function showSaldo(Request $request)
+
+
     {
 
-        
+        // Aqui você iria realizar a lógica para consultar o cliente no banco de dados
+        // Neste exemplo, estou apenas retornando dados estáticos
+
         $cpf = $request->input('cpf');
+
+        // Simulando a busca do cliente no banco de dados
+       
+        return View('relatorios.clientes.listagem_clientes')->withClientes(Cliente::all())->withTitulo('Listagem de Clientes')->withParametro(Parametro::first());
+
+        
+        return response()->json(['saldo' => $request->cpf]);
+        
+        $cpf = 'cpf';
         
         $cliente = Cliente::where('cpf_cnpj', $cpf)->first();
         

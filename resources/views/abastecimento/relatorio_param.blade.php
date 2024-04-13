@@ -127,6 +127,19 @@
                             'defaultNone' => true,
                             'inputSize' => 3,
                         ]
+                        ,
+                        [
+                            'type' => 'select',
+                            'field' => 'posto_abastecimento_id',
+                            'label' => 'Posto de Abastecimentos',
+                            'required' => true,
+                            'items' => $postos,
+                            'displayField' => 'nome',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'inputSize' => 4,
+                        ]
                     ]
                 ])
                 @endcomponent 

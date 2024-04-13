@@ -458,9 +458,6 @@ class MovimentacaoCreditoController extends Controller
                 // echo ' fim ' . date('Y-m-d H:i:s', $data_fim);
                 $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
 
-
-
-
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
                         'clientes.id',
