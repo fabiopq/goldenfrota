@@ -187,7 +187,7 @@ class DashboardController extends Controller
             }
 
 
-            if (count($posicaoFim) > 0) {
+            
                 $result[] = array(
                     'id' => $tanque->id,
                     'descricao_tanque' => $tanque->descricao_tanque,
@@ -195,7 +195,7 @@ class DashboardController extends Controller
                     'posicao_inicial' => $saldo_inicio,
                     'posicao_final' => $saldo_final
                 );
-            }
+            
 
 
             $i++;
