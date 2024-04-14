@@ -40,6 +40,7 @@ export default {
         Axios.get("dashboard/saldo_tanques")
             .then(r => {
                 this.tanques = r.data;
+                
             })
             .catch(e => {
                 console.log(e);

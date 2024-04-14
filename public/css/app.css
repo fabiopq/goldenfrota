@@ -1641,7 +1641,7 @@ pre code {
 
 .table-sm th,
 .table-sm td {
-  padding: 0.2rem;
+  padding: 0.3rem;
 }
 
 .table-bordered {
@@ -6063,7 +6063,6 @@ a.close.disabled {
 }
 
 .modal-body {
-  
   position: relative;
   flex: 1 1 auto;
   padding: 1rem;

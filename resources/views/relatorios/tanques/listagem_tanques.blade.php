@@ -11,6 +11,9 @@
                 Descrição
             </td>
             <td>
+                Posto Abastecimento
+            </td>
+            <td>
                 Combustível
             </td>
             <td>
@@ -19,9 +22,7 @@
             <td>
                 Posição
             </td>
-            <td>
-                Posto Abastecimento
-            </td>
+            
         </tr>
     </thead>
     <tbody>
@@ -36,6 +37,9 @@
                 {{$tanque->descricao_tanque}}
             </td>
             <td>
+                {{$tanque->posto_abastecimento}}
+            </td>
+            <td>
                 {{$tanque->combustivel->descricao}}
             </td>
             <td>
@@ -44,9 +48,7 @@
             <td>
                 {{ number_format($tanque->posicao, 3) }}
             </td>
-            <td>
-                {{$tanque->posto_abastecimento}}
-            </td>
+            
         </tr>
         @endforeach
     </tbody>

@@ -44,8 +44,8 @@ class AbastecimentoController extends Controller
         'placa' => 'Veículo',
         'km_veiculo' => ['label' => 'Odômetro', 'type' => 'decimal', 'decimais' => 1],
         'media_veiculo' => ['label' => 'Média', 'type' => 'decimal', 'decimais' => 2],
-        'posto_abastecimentos_id' => 'Posto id',
-        'posto' => 'Posto',
+        //'posto_abastecimentos_id' => 'Posto id',
+        'posto' => 'Posto de Abastecimentos',
         'nome_atendente' => 'Atendente',
         'nome' => 'Motorista',
         'abastecimento_local' => ['label' => 'Abast. Local', 'type' => 'bool'],
@@ -88,7 +88,7 @@ class AbastecimentoController extends Controller
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
                     ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
-                    ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
+                    //->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
                     ->orWhere('atendentes.nome_atendente', 'like', '%' . $request->searchField . '%')
                     ->orWhere('posto_abastecimentos.nome', 'like', '%' . $request->searchField . '%')
                     /* ->orderBy('abastecimentos.id', 'desc') */

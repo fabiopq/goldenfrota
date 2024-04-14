@@ -115,9 +115,6 @@ class DashboardController extends Controller
             ->get();
 
 
-
-
-
         return ($posicao->posicao) ? $posicao->posicao : 0;
     }
 
@@ -128,18 +125,14 @@ class DashboardController extends Controller
             ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
             ->where('tanques.ativo', true)->get();
 
-
-        //$dataAtual = (new \DateTime())->format('d/m/Y');
-        //$dataInicial = (new \DateTime('-1 day'))->format('d/m/Y');
-
-
         $dataInicio = date_format(date_create_from_format('d/m/Y H:i:s', (new \DateTime())->format('d/m/Y') . '00:00:00'), 'Y-m-d H:i:s');
         $dataFim = date_format(date_create_from_format('d/m/Y H:i:s', (new \DateTime())->format('d/m/Y') . '23:59:59'), 'Y-m-d H:i:s');
 
-        // dd($tanques);
+        //dd($dataInicio);
         // return ($posicao->posicao) ? $posicao->posicao : 0;
 
-
+        $i = 0;
+        $result = [];
         foreach ($tanques as $tanque) {
 
             $posicaoInicio = DB::table('movimentacao_combustiveis')
@@ -182,24 +175,34 @@ class DashboardController extends Controller
                 ->groupBy('tanques.id')
                 ->get();
 
+            $saldo_inicio = 0;
+            $saldo_final = 0;
+
+            if (count($posicaoInicio) > 0) {
+                $saldo_inicio = $posicaoInicio[0]->posicao_inicial;
+            }
+
+            if (count($posicaoFim) > 0) {
+                $saldo_final = $posicaoFim[0]->posicao_final;
+            }
 
 
+            if (count($posicaoFim) > 0) {
+                $result[] = array(
+                    'id' => $tanque->id,
+                    'descricao_tanque' => $tanque->descricao_tanque,
+                    'capacidade' => $tanque->capacidade,
+                    'posicao_inicial' => $saldo_inicio,
+                    'posicao_final' => $saldo_final
+                );
+            }
 
 
-            $result[] = array(
-                'id' => $tanque->id,
-                'descricao_tanque' => $tanque->descricao_tanque,
-                'capacidade' => $tanque->capacidade,
-                'posicao_inicial' => $posicaoInicio[0]->posicao_inicial,
-                'posicao_final' => $posicaoFim[0]->posicao_final
-            );
-            return response()->json($result);
-            
+            $i++;
+
+
+            //return response()->json($result);
         }
-
-       
-
-
 
         return response()->json($result);
     }

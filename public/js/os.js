@@ -2706,8 +2706,8 @@ __webpack_require__.r(__webpack_exports__);
       servicoInserido.valor_acrescimo = this.valor_acrescimo;
       servicoInserido.valor_desconto = this.valor_desconto;
       servicoInserido.valor_cobrado = this.valor_cobrado;
-      this.servicosSelecionados.push(servicoInserido); //this.$delete(this.servicosDisponiveis, this.getServicoIndexById(id));
-
+      this.servicosSelecionados.push(servicoInserido);
+      this.$delete(this.servicosDisponiveis, this.getServicoIndexById(id));
       this.$emit('updateTotalServ', this.valor_total_servicos);
     },
     updateServico: function updateServico() {
