@@ -120,9 +120,12 @@ class DashboardController extends Controller
 
     public function saldoTanques()
     {
-
-        $tanques = Tanque::select('tanques.*', 'combustiveis.descricao')
+ 
+        $tanques = Tanque::select( DB::raw("concat( tanques.num_tanque, ' - ',combustiveis.descricao,' - Posto: ', posto_abastecimentos.nome) as descricao_tanque"),
+        'tanques.id','tanques.id', 'tanques.capacidade','combustiveis.descricao')
+        
             ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
             ->where('tanques.ativo', true)->get();
 
         $dataInicio = date_format(date_create_from_format('d/m/Y H:i:s', (new \DateTime())->format('d/m/Y') . '00:00:00'), 'Y-m-d H:i:s');
