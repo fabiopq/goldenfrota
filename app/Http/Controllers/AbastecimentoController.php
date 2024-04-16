@@ -77,14 +77,14 @@ class AbastecimentoController extends Controller
 
             if (isset($request->searchField)) {
                 $abastecimentos = DB::table('abastecimentos')
-                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente', 'motoristas.nome', 'posto_abastecimentos.nome as posto' )
+                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente', 'motoristas.nome', 'posto_abastecimentos.nome as posto')
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('motoristas', 'motoristas.id', 'abastecimentos.motorista_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
-                
+
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
                     ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
@@ -96,14 +96,14 @@ class AbastecimentoController extends Controller
                     ->paginate();
             } else {
                 $abastecimentos = DB::table('abastecimentos')
-                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente', 'motoristas.nome','posto_abastecimentos.nome as posto')
+                    ->select('abastecimentos.*', 'bicos.num_bico', 'veiculos.placa', 'atendentes.nome_atendente', 'motoristas.nome', 'posto_abastecimentos.nome as posto')
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('motoristas', 'motoristas.id', 'abastecimentos.motorista_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
-                
+
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
                     /* ->orderBy('abastecimentos.id', 'desc') */
@@ -558,13 +558,15 @@ class AbastecimentoController extends Controller
     {
         $clientes = Cliente::all();
         $posto_abastecimentos = PostoAbastecimento::all();
+        $departamentos = Departamento::all();
+       // dd($departamentos);
         $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
             ->where('veiculos.ativo', true)
             ->get();
 
-        return View('abastecimento.relatorio_param')->withClientes($clientes)->withVeiculos($veiculos)->withPostos($posto_abastecimentos);
+        return View('abastecimento.relatorio_param')->withClientes($clientes)->withVeiculos($veiculos)->withPostos($posto_abastecimentos)->withDepartamentos($departamentos);
     }
 
     public function relatorioAbastecimentos(Request $request)
@@ -606,8 +608,8 @@ class AbastecimentoController extends Controller
         $departamento_id = $request->departamento_id;
         $veiculo_id = $request->veiculo_id;
         $posto_abastecimento_id = $request->posto_abastecimento_id;
-        
 
+        /*
         if ($veiculo_id > 0) {
             $whereParam = 'veiculos.id = ' . $veiculo_id;
         } else {
@@ -635,18 +637,44 @@ class AbastecimentoController extends Controller
                 }
             }
         }
-
+*/
         if ($cliente_id > 0) {
             array_push($parametros, 'Cliente: ' . Cliente::find($cliente_id)->nome_razao);
+            $whereParam = 'clientes.id = ' . $cliente_id;
         }
 
         if ($departamento_id > 0) {
             array_push($parametros, 'Departamento: ' . Departamento::find($departamento_id)->departamento);
+            if (empty($whereParam)) {
+                $whereParam =  ' veiculos.departamento_id = ' . $departamento_id;
+            } else {
+                $whereParam = $whereParam . ' and veiculos.departamento_id = ' . $departamento_id;
+            }
+        }
+
+        if ($veiculo_id > 0) {
+            //array_push($parametros, 'Veículo: ' . Veiculo::find($veiculo_id)->placa);
+            if (empty($whereParam)) {
+                $whereParam =  ' veiculos.id = ' . $veiculo_id;
+            } else {
+                $whereParam = $whereParam . ' and veiculos.id = ' . $veiculo_id;
+            }
         }
 
         if ($posto_abastecimento_id > 0) {
             array_push($parametros, 'Posto de Abastecimentos: ' . PostoAbastecimento::find($posto_abastecimento_id)->nome);
+            if ($whereParam) {
+                $whereParam = $whereParam . ' and posto_abastecimentos_id = ' . $posto_abastecimento_id;
+            } else {
+                $whereParam = 'posto_abastecimentos_id = ' . $posto_abastecimento_id;
+            }
         }
+
+        if (empty($whereParam)) {
+            $whereParam = '1 = 1';
+        }
+
+        
 
         if ($veiculo_id > 0) {
             $veiculo_param = Veiculo::select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo')
@@ -739,7 +767,7 @@ class AbastecimentoController extends Controller
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
-                
+
                     //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                     ->whereRaw('clientes.id is not null')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
@@ -764,13 +792,13 @@ class AbastecimentoController extends Controller
 
 
                 $abastecimentos = DB::table('abastecimentos')
-                    ->select('abastecimentos.*', 'veiculos.placa','posto_abastecimentos.nome')
+                    ->select('abastecimentos.*', 'veiculos.placa', 'posto_abastecimentos.nome')
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
-                
+
                     //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                     ->whereRaw('clientes.id is not null')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
@@ -828,7 +856,6 @@ class AbastecimentoController extends Controller
             return View('relatorios.abastecimentos.relatorio_abastecimentos_resumido')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         }
     }
-
     public function relatorioAbastecimentosDepartamento(Request $request)
     {
 
@@ -1064,6 +1091,7 @@ class AbastecimentoController extends Controller
     }
 
 
+
     public function relatorioAbastecimentosBicoParam()
     {
         $bicos = Bico::where('ativo', true)->get();
@@ -1198,8 +1226,8 @@ class AbastecimentoController extends Controller
 
     public function show(Abastecimento $abastecimento)
     {
-       
-       
+
+
         if (Auth::user()->canListarOrdemServico()) {
             $combustivel = DB::table('combustiveis')
                 ->select('combustiveis.*')
@@ -1216,7 +1244,7 @@ class AbastecimentoController extends Controller
         }
     }
 
-    
+
 
     public function apiAbastecimentos(Request $request)
     {

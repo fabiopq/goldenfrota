@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AbastecimentoController;
 use App\PostoAbastecimento;
-
+use League\Csv\Writer;
 
 class IntegracaoAutomacaoController extends Controller
 {
@@ -142,6 +142,7 @@ class IntegracaoAutomacaoController extends Controller
     /*
   
    */
+
     public function ExportarMotoristas()
     {
         try {
@@ -319,6 +320,139 @@ class IntegracaoAutomacaoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
+        }
+    }
+
+    public function ExportarVeiculosHorusTech()
+    {
+        try {
+            $conteudo = '';
+            $veiculos = Veiculo::where('ativo', true)->get();
+
+            // Criar o arquivo CSV
+            $csv = Writer::createFromString('');
+
+            $csv->setDelimiter(';');
+            //$csv->setEnclosure('');
+            $csv->setOutputBOM(Writer::BOM_UTF8);
+
+            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle', 'Nome', 'Disconto', 'Comb. Ctrl.']);
+
+            $i = 0;
+            $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;Nome ;Disconto ;Comb. Ctrl.;\n";
+            foreach ($veiculos as $veiculo) {
+                if (strlen($veiculo->tag) == 16) {
+                    $conteudo .= str_pad($i, 6, '0', STR_PAD_LEFT) . ';';
+                    $conteudo .= substr('                ' . $veiculo->tag, -16) . ';';
+                    $conteudo .= '27: CARD ATTENDANT 1 L  ;';
+                    $conteudo .= '10;';
+                    $conteudo .= 'FFFF;';
+                    $conteudo .= 'FFFFFFFF;';
+                    $conteudo .= str_pad($veiculo->tag, 30, ' ') . ';';
+                    $conteudo .= '00,00;';
+                    $conteudo .= ";\n";
+                    //$teste = substr('                ' . $veiculo->tag, -16);
+                    // $csv->insertOne([$teste, substr('                ' . $veiculo->tag, -16), '27: CARD ATTENDANT 1 L','10','FFFF','FFFFFFFF',$veiculo->tag,'00,00','']);
+
+
+                    $i++;
+                }
+            }
+            $arquivo = $conteudo;
+            $conteudo = $arquivo;
+
+            // $filename = 'veiculos.csv';
+
+            /* Config da conta de FTP */
+            $this->configFTP();
+            $filename = 'veiculos_todos.csv';
+            //Storage::disk($this->disk())->put($filename, $conteudo);
+
+            // Salvar o arquivo de texto no armazenamento local (storage)
+            Storage::put($filename, $conteudo);
+
+            // Retornar o arquivo de texto como download
+            return response()->download(storage_path("app/{$filename}"))->deleteFileAfterSend(true);
+
+            Session::flash('success', 'Dados Exportados com sucesso!');
+            //Storage::disk($this->disk())->put('veiculos_teste.txt', $arquivo);
+
+            return redirect()->action('HomeController@index');
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+
+            return redirect()->back();
+        }
+    }
+
+    public function ExportarVeiculosSaldoHorusTech()
+    {
+
+        //gerar arquivo de veiculos ativos e com saldo e tag para importar no console horustech 
+        try {
+            $conteudo = '';
+            $veiculos = Veiculo::where('ativo', true)->get();
+
+            // Criar o arquivo CSV
+            $csv = Writer::createFromString('');
+
+            $csv->setDelimiter(';');
+            //$csv->setEnclosure('');
+            $csv->setOutputBOM(Writer::BOM_UTF8);
+
+            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle', 'Nome', 'Disconto', 'Comb. Ctrl.']);
+
+            $i = 0;
+            $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;Nome ;Disconto ;Comb. Ctrl.;\n";
+            foreach ($veiculos as $veiculo) {
+                $saldo = MovimentacaoCreditoController::consumoCreditoMes($veiculo->cliente_id);
+                if ($saldo > 0) {
+                    if (strlen($veiculo->tag) == 16) {
+                        $conteudo .= str_pad($i, 6, '0', STR_PAD_LEFT) . ';';
+                        $conteudo .= substr('                ' . $veiculo->tag, -16) . ';';
+                        $conteudo .= '27: CARD ATTENDANT 1 L  ;';
+                        $conteudo .= '10;';
+                        $conteudo .= 'FFFF;';
+                        $conteudo .= 'FFFFFFFF;';
+                        $conteudo .= str_pad($veiculo->tag, 30, ' ') . ';';
+                        $conteudo .= '00,00;';
+                        $conteudo .= ";\n";
+                        //$teste = substr('                ' . $veiculo->tag, -16);
+                        // $csv->insertOne([$teste, substr('                ' . $veiculo->tag, -16), '27: CARD ATTENDANT 1 L','10','FFFF','FFFFFFFF',$veiculo->tag,'00,00','']);
+
+
+                        $i++;
+                    }
+                }
+            }
+            $arquivo = $conteudo;
+            $conteudo = $arquivo;
+
+            // $filename = 'veiculos.csv';
+
+            /* Config da conta de FTP */
+            $this->configFTP();
+            $filename = 'veiculos_com_saldo.csv';
+            //Storage::disk($this->disk())->put($filename, $conteudo);
+
+            // Salvar o arquivo de texto no armazenamento local (storage)
+            Storage::put($filename, $conteudo);
+
+            // Retornar o arquivo de texto como download
+            return response()->download(storage_path("app/{$filename}"))->deleteFileAfterSend(true);
+
+            Session::flash('success', 'Dados Exportados com sucesso!');
+            //Storage::disk($this->disk())->put('veiculos_teste.txt', $arquivo);
+
+            return redirect()->action('HomeController@index');
+        } catch (\Exception $e) {
+            Session::flash('error', __('messages.exception', [
+                'exception' => $e->getMessage()
+            ]));
+
+            return redirect()->back();
         }
     }
 

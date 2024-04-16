@@ -545,13 +545,14 @@ class MovimentacaoCreditoController extends Controller
     {
 
         try {
-
+           //definir a data inicial e final para a consulta de saldo - por padrao busca primeiro e ultimo dia do mes
             $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
             $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
             // echo 'início ' . date('Y-m-d H:i:s', $data_incio);
             // echo ' fim ' . date('Y-m-d H:i:s', $data_fim);
             $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
 
+            //captura os abastecimentos do cliente 
             $abastecimentos = DB::table('abastecimentos')
                 ->select(
                     'clientes.id',
@@ -574,6 +575,7 @@ class MovimentacaoCreditoController extends Controller
                 ->get();
             $i = 0;
 
+            //para cada abastecimento com sum retorna um cliente com consumo que ultrapassou limite
             foreach ($abastecimentos as $cliente) {
                 // se o saldo cliente for menor ou igual a zero
                 if ($cliente->saldo <= 0) {
@@ -591,7 +593,6 @@ class MovimentacaoCreditoController extends Controller
 
 
                     foreach ($cliente->placas as $placa) {
-
 
                         $teste[$i] = $placa;
                         $i++;

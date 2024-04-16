@@ -107,13 +107,13 @@
                             'field' => 'departamento_id',
                             'label' => 'Departamento',
                             'required' => true,
-                            'items' => null,
+                            'items' => $departamentos,
                             'displayField' => 'departamento',
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'inputSize' => 3,
-                            'disabled' => true,
+                            'disabled' => false,
                         ],
                         [
                             'type' => 'select',
@@ -143,6 +143,7 @@
                     ]
                 ])
                 @endcomponent 
+                
             @endsection
         @endcomponent
     </div>

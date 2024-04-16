@@ -151,10 +151,7 @@ class ClienteController extends Controller
 
 
         $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
-        //$saldoCredito= array("valor"=>0);
-        //dd($cliente->saldo);
-
-
+        
 
         if (Auth::user()->canAlterarCliente()) {
             return View('cliente.edit', [

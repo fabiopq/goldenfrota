@@ -77,6 +77,8 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/exportacao', 'IntegracaoAutomacaoController@Exportar')->name('exportacao');
     Route::get('/exportacao_atendentes', 'IntegracaoAutomacaoController@ExportarAtendentes')->name('exportacao_atendentes');
     Route::get('/exportacao_motoristas', 'IntegracaoAutomacaoController@ExportarMotoristas')->name('exportacao_motoristas');
+    Route::get('/exportacao_veiculos_horus', 'IntegracaoAutomacaoController@ExportarVeiculosHorusTech')->name('exportacao_veiculos_horus');
+    Route::get('/exportacao_veiculos_saldo_horus', 'IntegracaoAutomacaoController@ExportarVeiculosSaldoHorusTech')->name('exportacao_veiculos_saldo_horus');
     Route::get('/exportacao_veiculos', 'IntegracaoAutomacaoController@ExportarVeiculos')->name('exportacao_veiculos');
     Route::get('/exportacao_produtos', 'IntegracaoAutomacaoController@ExportarProdutos')->name('exportacao_produtos');
     
