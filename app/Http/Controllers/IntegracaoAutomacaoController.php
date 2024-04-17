@@ -407,7 +407,8 @@ class IntegracaoAutomacaoController extends Controller
             $i = 0;
             $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;Nome ;Disconto ;Comb. Ctrl.;\n";
             foreach ($veiculos as $veiculo) {
-                $saldo = MovimentacaoCreditoController::consumoCreditoMes($veiculo->cliente_id);
+                $saldo = MovimentacaoCreditoController::saldoCreditoMes($veiculo->cliente_id);
+                //dd($saldo);
                 if ($saldo > 0) {
                     if (strlen($veiculo->tag) == 16) {
                         $conteudo .= str_pad($i, 6, '0', STR_PAD_LEFT) . ';';
