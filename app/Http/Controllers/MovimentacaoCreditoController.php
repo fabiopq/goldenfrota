@@ -538,10 +538,12 @@ class MovimentacaoCreditoController extends Controller
                 } else {
                    
 
-                    $limite = Cliente::where('id',$id)->limite;
-                    log::debug($limite);
+                    $limite = Cliente::where('id',$id)->get();
+                    log::debug($limite[0]->limite);
+                   
 
-                    return $limite;
+
+                    return $limite[0]->limite;
                 }
             }
         } catch (\Exception $e) {
