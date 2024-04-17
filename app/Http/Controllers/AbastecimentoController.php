@@ -1328,6 +1328,8 @@ class AbastecimentoController extends Controller
 
     {
 
+        log::debug($request);
+        
         try {
 
             $cfgPreco = DB::table('settings')
