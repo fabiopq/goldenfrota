@@ -530,12 +530,14 @@ class MovimentacaoCreditoController extends Controller
                     ->groupBy('clientes.id')
                     ->get();
 
-
+                    
                 if ($abastecimentos[0]->consumo ?? 0) {
                     log::debug($abastecimentos[0]->nome_razao . '- limite: ' . $abastecimentos[0]->limite . ' - consumo '.$abastecimentos[0]->consumo);
 
                     return   $abastecimentos[0]->limite - $abastecimentos[0]->consumo;
                 } else {
+                    log::debug('0');
+
                     return '0';
                 }
             }
