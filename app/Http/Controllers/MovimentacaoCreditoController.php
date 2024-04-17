@@ -514,7 +514,7 @@ class MovimentacaoCreditoController extends Controller
                         'clientes.nome_razao',
                         'clientes.limite',
 
-                        DB::raw('SUM(abastecimentos.valor_abastecimento)  AS saldo')
+                        DB::raw('SUM(abastecimentos.valor_abastecimento)  AS consumo')
                     )
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
@@ -531,9 +531,10 @@ class MovimentacaoCreditoController extends Controller
                     ->get();
 
 
-                if ($abastecimentos[0]->saldo ?? 0) {
+                if ($abastecimentos[0]->consumo ?? 0) {
+                    log::debug($abastecimentos[0]->nome_razao . '- limite: ' . $abastecimentos[0]->limite . ' - consumo '.$abastecimentos[0]->consumo);
 
-                    return   $abastecimentos[0]->limite - $abastecimentos[0]->saldo;
+                    return   $abastecimentos[0]->limite - $abastecimentos[0]->consumo;
                 } else {
                     return '0';
                 }
