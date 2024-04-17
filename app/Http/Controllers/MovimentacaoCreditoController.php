@@ -533,7 +533,7 @@ class MovimentacaoCreditoController extends Controller
 
                 if ($abastecimentos[0]->saldo ?? 0) {
 
-                    return  $abastecimentos[0]->saldo - $abastecimentos[0]->limite ;
+                    return   $abastecimentos[0]->limite - $abastecimentos[0]->saldo;
                 } else {
                     return '0';
                 }
