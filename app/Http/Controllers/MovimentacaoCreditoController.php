@@ -536,9 +536,12 @@ class MovimentacaoCreditoController extends Controller
 
                     return   $abastecimentos[0]->limite - $abastecimentos[0]->consumo;
                 } else {
-                    log::debug('0');
+                   
 
-                    return '0';
+                    $limite = Cliente::where('id',$id)->limite;
+                    log::debug($limite);
+
+                    return $limite;
                 }
             }
         } catch (\Exception $e) {
