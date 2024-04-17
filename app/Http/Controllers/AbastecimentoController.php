@@ -1328,7 +1328,7 @@ class AbastecimentoController extends Controller
 
     {
 
-        log::debug($request);
+       // log::debug($request);
 
         try {
 
@@ -1508,7 +1508,7 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
-            Log::debug($e);
+            //Log::debug($e);
 
             return response()->json(["Erro" => "Abastecimento nao iserido"], 301);
         }
