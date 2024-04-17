@@ -339,7 +339,7 @@ class IntegracaoAutomacaoController extends Controller
             $csv->insertOne(['Posição','ID Cartão','Função','Versão','Controle','Código','Nome','Disconto','Comb. Ctrl.']);
 
             $i = 0;
-            $conteudo .= "Posição;ID Cartão;Função;Versão;Controle;Código;Nome;Disconto;Comb. Ctrl.;\n";
+            //$conteudo .= "Posição;ID Cartão;Função;Versão;Controle;Código;Nome;Disconto;Comb. Ctrl.;\n";
             foreach ($veiculos as $veiculo) {
                 if (strlen($veiculo->tag) == 16) {
                     $conteudo .= $i . ';';
@@ -405,7 +405,7 @@ class IntegracaoAutomacaoController extends Controller
             $csv->insertOne(['Posição','ID Cartão','Função','Versão','Controle','Código','Nome','Disconto','Comb. Ctrl.']);
 
             $i = 0;
-            $conteudo .= "Posição;ID Cartão;Função;Versão;Controle;Código;Nome;Disconto;Comb. Ctrl.;\n";
+         //   $conteudo .= "Posição;ID Cartão;Função;Versão;Controle;Código;Nome;Disconto;Comb. Ctrl.;\n";
             foreach ($veiculos as $veiculo) {
                 $saldo = MovimentacaoCreditoController::saldoCreditoMes($veiculo->cliente_id);
                 //dd($saldo);
