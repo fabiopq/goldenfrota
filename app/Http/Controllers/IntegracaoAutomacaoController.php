@@ -336,10 +336,10 @@ class IntegracaoAutomacaoController extends Controller
             //$csv->setEnclosure('');
             $csv->setOutputBOM(Writer::BOM_UTF8);
 
-            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle', 'Nome', 'Disconto', 'Comb. Ctrl.']);
+            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle', 'codigo', 'Nome', 'Disconto', 'Comb. Ctrl.']);
 
             $i = 0;
-            $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;Nome ;Disconto ;Comb. Ctrl.;\n";
+            $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;codigo ;Nome ;Disconto ;Comb. Ctrl.;\n";
             foreach ($veiculos as $veiculo) {
                 if (strlen($veiculo->tag) == 16) {
                     $conteudo .= str_pad($i, 6, '0', STR_PAD_LEFT) . ';';
@@ -402,10 +402,10 @@ class IntegracaoAutomacaoController extends Controller
             //$csv->setEnclosure('');
             $csv->setOutputBOM(Writer::BOM_UTF8);
 
-            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle', 'Nome', 'Disconto', 'Comb. Ctrl.']);
+            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle','codigo', 'Nome', 'Disconto', 'Comb. Ctrl.']);
 
             $i = 0;
-            $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;Nome ;Disconto ;Comb. Ctrl.;\n";
+            $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;codigo ;Nome ;Disconto ;Comb. Ctrl.;\n";
             foreach ($veiculos as $veiculo) {
                 $saldo = MovimentacaoCreditoController::saldoCreditoMes($veiculo->cliente_id);
                 //dd($saldo);
