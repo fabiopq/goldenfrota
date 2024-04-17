@@ -329,7 +329,7 @@
                         <li><a class="dropdown-item" href="{{route('exportacao_veiculos_horus')}}">Exportar - Veículos - Todos - Horus Tech</a></li>
                         @endpermission
                         @permission('acesso-exportar-exportar-dados-cadastrais')
-                        <li><a class="dropdown-item" href="{{route('exportacao_veiculos_saldo_horus')}}">Exportar - Veículos - Saldo - Horus Tech</a></li>
+                        <li><a class="dropdown-item" href="{{route('exportacao_veiculos_saldo_horus')}}">Exportar - Veículos - Saldo Credito Positivo- Horus Tech</a></li>
                         @endpermission
                        
                         

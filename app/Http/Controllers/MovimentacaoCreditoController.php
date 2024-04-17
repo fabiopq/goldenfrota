@@ -501,11 +501,9 @@ class MovimentacaoCreditoController extends Controller
         try {
 
             if ($id) {
-                //funcao retorna total do consumo reais durante o mes
+                //funcao retorna total do saldo em reais durante o mes 
                 $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
                 $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
-                // echo 'início ' . date('Y-m-d H:i:s', $data_incio);
-                // echo ' fim ' . date('Y-m-d H:i:s', $data_fim);
                 $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
 
                 $abastecimentos = DB::table('abastecimentos')
@@ -520,28 +518,22 @@ class MovimentacaoCreditoController extends Controller
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
-                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                     ->whereRaw('clientes.id is not null')
-                    //   ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
-                    // ->whereRaw($whereParam)
-                    //// ->whereRaw($whereTipoAbastecimento)
                     ->where('veiculos.cliente_id', $id)
                     ->groupBy('clientes.id')
                     ->get();
 
-                    
+
                 if ($abastecimentos[0]->consumo ?? 0) {
-                    log::debug($abastecimentos[0]->nome_razao . '- limite: ' . $abastecimentos[0]->limite . ' - consumo '.$abastecimentos[0]->consumo);
+                    //  log::debug($abastecimentos[0]->nome_razao . '- limite: ' . $abastecimentos[0]->limite . ' - consumo '.$abastecimentos[0]->consumo);
 
                     return   $abastecimentos[0]->limite - $abastecimentos[0]->consumo;
                 } else {
-                   
 
-                    $limite = Cliente::where('id',$id)->get();
-                    log::debug($limite[0]->limite);
-                   
 
+                    $limite = Cliente::where('id', $id)->get();
+                    //   log::debug($limite[0]->limite);
 
                     return $limite[0]->limite;
                 }
