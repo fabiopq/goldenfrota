@@ -1329,7 +1329,7 @@ class AbastecimentoController extends Controller
     {
 
         log::debug($request);
-        
+
         try {
 
             $cfgPreco = DB::table('settings')
@@ -1388,7 +1388,7 @@ class AbastecimentoController extends Controller
                 $bico = Bico::where('endereco', '=', $request->bico_endereco)->first();
 
                 if ($bico) {
-                    //dd($bico); 
+
                     $abastecimento->bico_id = $bico->id;
                 }
             }
@@ -1416,28 +1416,30 @@ class AbastecimentoController extends Controller
             if ($request->veiculo_id) {
 
                 $veiculo = Veiculo::where('id', '=', $request->veiculo_id)->first();
+
                 if ($veiculo) {
 
                     $abastecimento->veiculo_id = $veiculo->id;
-                } else if ($request->tag_atendente) {
-
-                    $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
-                    if ($veiculo) {
-                        $abastecimento->veiculo_id = $veiculo->id;
-                    }
                 }
-                if ($veiculo) {
+            } else if ($request->tag_atendente) {
 
-                    $abastecimento->veiculo_id = $veiculo->id;
-                    $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
-                    // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
+                $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
+            } else if ($request->tag_cliente) {
 
-                    Log::debug('Abastecimento recebido na api : ' . $abastecimento);
-                    Log::debug('TAg recebida : ' . $request->tag);
-                } else {
-                    $abastecimento->veiculo_id = null;
-                    $abastecimento->media_veiculo = 0;
-                }
+                $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
+            }
+
+            if ($veiculo) {
+
+                $abastecimento->veiculo_id = $veiculo->id;
+                $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
+
+                Log::debug('Abastecimento recebido na api : ' . $abastecimento);
+                Log::debug('TAg recebida : ' . $request->tag);
+            } else {
+                $abastecimento->veiculo_id = null;
+                $abastecimento->media_veiculo = 0;
             }
 
 
@@ -1504,7 +1506,7 @@ class AbastecimentoController extends Controller
             //   Log::debug('Data do abastecimento menor que o ultimo abastecimento inserido ');
             // }
         } catch (\Exception $e) {
-            //dd($e);
+
             DB::rollback();
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
