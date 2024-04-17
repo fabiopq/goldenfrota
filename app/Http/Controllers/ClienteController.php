@@ -55,6 +55,7 @@ class ClienteController extends Controller
                     ->orWhere('endereco', 'like', '%' . $request->searchField . '%')
                     ->orWhere('fone1', 'like', '%' . $request->searchField . '%')
                     ->orWhere('fone2', 'like', '%' . $request->searchField . '%')
+                    
                     ->paginate();
             } else {
                 $clientes = Cliente::paginate();
