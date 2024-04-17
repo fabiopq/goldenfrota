@@ -559,7 +559,7 @@ class AbastecimentoController extends Controller
         $clientes = Cliente::all();
         $posto_abastecimentos = PostoAbastecimento::all();
         $departamentos = Departamento::all();
-       // dd($departamentos);
+        // dd($departamentos);
         $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
@@ -674,7 +674,7 @@ class AbastecimentoController extends Controller
             $whereParam = '1 = 1';
         }
 
-        
+
 
         if ($veiculo_id > 0) {
             $veiculo_param = Veiculo::select('veiculos.*', 'marca_veiculos.marca_veiculo', 'modelo_veiculos.modelo_veiculo')
@@ -1410,7 +1410,7 @@ class AbastecimentoController extends Controller
                 }
             }
 
-      
+
             if ($request->veiculo_id) {
 
                 $veiculo = Veiculo::where('id', '=', $request->veiculo_id)->first();
@@ -1452,7 +1452,7 @@ class AbastecimentoController extends Controller
 
 
                 Log::debug('abastecimento salvo  : ' . $abastecimento);
-                //MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
+                Log::debug('TAg recebida : ' . $request->tag);
                 MovimentacaoCreditoController::saidaCredito2($abastecimento);
 
                 if ($abastecimento->bico_id) {
