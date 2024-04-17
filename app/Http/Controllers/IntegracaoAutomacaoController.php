@@ -342,14 +342,14 @@ class IntegracaoAutomacaoController extends Controller
             $conteudo .= "Posição; ID Cartão; Função; Versão; Controle ;codigo ;Nome ;Disconto ;Comb. Ctrl.;\n";
             foreach ($veiculos as $veiculo) {
                 if (strlen($veiculo->tag) == 16) {
-                    $conteudo .= str_pad($i, 6, '0', STR_PAD_LEFT) . ';';
+                    $conteudo .= $i . ';';
                     $conteudo .= substr('                ' . $veiculo->tag, -16) . ';';
                     $conteudo .= '27: CARD ATTENDANT 1 L  ;';
                     $conteudo .= '10;';
                     $conteudo .= 'FFFF;';
                     $conteudo .= 'FFFFFFFF;';
                     $conteudo .= str_pad($veiculo->tag, 30, ' ') . ';';
-                    $conteudo .= '00,00;';
+                    $conteudo .= '0;';
                     $conteudo .= ";\n";
                     //$teste = substr('                ' . $veiculo->tag, -16);
                     // $csv->insertOne([$teste, substr('                ' . $veiculo->tag, -16), '27: CARD ATTENDANT 1 L','10','FFFF','FFFFFFFF',$veiculo->tag,'00,00','']);
@@ -411,14 +411,14 @@ class IntegracaoAutomacaoController extends Controller
                 //dd($saldo);
                 if ($saldo > 0) {
                     if (strlen($veiculo->tag) == 16) {
-                        $conteudo .= str_pad($i, 6, '0', STR_PAD_LEFT) . ';';
+                        $conteudo .= $i. ';';
                         $conteudo .= substr('                ' . $veiculo->tag, -16) . ';';
                         $conteudo .= '27: CARD ATTENDANT 1 L  ;';
                         $conteudo .= '10;';
                         $conteudo .= 'FFFF;';
                         $conteudo .= 'FFFFFFFF;';
                         $conteudo .= str_pad($veiculo->tag, 30, ' ') . ';';
-                        $conteudo .= '00,00;';
+                        $conteudo .= '0;';
                         $conteudo .= ";\n";
                         //$teste = substr('                ' . $veiculo->tag, -16);
                         // $csv->insertOne([$teste, substr('                ' . $veiculo->tag, -16), '27: CARD ATTENDANT 1 L','10','FFFF','FFFFFFFF',$veiculo->tag,'00,00','']);
