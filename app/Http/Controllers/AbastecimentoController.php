@@ -1410,7 +1410,7 @@ class AbastecimentoController extends Controller
                 }
             }
 
-
+      
             if ($request->veiculo_id) {
 
                 $veiculo = Veiculo::where('id', '=', $request->veiculo_id)->first();
@@ -1431,6 +1431,7 @@ class AbastecimentoController extends Controller
                     // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
 
                     Log::debug('Abastecimento recebido na api : ' . $abastecimento);
+                    Log::debug('TAg recebida : ' . $request->tag);
                 } else {
                     $abastecimento->veiculo_id = null;
                     $abastecimento->media_veiculo = 0;
