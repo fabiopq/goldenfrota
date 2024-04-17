@@ -1435,8 +1435,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                 // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
 
-                Log::debug('Abastecimento recebido na api : ' . $abastecimento);
-                Log::debug('TAg recebida : ' . $request->tag);
+                
             } else {
                 $abastecimento->veiculo_id = null;
                 $abastecimento->media_veiculo = 0;
@@ -1453,10 +1452,8 @@ class AbastecimentoController extends Controller
                 }
 
 
-
-
-                Log::debug('abastecimento salvo  : ' . $abastecimento);
-                Log::debug('TAg recebida : ' . $request->tag);
+                Log::debug('abastecimento salvo  : ' . $abastecimento. 'tag_atendente'.$request->tag_atendente);
+                
                 MovimentacaoCreditoController::saidaCredito2($abastecimento);
 
                 if ($abastecimento->bico_id) {
