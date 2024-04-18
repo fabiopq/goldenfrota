@@ -213,9 +213,10 @@
                     Relatórios
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownRelatorios">
-                    @permission('acesso-posicao-tanques-grafico')
+                 <!--   @permission('acesso-posicao-tanques-grafico')
                     <li><a class="dropdown-item" href="{{route('relatorio_posicao_tanques')}}" target="_blank">Tanques (Gráfico)</a></li>
                     @endpermission
+                    -->
                     @permission('acesso-media-consumo-veiculos-grafico')
                     <li><a class="dropdown-item" href="{{route('relatorio_media_consumo')}}" target="_blank">Consumo de Veículos (Gráfico)</a></li>
                     @endpermission

@@ -76,6 +76,7 @@ Route::get('veiculos', 'VeiculoController@apiVeiculos');
 Route::get('veiculo/{id}', 'VeiculoController@apiVeiculo');
 Route::get('veiculoscliente', 'VeiculoController@apiVeiculosClientes');
 Route::get('clientes', 'ClienteController@apiClientes');
+Route::get('memoria_identificadores', 'MemoriaIdentificadoresController@apiMemoriaIdentificadores');
 Route::get('cliente/{id}', 'ClienteController@apiClienteCnpj');
 Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
 

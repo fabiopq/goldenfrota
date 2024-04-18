@@ -115,4 +115,9 @@ class MemoriaIdentificadoresController extends Controller
         }
         return $csvData;
     }
+
+    public function apiMemoriaIdentificadores()
+    {
+        return response()->json(MemoriaIdentificadores::select('id','posicao','identificador')->get());
+    }
 }
