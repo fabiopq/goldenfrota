@@ -304,9 +304,15 @@
                 
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownAutomacao">
                     
-                    @permission('acesso-importar-abastecimentos')
+                    
+                @permission('acesso-importar-abastecimentos')
+                <a class="dropdown-item dropdown-toggle" href="#">Importar</a>
+                    <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{{route('importacao')}}">Importar Abastecimentos</a></li>
+                    <li><a class="dropdown-item" href="{{route('memoria_identificadores')}}">Importar Indentificadores Horus</a></li>
+
                     @endpermission
+                    </ul>
                     <a class="dropdown-item dropdown-toggle" href="#">Exportar Dados Para Console</a>
                     <ul class="dropdown-menu">
                     <li class="dropdown-submenu">

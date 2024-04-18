@@ -86,7 +86,8 @@ Route::middleware(['auth:web'])->group(function() {
    // Route::view('/param_teste_exportar_hiro', 'integracao_hiro.index');
   //Route::get('/param_teste_exportar_hiro', 'IntegracaoAutomacaoController@ParamTesteExportarHiro')->name('param_teste_exportar_hiro');
    // Route::post('/teste_hiro_exportacao', 'IntegracaoAutomacaoController@TesteExportarHiro')->name('teste_exportar_hiro');
-
+    Route::get('/memoria_identificadores', 'MemoriaIdentificadoresController@showUploadForm')->name('memoria_identificadores');
+    Route::post('/memoria_identificadores_upload', 'MemoriaIdentificadoresController@uploadFile')->name('memoria_identificadores_upload');
     Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModelosJson')->name('modelo_veiculos.json');
     Route::post('modelo_veiculo_marca/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
