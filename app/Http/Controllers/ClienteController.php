@@ -55,7 +55,7 @@ class ClienteController extends Controller
                     ->orWhere('endereco', 'like', '%' . $request->searchField . '%')
                     ->orWhere('fone1', 'like', '%' . $request->searchField . '%')
                     ->orWhere('fone2', 'like', '%' . $request->searchField . '%')
-                    
+
                     ->paginate();
             } else {
                 $clientes = Cliente::paginate();
@@ -152,7 +152,7 @@ class ClienteController extends Controller
 
 
         $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
-        
+
 
         if (Auth::user()->canAlterarCliente()) {
             return View('cliente.edit', [
@@ -330,34 +330,86 @@ class ClienteController extends Controller
 
 
     {
+        $this->validate($request, [
+            'username' => 'required',
+            'password' => 'required'
+        ]);
 
-        // Aqui você iria realizar a lógica para consultar o cliente no banco de dados
-        // Neste exemplo, estou apenas retornando dados estáticos
 
-        $cpf = $request->input('cpf');
+        // $cpf = '025.813.691-08';
+        $cpf = $request->username;
+
+        //$id = '2';
+        // $fantasia = 'arlan antonio lemes';
+        // $cliente = Cliente::where('cpf_cnpj', $cpf)->first();
+        /*  $cliente = DB::table('clientes')
+            ->select('clientes.*')
+            ->where('cpf_cnpj', $cpf)
+            ->distinct()
+            ->get();
+*/
+        $cliente = Cliente::where('cpf_cnpj', $request->input('username'))->first();
+
 
         // Simulando a busca do cliente no banco de dados
-       
-        return View('relatorios.clientes.listagem_clientes')->withClientes(Cliente::all())->withTitulo('Listagem de Clientes')->withParametro(Parametro::first());
-
-        
-        return response()->json(['saldo' => $request->cpf]);
-        
-        $cpf = 'cpf';
-        
-        $cliente = Cliente::where('cpf_cnpj', $cpf)->first();
-        
-        
-        if ($cliente) {
-            $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
-            
-            return response()->json(['saldo' => $cliente->saldo]);
+        if (!$cliente) {
+            return redirect()->back()->withErrors(['error' => 'username ou senha invlida']);
         } else {
-            return response()->json(['error' => 'Cliente não encontrado'], 404);
+
+            $senha = $cliente->cpf_cnpj;
+            $senha = str_replace(array('.', '-', '/'), "", $senha);
+            $senha = substr($senha, 0, 4);
+            //dd($senha);
+            if ($request->password == $senha) {
+               // $saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
+               
+                $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
+                $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
+                // echo 'início ' . date('Y-m-d H:i:s', $data_incio);
+                // echo ' fim ' . date('Y-m-d H:i:s', $data_fim);
+                $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
+
+
+
+
+
+
+                $abastecimentos = DB::table('abastecimentos')
+                    ->select('abastecimentos.*', 'veiculos.placa', 'posto_abastecimentos.nome')
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+
+                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->whereRaw('clientes.id is not null')
+                    //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->orderBy('veiculos.placa', 'asc')
+                    ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+                    /* ->orderBy('abastecimentos.id', 'desc') */
+                    ->distinct()
+                    ->get();
+                $cliente->abastecimentos = $abastecimentos;
+
+
+                $parametros = [];
+                //dd($cliente->nome_razao);
+                return View('relatorios.clientes.extrato_saldo')->withCliente($cliente)->withTitulo('Relatório de Abastecimentos')->withParametros($parametros)->withParametro(Parametro::first());
+
+                //return View('relatorios.clientes.extrato_saldo')->withCliente($cliente)->withSaldo($saldo)->withTitulo('Extrato do Cliente')->withParametro(Parametro::first());
+            } else {
+                return redirect()->back()->withErrors(['error' => 'username ou senha invlida']);
+            }
         }
 
-        // $cliente->saldo = MovimentacaoCreditoController::consumoCreditoMes($cliente->id);
 
-        // return View('cliente.modal')->withParametro(Parametro::first())->withTitulo('Saldo do Mês')->withCliente($cliente);
+        //return response()->json(['saldo' => $request->cpf]);
+
+        // $cpf = '001.880.811-51';
+
+
     }
 }

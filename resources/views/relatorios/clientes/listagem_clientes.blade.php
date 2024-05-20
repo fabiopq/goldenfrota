@@ -28,6 +28,7 @@
         </tr>
     </thead>
     <tbody>
+       
         @foreach($clientes as $cliente) 
         <tr>
             <td>

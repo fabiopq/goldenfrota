@@ -448,16 +448,18 @@ class MovimentacaoCreditoController extends Controller
     static public function consumoCreditoMes($id)
     {
 
+        
         try {
 
             if ($id) {
+                
                 //funcao retorna total do consumo reais durante o mes
                 $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
                 $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
                 // echo 'início ' . date('Y-m-d H:i:s', $data_incio);
                 // echo ' fim ' . date('Y-m-d H:i:s', $data_fim);
                 $whereData = 'abastecimentos.data_hora_abastecimento between \'' . date('Y-m-d H:i:s', $data_incio) . '\' and \'' .  date('Y-m-d H:i:s', $data_fim) . '\'';
-
+                
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
                         'clientes.id',
@@ -465,26 +467,27 @@ class MovimentacaoCreditoController extends Controller
 
                         DB::raw('SUM(abastecimentos.valor_abastecimento)  AS saldo')
                     )
-                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    //->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
-                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                   // ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-                    ->whereRaw('clientes.id is not null')
+                   // ->whereRaw('clientes.id is not null')
                     //   ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
                     // ->whereRaw($whereParam)
                     //// ->whereRaw($whereTipoAbastecimento)
                     ->where('veiculos.cliente_id', $id)
                     ->groupBy('clientes.id')
+                    ->groupBy('clientes.nome_razao')
                     ->get();
-
-
+                    //dd($abastecimentos);
+                   
                 if ($abastecimentos[0]->saldo ?? 0) {
 
                     return  $abastecimentos[0]->saldo;
                 } else {
-                    return '0';
+                    return 0;
                 }
             }
         } catch (\Exception $e) {

@@ -24,12 +24,27 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+       
         $credentials = $request->only('username', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
             return $this->respondWithToken($token);
         }
 
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    public function loginCliente(Request $request)
+    {
+        
+        
+        $credentials = $request->only('username', 'password');
+
+        if ($token = $this->guardCliente()->attempt($credentials)) {
+            
+            return $this->respondWithToken($token);
+        }
+        
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
@@ -89,5 +104,9 @@ class AuthController extends Controller
     public function guard()
     {
         return Auth::guard('api');
+    }
+    public function guardCliente()
+    {
+        return Auth::guard('cliente');
     }
 }

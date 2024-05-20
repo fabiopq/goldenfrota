@@ -818,7 +818,7 @@ class AbastecimentoController extends Controller
             return View('relatorios.abastecimentos.relatorio_abastecimentos_analitico')->withClientes($clientes)->withClientesNulloAnalitico($clientesNulloAnalitico)->withTitulo('Relatório de Abastecimentos - Analítico')->withParametros($parametros)->withParametro(Parametro::first());
         } else if ($request->tipo_relatorio == 3) {
             foreach ($clientes as $cliente) {
-
+                /* relatório Resumido */
 
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
@@ -843,9 +843,11 @@ class AbastecimentoController extends Controller
                     ->whereRaw($whereTipoAbastecimento)
                     ->where('veiculos.cliente_id', $cliente->id)
                     ->groupBy('clientes.id')
+                    ->groupBy('clientes.nome_razao')
+                    ->groupBy('clientes.limite')
                     ->get();
                 //->toSql();
-                //dd($cliente->id);
+               
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
@@ -1328,7 +1330,7 @@ class AbastecimentoController extends Controller
 
     {
 
-       // log::debug($request);
+        // log::debug($request);
 
         try {
 
@@ -1435,7 +1437,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                 // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
 
-                
+
             } else {
                 $abastecimento->veiculo_id = null;
                 $abastecimento->media_veiculo = 0;
@@ -1452,8 +1454,8 @@ class AbastecimentoController extends Controller
                 }
 
 
-                Log::debug('abastecimento salvo  : ' . $abastecimento. 'tag_atendente'.$request->tag_atendente);
-                
+                Log::debug('abastecimento salvo  : ' . $abastecimento . 'tag_atendente' . $request->tag_atendente);
+
                 MovimentacaoCreditoController::saidaCredito2($abastecimento);
 
                 if ($abastecimento->bico_id) {

@@ -2,103 +2,58 @@
     $marcaVeiculos = [];
     $modelo = [];
 @endphp
-@extends('layouts.app')
+@extends('layouts.app_sem_main')
 
 @section('content')
-    <div class="card m-0 border-0">
-        @component('components.form', [
-            'title' => 'Relatório de Média de Consumo por Modelo', 
-            'routeUrl' => route('param_relatorio_media_modelo'), 
-            'formTarget' => '_blank',
-            'method' => 'POST',
-            'cancelRoute' => 'home',
-            'formButtons' => [
-                ['type' => 'submit', 'label' => 'Gerar Relatório', 'icon' => 'chart-line'],
-                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
-                ]
-            ])
-            @section('formFields')
-                
-                @component('components.form-group', [
-                    'inputs' => [
-                        [
-                            'type' => 'select',
-                            'field' => 'marca_veiculo_id',
-                            'label' => 'Marca',
-                            'required' => true,
-                            'items' => $marcaVeiculos,
-                            'autofocus' => true,
-                            'displayField' => 'marca_veiculo',
-                            'liveSearch' => true,
-                            'keyField' => 'id',
-                            'defaultNone' => true,
-                            'inputSize' => 6
-                        ],
-                        [
-                            'type' => 'select',
-                            'field' => 'modelo_veiculo_id',
-                            'label' => 'Modelo',
-                            'required' => true,
-                            'items' => $modelo,
-                            'autofocus' => true,
-                            'displayField' => 'modelo_veiculo',
-                            'liveSearch' => true,
-                            'keyField' => 'id',
-                            'defaultNone' => true,
-                            'disabled' => false,
-                            'inputSize' => 6
-                        ]
-                    ]
-                ])
-                @endcomponent
-            @endsection
-        @endcomponent
-    </div>
-    @push('document-ready')
-        $(document).ready(function() {
-            var buscarModeloVeiculos = function() {
-                var marca = {};
+    <div class="container-fluid bg-dark text-white h-100">
+        <div class="row align-items-center h-100">
+            <div class="col-md-4 mx-auto">
+                <span class="display-5"><img src="{{ asset('images/logo_login.png') }}" width="400px"
+                        alt="Golden Service - Controle de Frotas"></span>
+                <form method="POST" action="{{ route('saldo.json') }}">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <input class="form-control form-control-lg{{ $errors->has('username') ? ' is-invalid' : '' }}"
+                            placeholder="Usuário" id="text" type="username" name="username"
+                            value="{{ old('username') }}" required autofocus>
 
-                marca.id =1;
-                marca._token = $('input[name="_token"]').val();
-
-                console.log(marca);
-                $.ajax({
-                    url: '{{ route("modelo_veiculos_marca.json") }}',
-                    type: 'POST',
-                    data: marca,
-                    dataType: 'JSON',
-                    
-                    success: function (data) {
-                        console.log(data);
-                        
-                            $('#modelo_veiculo_id').append($('<option>', { 
-                                value: -1,
-                                text : 'Nada Selecionado' 
-                        }));
-
-
-                        $.each(data, function (i, item) {
-                            
-                            $('#modelo_veiculo_id').append($('<option>', { 
-                                value: item.id,
-                                text : item.modelo_veiculo 
-                            }));
-                        });
-
-                        @if(old('modelo_veiculo_id'))
-                        $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
+                        @if ($errors->has('username'))
+                            <span class="invalid-feedback">
+                                <strong>{{ $errors->first('username') }}</strong>
+                            </span>
                         @endif
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control form-control-lg{{ $errors->has('password') ? ' is-invalid' : '' }}"
+                            placeholder="Senha" id="password" type="password" name="password" value="{{ old('password') }}"
+                            required autofocus>
 
-                        $('.selectpicker').selectpicker('refresh');
-                    }
-                });
-            }
-            $('#marca_veiculo_id').click(buscarModeloVeiculos);
-            
-
-            
-            
-        });
-    @endpush
+                        @if ($errors->has('password'))
+                            <span class="invalid-feedback">
+                                <strong>{{ $errors->first('password') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="remember" name="remember"
+                                {{ old('remember') ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="remember">Manter conectado</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-info btn-lg btn-block">Entrar</button>
+                    </div>
+                    <div class="row">
+                        <a class="btn btn-link text-light" href="{{ route('password.request') }}">
+                            Esqueceu sua senha?
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+@push('document-ready')
+    $("#text").mask('000.000.000-00', {placeholder: '___.___.___-__'});
+@endpush
