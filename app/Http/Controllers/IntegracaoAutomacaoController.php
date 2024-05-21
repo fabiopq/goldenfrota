@@ -1005,7 +1005,7 @@ class IntegracaoAutomacaoController extends Controller
                                 // Elimina o arquivo do servidor apenas se conseguir importar todos os abastecimentos */
 
                                 if (!$errosImportacao) {
-                                    Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
+                                   // Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
                                     //$this->limparArquivoAbastecimentosServidor($i);
                                 }
                             }
