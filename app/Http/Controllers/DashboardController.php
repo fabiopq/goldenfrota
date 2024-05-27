@@ -246,7 +246,7 @@ class DashboardController extends Controller
        //->orderBy('veiculos.placa', 'asc')
        ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
        /* ->orderBy('abastecimentos.id', 'desc') */
-       ->take(5)
+       ->take(3)
        ->get();
        
        // $abastecimentos = Abastecimento::orderby('data_hora_abastecimento', $data->format('Y-m-d'))->take(5)->get();
