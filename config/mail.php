@@ -91,7 +91,7 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Sendmail System Path
-    |--------------------------------------------------------------------------
+    |--------------------------------------p------------------------------------
     |
     | When using the "sendmail" driver to send e-mails, we will need to know
     | the path to where Sendmail lives on this server. A default path has

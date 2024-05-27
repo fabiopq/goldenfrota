@@ -232,6 +232,15 @@ class DashboardController extends Controller
         return response()->json($motoristas);
     }
 
+    public function ultimosAbastecimentos()
+    {
+        $data = new \Datetime();
+
+        $abastecimentos = Abastecimento::orderby('data_hora_abastecimento', $data->format('Y-m-d'))->take(5)->get();
+
+        return response()->json($abastecimentos);
+    }
+
     public function abastecimentosHoje()
     {
         $data = new \Datetime();

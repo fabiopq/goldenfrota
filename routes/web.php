@@ -11,12 +11,15 @@
 |
 */
 
+use App\Mail\newEmail;
+use Illuminate\Support\Facades\Mail;
+
 Auth::routes();
 /* Route::get('/teste', function() {
     return View('teste');
 }); */
 
-Route::middleware(['auth:web'])->group(function() {
+Route::middleware(['auth:web'])->group(function () {
 
     Route::get('/', 'HomeController@index')->name('home');
     /* Route::get('/', 'DashboardController@index')->name('home'); */
@@ -26,7 +29,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::put('/alterar_senha/{user}', 'UserController@changePassword')->name('user.change.password');
 
     Route::resource('/combustivel', 'CombustivelController')->except('show');
-    
+
     Route::resource('/tipo_bomba', 'TipoBombaController')->except('show');
     Route::resource('/modelo_bomba', 'ModeloBombaController')->except('show');
     Route::resource('/tanque', 'TanqueController')->except('show');
@@ -49,8 +52,8 @@ Route::middleware(['auth:web'])->group(function() {
     Route::resource('/fornecedor', 'FornecedorController')->except('show');
     Route::resource('/estoque', 'EstoqueController')->except('show');
     Route::resource('/parametro', 'ParametroController')->except('show');
-    
-     
+
+
     Route::resource('/tipo_movimentacao_produto', 'TipoMovimentacaoProdutoController')->except('show');
     Route::resource('/entrada_estoque', 'EntradaEstoqueController');
     Route::resource('/entrada_tanque', 'EntradaTanqueController');
@@ -65,7 +68,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/motorista/{motorista}/edit', 'MotoristaController@edit')->name('motorista.edit');
     Route::put('/motorista/{motorista}', 'MotoristaController@update')->name('motorista.update');
     Route::delete('/motorista/{motorista}', 'MotoristaController@destroy')->name('motorista.destroy');
-    
+
     Route::resource('/role_user', 'RoleUsersController')->except('show');
     Route::resource('/role', 'RolesController')->except('show');
 
@@ -81,11 +84,11 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('/exportacao_veiculos_saldo_horus', 'IntegracaoAutomacaoController@ExportarVeiculosSaldoHorusTech')->name('exportacao_veiculos_saldo_horus');
     Route::get('/exportacao_veiculos', 'IntegracaoAutomacaoController@ExportarVeiculos')->name('exportacao_veiculos');
     Route::get('/exportacao_produtos', 'IntegracaoAutomacaoController@ExportarProdutos')->name('exportacao_produtos');
-    
+
     Route::get('/importacao', 'IntegracaoAutomacaoController@ImportarAbastecimentos')->name('importacao');
-   // Route::view('/param_teste_exportar_hiro', 'integracao_hiro.index');
-  //Route::get('/param_teste_exportar_hiro', 'IntegracaoAutomacaoController@ParamTesteExportarHiro')->name('param_teste_exportar_hiro');
-   // Route::post('/teste_hiro_exportacao', 'IntegracaoAutomacaoController@TesteExportarHiro')->name('teste_exportar_hiro');
+    // Route::view('/param_teste_exportar_hiro', 'integracao_hiro.index');
+    //Route::get('/param_teste_exportar_hiro', 'IntegracaoAutomacaoController@ParamTesteExportarHiro')->name('param_teste_exportar_hiro');
+    // Route::post('/teste_hiro_exportacao', 'IntegracaoAutomacaoController@TesteExportarHiro')->name('teste_exportar_hiro');
     Route::get('/memoria_identificadores', 'MemoriaIdentificadoresController@showUploadForm')->name('memoria_identificadores');
     Route::post('/memoria_identificadores_upload', 'MemoriaIdentificadoresController@uploadFile')->name('memoria_identificadores_upload');
     Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModelosJson')->name('modelo_veiculos.json');
@@ -93,7 +96,7 @@ Route::middleware(['auth:web'])->group(function() {
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
     Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
-    
+
     Route::post('veiculo/jsonComponent', 'VeiculoController@getVeiculosComponentJson')->name('veiculosComponent.json');
     Route::post('bico/json', 'BicoController@getBicoJson')->name('bico.json');
     Route::post('veiculo_departamento/json', 'VeiculoController@getVeiculosDepartamentoJson')->name('veiculos_departamento.json');
@@ -106,8 +109,8 @@ Route::middleware(['auth:web'])->group(function() {
     Route::get('produtos_vencendo_vencidos/{veiculo}', 'VencimentoProdutoController@getProdutosVencendoVencidosPorVeiculo');
     //Route::resource('/movimentacao_credito', 'MovimentacaoCreditoController');
     Route::resource('/movimentacao_credito', 'MovimentacaoCreditoController');
-   
-   
+
+
     //relatorios
     Route::get('relatorios/posicao_tanques', 'TanqueController@relPosicaoTanque')->name('relatorio_posicao_tanques');
     Route::get('relatorios/media_consumo', 'VeiculoController@relMediaConsumo')->name('relatorio_media_consumo');
@@ -184,6 +187,22 @@ Route::post('/cliente/consultar-saldo', 'ClienteController@showSaldo')->name('sa
 Route::get('/motorista/{motorista}/edit', 'MotoristaController@edit')->name('motorista.edit');
 Route::post('login_cliente', 'AuthController@loginCliente')->name('login_cliente');
 
+
+Route::get('envio-email', function () {
+
+    Mail::send(new newEmail());
+    /*return new newEmail();
+    Mail::send('Html.view', ['teste' => 'envio de email'], function ($message) {
+        $message->from('frotas@goldenservice.com.br', 'Golden Frotas');
+        $message->sender('frotas@goldenservice.com.br', 'John Doe');
+        $message->to('jgoldenserivicenfe@gmail.com', 'Golden');
+
+        $message->subject('Subject');
+        $message->priority(3);
+        //$message->attach('pathToFile');
+    });
+    */
+});
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
 

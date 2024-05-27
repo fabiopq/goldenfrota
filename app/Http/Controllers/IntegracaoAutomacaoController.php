@@ -18,8 +18,11 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AbastecimentoController;
+use App\Mail\newEmail;
 use App\PostoAbastecimento;
+use Illuminate\Support\Facades\Mail;
 use League\Csv\Writer;
+use stdClass;
 
 class IntegracaoAutomacaoController extends Controller
 {
@@ -815,12 +818,23 @@ class IntegracaoAutomacaoController extends Controller
 
                     $errosImportacao = false;
                     try {
-
+                        
 
                         if (Storage::disk('ftp' . $i)->exists('abastecimentos.hir')) {
                             log::debug('Existe abastecimento no ftp' . $i);
                             try {
                                 $arquivo = Storage::disk('ftp' . $i)->get('abastecimentos.hir');
+                                //se o arquivo existir e estiver em branco 
+                                if(!filesize($arquivo)){
+                                   // $contato = new stdClass();
+                                    //$contato->assunto = 'Alerta de Erro de Importação';
+                                   // Mail::send(new newEmail($contato));
+                                   // Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
+                                    $this->limparArquivoAbastecimentosServidor($i);
+                                    
+                                   
+
+                                }
                                 $arquivo = $this->cryptAPI($arquivo);
                                 Storage::disk('ftp' . $i)->put('abastecimentos_hir_teste.txt', $arquivo);
 
