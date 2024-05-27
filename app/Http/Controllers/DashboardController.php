@@ -236,7 +236,20 @@ class DashboardController extends Controller
     {
         $data = new \Datetime();
 
-        $abastecimentos = Abastecimento::orderby('data_hora_abastecimento', $data->format('Y-m-d'))->take(5)->get();
+       $abastecimentos = DB::table('abastecimentos')
+       ->select('abastecimentos.*', 'veiculos.placa','clientes.nome_razao' ,'posto_abastecimentos.nome')
+       ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+       ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+       ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+       ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+       ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+       //->orderBy('veiculos.placa', 'asc')
+       ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+       /* ->orderBy('abastecimentos.id', 'desc') */
+       ->take(5)
+       ->get();
+       
+       // $abastecimentos = Abastecimento::orderby('data_hora_abastecimento', $data->format('Y-m-d'))->take(5)->get();
 
         return response()->json($abastecimentos);
     }
@@ -244,6 +257,8 @@ class DashboardController extends Controller
     public function abastecimentosHoje()
     {
         $data = new \Datetime();
+
+        
 
         $abastecimentos['abastecimentos_hoje'] = Abastecimento::whereDate('data_hora_abastecimento', $data->format('Y-m-d'))->count();
 
