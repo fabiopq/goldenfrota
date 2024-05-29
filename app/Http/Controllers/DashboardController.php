@@ -75,6 +75,52 @@ class DashboardController extends Controller
         return response()->json($grafico);
     }
 
+    public function saidasCombustiveis()
+    {
+        $dataFinal = new \DateTime();
+        $dataInicial = new \Datetime();
+        $dataInicial->sub(new \DateInterval('P15D'));
+
+        $dtinicio = $dataInicial->format('Y-m-d');
+        $dtfim = $dataFinal->format('Y-m-d');
+        $tanques = Tanque::Ativo()->get();
+
+        //$whereData = 'movimentacao_combustiveis.created_at between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $dtinicio . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $dtfim . '23:59:59'), 'Y-m-d H:i:s') . '\'';
+        $whereData = 'movimentacao_combustiveis.created_at between \'' . $dtinicio . ' 00:00:00' . '\' and \'' .  $dtfim . ' 23:59:59' . '\'';
+
+
+        if (!$tanques) {
+            return;
+        }
+
+        $posicao = 0;
+        $posicao = DB::table('movimentacao_combustiveis')
+            ->select(
+                'movimentacao_combustiveis.tanque_id','combustiveis.descricao','tanques.descricao_tanque',
+                DB::raw(
+                    'SUM(
+                        CASE tipo_movimentacao_combustiveis.eh_entrada
+                            WHEN 1 THEN
+                                movimentacao_combustiveis.quantidade * -1
+                            WHEN 0 THEN
+                                movimentacao_combustiveis.quantidade 
+                        END
+                    ) as total'
+                )
+            )
+            ->join('tipo_movimentacao_combustiveis', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id', 'tipo_movimentacao_combustiveis.id')
+            ->join('tanques', 'tanques.id', 'movimentacao_combustiveis.tanque_id')
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+
+           // ->whereBetween('movimentacao_combustiveis.created_at', [$dataInicial, $dataFinal])
+           // ->where('movimentacao_combustiveis.tanque_id', 2)
+           ->whereRaw($whereData)
+           ->groupBy('movimentacao_combustiveis.tanque_id','combustiveis.descricao','tanques.descricao_tanque')
+            ->get();
+
+        return response()->json($posicao);
+    }
+
     public function ultimasEntradasComb()
     {
         $entradas = DB::table('movimentacao_combustiveis')

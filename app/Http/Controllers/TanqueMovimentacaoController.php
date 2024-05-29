@@ -252,7 +252,30 @@ class TanqueMovimentacaoController extends Controller
             ->first();
 
         return round($posicao->posicao, 2);
-    }   
+    }  
+    
+    public function getSaidasTanque(Tanque $tanque, \DateTime $data) {
+        $posicao = 0;
+        $posicao = DB::table('movimentacao_combustiveis')
+            ->select(
+                DB::raw(
+                    'SUM(
+                        CASE tipo_movimentacao_combustiveis.eh_entrada
+                            WHEN 1 THEN
+                                movimentacao_combustiveis.quantidade * -1
+                            WHEN 0 THEN
+                                movimentacao_combustiveis.quantidade 
+                        END
+                    ) as posicao'
+                )
+            )
+            ->join('tipo_movimentacao_combustiveis', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id', 'tipo_movimentacao_combustiveis.id')
+            ->where('movimentacao_combustiveis.created_at', '<=', $data->format('Y-m-d H:i:s'))
+            ->where('movimentacao_combustiveis.tanque_id', $tanque->id)
+            ->first();
+
+        return round($posicao->posicao, 2);
+    }  
 
     public function posTanque30Dias($tanqueId) {
         $dataFinal = new \DateTime();

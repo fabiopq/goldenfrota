@@ -96,5 +96,7 @@ Route::get('limites', 'MovimentacaoCreditoController@limitesapi');
 Route::get('ultimasentradascomb', 'DashboardController@ultimasEntradasComb');
 Route::get('abastecimentoshoje', 'DashboardController@abastecimentosHoje');
 Route::get('utimosabastecimentos', 'DashboardController@ultimosAbastecimentos');
+Route::get('saidascomb', 'DashboardController@saidasCombustiveis');
+Route::get('total_veiculos_frota', 'DashboardController@totalVeiculosFrota');
 
 
