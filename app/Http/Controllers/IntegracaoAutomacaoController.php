@@ -830,7 +830,8 @@ class IntegracaoAutomacaoController extends Controller
                                     //$contato->assunto = 'Alerta de Erro de Importação';
                                    // Mail::send(new newEmail($contato));
                                    // Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
-                                    $this->limparArquivoAbastecimentosServidor($i);
+                                   
+                                   //$this->limparArquivoAbastecimentosServidor($i);
                                     
                                    
 
