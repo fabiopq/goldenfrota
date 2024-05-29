@@ -105,7 +105,7 @@ class DashboardController extends Controller
                             WHEN 0 THEN
                                 movimentacao_combustiveis.quantidade 
                         END
-                    ) as total'
+                    ) as total_quantidade'
                 )
             )
             ->join('tipo_movimentacao_combustiveis', 'movimentacao_combustiveis.tipo_movimentacao_combustivel_id', 'tipo_movimentacao_combustiveis.id')
