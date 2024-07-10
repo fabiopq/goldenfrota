@@ -335,7 +335,9 @@ class MotoristaController extends Controller
 
     public function apiMotoristas() {
         return response()->json(  DB::table('motoristas')
-        ->select('motoristas.*')->get());
+        ->select('motoristas.*')
+        ->where('ativo', true)
+        ->get());
     }
     public function apiMotoristaid($id) {
         return response()->json(Motorista::ativo()->where('id', $id)->get());

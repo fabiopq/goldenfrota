@@ -1,6 +1,7 @@
 @php
     $displayField = isset($displayField) ? $displayField : 'name';
     $keyField = isset($keyField) ? $keyField : 'id';
+    
     if (isset($colorLineCondition)) {
         $lineConditionField = $colorLineCondition['field'];
         $lineConditionValue = $colorLineCondition['value'];
@@ -24,6 +25,9 @@
                     <div class="form-group">
                         <div class="input-group">
                             <input type="text" class="form-control" id="searchField" name="searchField" placeholder="Digite aqui para buscar" value="{{isset($_GET['searchField']) ? $_GET['searchField'] : ''}}">
+                            <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="{{__('strings.Search')}}" data-original-title="{{__('Search')}}">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></span></button>
+                            </span>
                             <span class="input-group-append" data-toggle="tooltip" data-placement="top" title="{{__('strings.Search')}}" data-original-title="{{__('Search')}}">
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></span></button>
                             </span>

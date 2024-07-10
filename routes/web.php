@@ -190,8 +190,8 @@ Route::post('login_cliente', 'AuthController@loginCliente')->name('login_cliente
 
 Route::get('envio-email', function () {
 
-    Mail::send(new newEmail());
-    /*return new newEmail();
+    //Mail::send(new newEmail());
+    //return new newEmail();
     Mail::send('Html.view', ['teste' => 'envio de email'], function ($message) {
         $message->from('frotas@goldenservice.com.br', 'Golden Frotas');
         $message->sender('frotas@goldenservice.com.br', 'John Doe');
@@ -201,7 +201,7 @@ Route::get('envio-email', function () {
         $message->priority(3);
         //$message->attach('pathToFile');
     });
-    */
+    
 });
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
