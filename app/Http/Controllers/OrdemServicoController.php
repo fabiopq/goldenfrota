@@ -30,7 +30,7 @@ class OrdemServicoController extends Controller
         'nome_razao' => 'Cliente',
         'placa' => 'Veículo',
         'name' => 'Usuário',
-        
+
         'os_status' => 'Status'
     ];
     /**
@@ -154,9 +154,40 @@ class OrdemServicoController extends Controller
 
                 DB::beginTransaction();
 
-                $ordemServico = Auth::user()->ordem_servico()->create($request->all());
+                $ordemServico = OrdemServico::create([
+
+                    'user_id' => Auth::user()->id,
+                    'km_veiculo' => $request->km_veiculo,
+                    'created_at' => \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s'),
+                    'cliente_id' => $request->cliente_id,
+                    'veiculo_id' => $request->veiculo_id,
+                    'ordem_servico_status_id' => $request->ordem_servico_status_id,
+                    'estoque_id' => $request->estoque_id,
+                    'valor_total' => $request->valor_total,
+                    'obs' => $request->obs,
+
+                ]);
+                /* dd($ordemServico);
+                //$ordemServico = new OrdemServico();
+                $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data)->format('Y-m-d H:i:s');
+                $ordemServico->cliente_id = $request->cliente_id;
+                $ordemServico->veiculo_id = $request->veiculo_id;
+                $ordemServico->km_veiculo = $request->km_veiculo;
+                $ordemServico->ordem_servico_status_id = $request->ordem_servico_status_id;
+                $ordemServico->estoque_id = $request->estoque_id;
+                $ordemServico->valor_total = $request->valor_total;
+                $ordemServico->obs = $request->obs;
+                $ordemServico->user_id = $request->user_id;
+                */
 
 
+                $ordemServico->save();
+
+
+
+                // $ordemServico = Auth::user()->ordem_servico()->create($request->all());
+
+                //dd($ordemServico);
 
                 $osStatus = OrdemServicoStatus::find($request->ordem_servico_status_id);
                 if (!$osStatus->em_aberto) {
@@ -238,8 +269,8 @@ class OrdemServicoController extends Controller
      */
     public function edit(OrdemServico $ordemServico)
     {
-       
-       
+
+
         if (Auth::user()->canAlterarOrdemServico()) {
 
             /* Não permite alterar OS Fechada */
@@ -258,8 +289,8 @@ class OrdemServicoController extends Controller
             $estoques = Estoque::where('ativo', true)->orderBy('estoque', 'asc')->get();
             $clientes = Cliente::where('ativo', true)->orderBy('nome_razao', 'asc')->get();
             $veiculos = Veiculo::where('ativo', true)->orderBy('placa', 'asc')->get();
-           // $veiculos = $ordemServico->veiculo->get();
-           // $clientes = $ordemServico->veiculo->cliente->get();
+            // $veiculos = $ordemServico->veiculo->get();
+            // $clientes = $ordemServico->veiculo->cliente->get();
             $ordemServicoStatus = OrdemServicoStatus::orderBy('os_status', 'asc')->get();
 
             return View('ordem_servico.edit', [
@@ -286,7 +317,7 @@ class OrdemServicoController extends Controller
      */
     public function update(Request $request, OrdemServico $ordemServico)
     {
-        
+
         if (Auth::user()->canAlterarOrdemServico()) {
             $this->validate($request, [
                 'cliente_id' => 'required',

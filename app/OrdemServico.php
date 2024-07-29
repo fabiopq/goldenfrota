@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrdemServico extends Model
 {
     protected $fillable = [
+        'created_at',
         'estoque_id',
         'data_fechamento',
         'cliente_id',

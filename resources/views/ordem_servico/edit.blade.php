@@ -16,6 +16,17 @@
                 @component('components.form-group', [
                     'inputs' => [
                         [
+                            'type' => 'datetime',
+                            'field' => 'data',
+                            'label' => 'Data/Hora',
+                            'required' => true,
+                            'inputSize' => 2,
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                            'sideBySide' => true,
+                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $ordemServico->created_at)->format('d/m/Y H:i:s'),
+              
+                        ],
+                        [
                             'type' => 'select',
                             'field' => 'cliente_id',
                             'label' => 'Cliente',
@@ -24,6 +35,7 @@
                             'displayField' => 'nome_razao',
                             'keyField' => 'id',
                             'disabled' => false,
+                            'liveSearch' => true,
                             'indexSelected' => isset($ordemServico->cliente_id) ? $ordemServico->cliente_id : 0,
                         ],
                        /* [
