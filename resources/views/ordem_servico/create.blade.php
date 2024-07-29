@@ -37,6 +37,7 @@
                             'displayField' => 'placa',
                             'keyField' => 'id',
                             'liveSearch' => true,
+                            'defaultNone' => true
                         ],
                         [
                             'type' => 'number',
@@ -103,7 +104,7 @@ var buscarVeiculos = function() {
                 .find('option')
                 .remove();
             
-            $('#veiculo_id').append($('<option>', {value: null, text: 'Nada selecionado'}));
+            $('#veiculo_id').append($('<option>', {value: null}));
 
             $.each(data, function (i, item) {
                 $('#veiculo_id').append($('<option>', { 

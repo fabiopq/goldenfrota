@@ -127,6 +127,9 @@
                     @permission('listar-veiculo')
                     <li><a class="dropdown-item" href="{{route('veiculo.index')}}">Veículos</a></li>
                     @endpermission
+                    @permission('listar-veiculo-status')
+                    <li><a class="dropdown-item" href="{{route('veiculo_status.index')}}">Veículos Alertas</a></li>
+                    @endpermission
                     @permission('listar-grupo-veiculo')
                     <li><a class="dropdown-item" href="{{route('grupo_veiculo.index')}}">Grupos de Veículo</a></li>
                     @endpermission

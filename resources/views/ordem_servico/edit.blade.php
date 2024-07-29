@@ -1,58 +1,63 @@
 @extends('layouts.app')
 
+
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Alterar Ordem de Servico', 
-            'routeUrl' => route('ordem_servico.update', $ordemServico->id), 
+            'title' => 'Alterar Ordem de Servico',
+            'routeUrl' => route('ordem_servico.update', $ordemServico->id),
             'method' => 'PUT',
             'formButtons' => [
                 ['type' => 'submit', 'label' => 'Salvar', 'icon' => 'check'],
-                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
-                ]
-            ])
+                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times'],
+            ],
+        ])
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
                         [
                             'type' => 'select',
-                            'field' => 'cliente_id_readonly',
+                            'field' => 'cliente_id',
                             'label' => 'Cliente',
-                            'items' => $ordemServico->veiculo->cliente->get(),
+                            'items' => $ordemServico->cliente->get(),
                             'inputSize' => 5,
                             'displayField' => 'nome_razao',
                             'keyField' => 'id',
-                            'disabled' => true,
-                            'indexSelected' => $ordemServico->veiculo->cliente_id
+                            'disabled' => false,
+                            'indexSelected' => isset($ordemServico->cliente_id) ? $ordemServico->cliente_id : 0,
                         ],
-                        [
+                       /* [
                             'type' => 'hidden',
                             'field' => 'cliente_id',
-                            'inputValue' => $ordemServico->veiculo->cliente_id
+                            'inputValue' => $ordemServico->cliente_id,
                         ],
+                        */
                         [
                             'type' => 'select',
-                            'field' => 'veiculo_id_readonly',
-                            'label' => 'Veiculo',
-                            'items' => $ordemServico->veiculo->get(),
-                            'inputSize' => 3,
-                            'displayField' => 'placa',
+                            'field' => 'veiculo_id',
+                            'label' => 'Veículo',
+                            'required' => false,
+                            'items' => $veiculos,
+                            'displayField' => 'veiculo',
+                            'liveSearch' => true,
                             'keyField' => 'id',
-                            'disabled' => true,
-                            'indexSelected' => $ordemServico->veiculo_id
+                            'defaultNone' => true,
+                            'inputSize' => 6,
+                            'indexSelected' => $ordemServico->veiculo_id,
                         ],
-                        [
+                      /*  [
                             'type' => 'hidden',
                             'field' => 'veiculo_id',
-                            'inputValue' => $ordemServico->veiculo_id
+                            'inputValue' => $ordemServico->veiculo_id,
                         ],
+                        */
                         [
                             'type' => 'number',
                             'field' => 'km_veiculo',
                             'label' => 'KM Atual',
                             'required' => true,
                             'inputSize' => 2,
-                            'inputValue' => $ordemServico->km_veiculo
+                            'inputValue' => $ordemServico->km_veiculo,
                         ],
                         [
                             'type' => 'select',
@@ -62,80 +67,80 @@
                             'items' => $ordemServicoStatus,
                             'displayField' => 'os_status',
                             'keyField' => 'id',
-                            'disabled' => (!$ordemServico->ordem_servico_status->em_aberto),
-                            'indexSelected' => $ordemServico->ordem_servico_status_id
-                        ]
-                    ]
+                            'disabled' => !$ordemServico->ordem_servico_status->em_aberto,
+                            'indexSelected' => $ordemServico->ordem_servico_status_id,
+                        ],
+                    ],
                 ])
                 @endcomponent
                 <div id="ordem_servico">
-                    <ordem-servico 
-                        :servicos-data="{{ json_encode($servicos) }}" 
-                        :old-servicos-data="{{ (old('servicos')) ? json_encode(old('servicos')) : json_encode($ordemServico->servicos) }}"
-                        v-bind:estoques="{{ json_encode($estoques) }}" 
-                        :old-estoque-id="{{ (old('estoque_id')) ? json_encode(old('estoque_id')) : $ordemServico->estoque_id }}"
-                        :old-produtos-data="{{ (old('produtos')) ? json_encode(old('produtos')) : json_encode($ordemServico->produtos) }}">
+                    <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
+                        :old-servicos-data="{{ old('servicos') ? json_encode(old('servicos')) : json_encode($ordemServico->servicos) }}"
+                        v-bind:estoques="{{ json_encode($estoques) }}"
+                        :old-estoque-id="{{ old('estoque_id') ? json_encode(old('estoque_id')) : $ordemServico->estoque_id }}"
+                        :old-produtos-data="{{ old('produtos') ? json_encode(old('produtos')) : json_encode($ordemServico->produtos) }}">
                     </ordem-servico>
                 </div>
-                
+
                 @component('components.form-group', [
                     'inputs' => [
                         [
                             'type' => 'textarea',
                             'field' => 'obs',
                             'label' => 'Observações',
-                            'inputValue' => $ordemServico->obs
-                        ]
-                    ]
+                            'inputValue' => $ordemServico->obs,
+                        ],
+                    ],
                 ])
                 @endcomponent
             @endsection
         @endcomponent
     </div>
-@push('bottom-scripts')
-    <script src="{{ mix('js/os.js') }}"></script>
+    
+    @push('bottom-scripts')
+        <script src="{{ mix('js/os.js') }}"></script>
 
-    <script>
-        $(document).ready(function() {
-            var buscarVeiculos = function() {
-                var cliente = {};
+        <script>
+            $(document).ready(function() {
+                var buscarVeiculos = function() {
+                    var cliente = {};
 
-                cliente.id = $('#cliente_id').val();
-                cliente._token = $('input[name="_token"]').val();
+                    cliente.id = $('#cliente_id').val();
+                    cliente._token = $('input[name="_token"]').val();
 
-                $.ajax({
-                    url: '{{ route("veiculos.json") }}',
-                    type: 'POST',
-                    data: cliente,
-                    dataType: 'JSON',
-                    cache: false,
-                    success: function (data) {
-                        $("#veiculo_id")
-                            .removeAttr('disabled')
-                            .find('option')
-                            .remove();
-                        
-                        $.each(data, function (i, item) {
-                            $('#veiculo_id').append($('<option>', { 
-                                value: item.id,
-                                text : item.placa 
-                            }));
-                        });
+                    $.ajax({
+                        url: '{{ route('veiculos.json') }}',
+                        type: 'POST',
+                        data: cliente,
+                        dataType: 'JSON',
+                        cache: false,
+                        success: function(data) {
+                            $("#veiculo_id")
+                                .removeAttr('disabled')
+                                .find('option')
+                                .remove();
 
-                        @if(old('veiculo_id'))
-                        $('#veiculo_id').selectpicker('val', {{old('veiculo_id')}});
-                        @endif
+                            $.each(data, function(i, item) {
+                                $('#veiculo_id').append($('<option>', {
+                                    value: item.id,
+                                    text: item.placa
+                                }));
+                            });
 
-                        $('.selectpicker').selectpicker('refresh');
-                    }
-                });
-            }
-            $('#cliente_id').on('changed.bs.select', buscarVeiculos);
-            
-            if ($('#cliente_id').val()) {
-                buscarVeiculos();
-            }
-        });
-    </script>
-@endpush
+                            @if (old('veiculo_id'))
+                                $('#veiculo_id').selectpicker('val', {{ old('veiculo_id') }});
+                            @endif
+
+                            $('.selectpicker').selectpicker('refresh');
+                        }
+                    });
+                }
+                $('#cliente_id').on('changed.bs.select', buscarVeiculos);
+
+                if ($('#cliente_id').val()) {
+                    buscarVeiculos();
+                }
+            });
+        </script>
+    @endpush
 @endsection

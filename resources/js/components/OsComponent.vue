@@ -10,6 +10,7 @@
     </div>
 </template> 
 
+
 <script>
 import ordemServicoServico from './OsServicoComponent.vue';
 import ordemServicoProduto from './OsProdutoComponent.vue';

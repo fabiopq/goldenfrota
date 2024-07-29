@@ -138,6 +138,13 @@
                             'inputSize' => 3,
                             'inputValue' => $veiculo->chassi
                         ],
+                      
+                    ]
+                ])
+                @endcomponent
+                @component('components.form-group', [
+                    'inputs' => [
+                      
                         [
                             'type' => 'number',
                             'field' => 'hodometro',
@@ -157,8 +164,15 @@
                             'type' => 'number',
                             'field' => 'media_minima',
                             'label' => 'Média Mínima',
-                            'inputSize' => 3,
+                            'inputSize' => 2,
                             'inputValue' => $veiculo->media_minima
+                        ],
+                        [
+                            'type' => 'number',
+                            'field' => 'media_atual',
+                            'label' => 'Média Atual',
+                            'inputSize' => 2,
+                            'inputValue' => $veiculo->media_atual
                         ],
                     ]
                 ])

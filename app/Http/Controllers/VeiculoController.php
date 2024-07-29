@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+
 use App\Veiculo;
 use App\Cliente;
 use App\Parametro;
@@ -20,7 +21,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\Events\NovoRegistroAtualizacaoApp;
 use Illuminate\Support\Facades\Log;
 use App\AtualizacaoApp;
-use App\Rules\ValidarPlaca;
+
+
 
 class VeiculoController extends Controller
 {
@@ -612,26 +614,49 @@ class VeiculoController extends Controller
         return View('relatorios.veiculos.media_modelo_veiculo')->withmodeloVeiculos($modeloVeiculos)->withTitulo('Relatório de Abastecimentos - Modelo Veículo')->withParametros($parametros)->withParametro(Parametro::first());
     }
 
-    static public function atualizaKmVeiculo(Abastecimento $abastecimento)
+    static public function atualizaKmVeiculo(Veiculo $veiculo, Abastecimento $abastecimentoAtual, $ehUpdate = false)
     {
+
         try {
 
-            if ($abastecimento->km_veiculo) {
-                $veiculo = Veiculo::find($abastecimento->veiculo->id);
+            Log::debug('AbastecimentoController::obterMediaVeiculo');
 
-                $veiculo->hodometro = $abastecimento->km_veiculo;
+            if ($ehUpdate) {
+                $ultimoAbastecimento = AbastecimentoController::ObterUltimoAbastecimentoVeiculo($veiculo);
+            } else {
+                $ultimoAbastecimento = AbastecimentoController::ObterUltimoAbastecimentoVeiculo($veiculo);
+            }
 
 
+            Log::debug('obterMediaVeiculo - ehUpdate => ' . ($ehUpdate) ? 'Sim' : 'Não');
+            Log::debug('obterMediaVeiculo - ultimoAbastecimento => ' . $ultimoAbastecimento);
 
-                if ($veiculo->save()) {
 
+            if (!$ultimoAbastecimento) {
+                //primeiro abastecimento deste veiculo;
 
+                $veiculo->hodometro = $abastecimentoAtual->km_veiculo;
+                $veiculo->save();
+                return true;
+            } else {
+                //veiculo já abasteceu antes
+
+                /* controle de horas trabalhadas */
+               // dd($ultimoAbastecimento);
+                if ($abastecimentoAtual->id == $ultimoAbastecimento->id) {
+                    //horas trabalhadas informada
+
+                    $veiculo->hodometro = $abastecimentoAtual->km_veiculo;
+                    $veiculo->save();
                     return true;
+                } else {
+                    //horas trabalhadas não informada
+                    return 0;
                 }
             }
         } catch (\Exception $e) {
-            dd($e);
-            throw new \Exception($e);
+            // Log::debug($e);
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -659,12 +684,14 @@ class VeiculoController extends Controller
             )
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->where('veiculos.ativo', true)
             ->orderBy('veiculos.placa', 'desc')
             //->orderBy('marca_veiculo', 'asc')
             //->orderBy('modelo_veiculo', 'asc')
             //->tosql();
             ->get());
     }
+
 
     public function apiVeiculosClientes()
     {

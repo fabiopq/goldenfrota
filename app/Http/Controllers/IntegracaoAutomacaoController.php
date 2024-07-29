@@ -339,7 +339,7 @@ class IntegracaoAutomacaoController extends Controller
             //$csv->setEnclosure('');
             $csv->setOutputBOM(Writer::BOM_UTF8);
 
-            $csv->insertOne(['Posição','ID Cartão','Função','Versão','Controle','Código','Nome','Disconto','Comb. Ctrl.']);
+            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle', 'Código', 'Nome', 'Disconto', 'Comb. Ctrl.']);
 
             $i = 0;
             //$conteudo .= "Posição;ID Cartão;Função;Versão;Controle;Código;Nome;Disconto;Comb. Ctrl.;\n";
@@ -405,16 +405,16 @@ class IntegracaoAutomacaoController extends Controller
             //$csv->setEnclosure('');
             $csv->setOutputBOM(Writer::BOM_UTF8);
 
-            $csv->insertOne(['Posição','ID Cartão','Função','Versão','Controle','Código','Nome','Disconto','Comb. Ctrl.']);
+            $csv->insertOne(['Posição', 'ID Cartão', 'Função', 'Versão', 'Controle', 'Código', 'Nome', 'Disconto', 'Comb. Ctrl.']);
 
             $i = 0;
-         //   $conteudo .= "Posição;ID Cartão;Função;Versão;Controle;Código;Nome;Disconto;Comb. Ctrl.;\n";
+            //   $conteudo .= "Posição;ID Cartão;Função;Versão;Controle;Código;Nome;Disconto;Comb. Ctrl.;\n";
             foreach ($veiculos as $veiculo) {
                 $saldo = MovimentacaoCreditoController::saldoCreditoMes($veiculo->cliente_id);
                 //dd($saldo);
                 if ($saldo > 0) {
                     if (strlen($veiculo->tag) == 16) {
-                        $conteudo .= $i. ';';
+                        $conteudo .= $i . ';';
                         $conteudo .= substr('                ' . $veiculo->tag, -16) . ';';
                         $conteudo .= '27: CARD ATTENDANT 1 L  ;';
                         $conteudo .= '10;';
@@ -818,24 +818,24 @@ class IntegracaoAutomacaoController extends Controller
 
                     $errosImportacao = false;
                     try {
-                        
+
 
                         if (Storage::disk('ftp' . $i)->exists('abastecimentos.hir')) {
                             log::debug('Existe abastecimento no ftp' . $i);
                             try {
                                 $arquivo = Storage::disk('ftp' . $i)->get('abastecimentos.hir');
                                 //se o arquivo existir e estiver em branco 
-                                if(!filesize($arquivo)){
-                                   // $contato = new stdClass();
-                                    //$contato->assunto = 'Alerta de Erro de Importação';
-                                   // Mail::send(new newEmail($contato));
-                                   // Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
-                                   
-                                   //$this->limparArquivoAbastecimentosServidor($i);
-                                    
-                                   
+                                //if (!filesize($arquivo)) {
+                                // $contato = new stdClass();
+                                //$contato->assunto = 'Alerta de Erro de Importação';
+                                // Mail::send(new newEmail($contato));
+                                // Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
 
-                                }
+                                //$this->limparArquivoAbastecimentosServidor($i);
+
+
+
+                                // }
                                 $arquivo = $this->cryptAPI($arquivo);
                                 Storage::disk('ftp' . $i)->put('abastecimentos_hir_teste.txt', $arquivo);
 
@@ -891,7 +891,8 @@ class IntegracaoAutomacaoController extends Controller
 
 
                                             $veiculo = Veiculo::where('placa', '=', $this->formataPlacaVeiculo(trim($registro[13])))->first();
-
+                                            Log::debug('placa = ' . $this->formataPlacaVeiculo(trim($registro[13])));
+                                            Log::debug('atendente - ' . trim($registro[12]));
                                             if (!$bico) {
                                                 $obs .= 'Bico [' . trim($registro[3]) . ']: Não encontrado!&#10;';
                                             } else {
@@ -987,6 +988,8 @@ class IntegracaoAutomacaoController extends Controller
                                                 DB::beginTransaction();
 
                                                 if ($abastecimento->save()) {
+                                                    VeiculoController::atualizaKmVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
+
 
                                                     if (MovimentacaoCombustivelController::saidaAbastecimento($abastecimento)) {
                                                         DB::commit();
@@ -1020,7 +1023,7 @@ class IntegracaoAutomacaoController extends Controller
                                 // Elimina o arquivo do servidor apenas se conseguir importar todos os abastecimentos */
 
                                 if (!$errosImportacao) {
-                                   // Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
+                                    // Storage::disk('ftp' . $i)->delete('abastecimentos.hir');
                                     //$this->limparArquivoAbastecimentosServidor($i);
                                 }
                             }

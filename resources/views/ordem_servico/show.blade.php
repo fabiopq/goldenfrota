@@ -1,5 +1,7 @@
 @extends('layouts.relatorios')
 
+
+
 @section('relatorio')
 <div class="container-fluid m-b-10">
     <div class="row">
@@ -30,7 +32,7 @@
         <div class="col col-sm-5 col-md-5 col-lg-5">
             <div class="card nf-panel">
                 <label for="#cliente" class="nf-label">Cliente:</label>
-                <div id="cliente">{{ $ordemServico->veiculo->cliente_id }} - {{ $ordemServico->veiculo->cliente->nome_razao }}</div>
+                <div id="cliente">{{ isset($ordemServico->cliente_id) ? $ordemServico->cliente_id : ''  }} - {{ $ordemServico->cliente->nome_razao }}</div>
             </div>
         </div>
         <div class="col col-sm-3 col-md-3 col-lg-3">
@@ -42,7 +44,7 @@
         <div class="col col-sm-2 col-md-2 col-lg-2">
             <div class="card nf-panel">
                 <label for="#veiculo" class="nf-label">Veículo:</label>
-                <div id="veiculo">{{ $ordemServico->veiculo->placa }}</div>
+                <div id="veiculo">{{ isset($ordemServico->veiculo->placa) ? $ordemServico->veiculo->placa : ''}}</div>
             </div>
         </div>
         <div class="col col-sm-2 col-md-2 col-lg-2">
@@ -260,7 +262,7 @@
             <div class="col col-sm-2 col-md-2 col-lg-2">
             </div>
             <div class="col col-sm-4 col-md-4 col-lg-4" align="center">
-                <strong>{{ $ordemServico->veiculo->cliente->nome_razao }}</strong> 
+                <strong>{{isset($ordemServico->cliente->nome_razao) ? $ordemServico->cliente->nome_razao : ''  }}</strong> 
             </div>
         </div>
     </div>

@@ -25,6 +25,7 @@
                     ]
                 ])
                 @endcomponent
+                
             @endsection
         @endcomponent
     </div>

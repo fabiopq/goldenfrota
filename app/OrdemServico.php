@@ -16,6 +16,7 @@ class OrdemServico extends Model
     protected $fillable = [
         'estoque_id',
         'data_fechamento',
+        'cliente_id',
         'veiculo_id',
         'km_veiculo',
         'obs', 
@@ -26,6 +27,10 @@ class OrdemServico extends Model
 
     public function veiculo() {
         return $this->belongsTo(Veiculo::class);
+    }
+
+    public function cliente() {
+        return $this->belongsTo(Cliente::class);
     }
 
     public function user() {

@@ -189,7 +189,9 @@ class AbastecimentoController extends Controller
                 $abastecimento->bico_id = $request->bico_id;
                 $abastecimento->encerrante_inicial = $request->encerrante_inicial;
                 $abastecimento->encerrante_final = $request->encerrante_final;
+
                 /* Calcula a média do veículo, caso seja informado um veículo */
+
                 if ($request->veiculo_id) {
                     $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, false);
                 } else {
@@ -198,6 +200,9 @@ class AbastecimentoController extends Controller
                 $abastecimento->eh_afericao = (bool)$request->eh_afericao;
 
                 if ($abastecimento->save()) {
+                    
+                   VeiculoController::atualizaKmVeiculo(Veiculo::find($request->veiculo_id),$abastecimento, false);
+                   
 
                     if ($request->bico_id) {
 
@@ -343,7 +348,9 @@ class AbastecimentoController extends Controller
                 //$abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
                 $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
                 $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
+                
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, true);
+                
                 $abastecimento->atendente_id = $request->atendente_id;
                 $abastecimento->motorista_id = $request->motorista_id;
                 //$abastecimento->bico_id = $request->bico_id;
@@ -370,6 +377,8 @@ class AbastecimentoController extends Controller
                     //return redirect()->action('AbastecimentoController@index');
                 } else { */
                 if ($abastecimento->save()) {
+                    VeiculoController::atualizaKmVeiculo(Veiculo::find($request->veiculo_id),$abastecimento, true);
+                  
                     Session::flash('success', __('messages.update_success', [
                         'model' => __('models.abastecimento'),
                         'name' => $abastecimento->id
@@ -847,7 +856,7 @@ class AbastecimentoController extends Controller
                     ->groupBy('clientes.limite')
                     ->get();
                 //->toSql();
-               
+
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
@@ -1185,10 +1194,11 @@ class AbastecimentoController extends Controller
         }
     }
 
-    public function ObterUltimoAbastecimentoVeiculo(Veiculo $veiculo, Abastecimento $abastecimentoAtual = null)
+    static public function ObterUltimoAbastecimentoVeiculo(Veiculo $veiculo, Abastecimento $abastecimentoAtual = null)
     {
-
+        
         if ($abastecimentoAtual) {
+            
             try {
 
                 return Abastecimento::UltimoDoVeiculo($veiculo->id, $abastecimentoAtual->data_hora_abastecimento);
@@ -1200,7 +1210,7 @@ class AbastecimentoController extends Controller
         } else {
 
             try {
-
+               
                 return Abastecimento::UltimoDoVeiculo($veiculo->id);
             } catch (ModelNotFoundException $e) {
                 return null;
@@ -1448,7 +1458,8 @@ class AbastecimentoController extends Controller
 
             if ($abastecimento->save()) {
                 try {
-                    VeiculoController::atualizaKmVeiculo($abastecimento);
+                    VeiculoController::atualizaKmVeiculo(Veiculo::find($request->veiculo_id),$abastecimento, false);
+                
                 } catch (\Exception $e) {
                     Session::flash('error', 'Ocorreu um erro ao atualizar os dados do veiculo. ' . $e->getMessage());
                 }
@@ -1537,7 +1548,8 @@ class AbastecimentoController extends Controller
 
 
             if ($abastecimento->save()) {
-                VeiculoController::atualizaKmVeiculo($abastecimento);
+                VeiculoController::atualizaKmVeiculo(Veiculo::find($request->veiculo_id),$abastecimento, true);
+                  
 
 
                 return response()->json(true);

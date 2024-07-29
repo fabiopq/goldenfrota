@@ -26,60 +26,69 @@ class MotoristaController extends Controller
         'ativo' => ['label' => 'Ativo', 'type' => 'bool']
 
     );
-   
-        /**
+
+    /**
      * Display a listing of the resource.b
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-       
-        
-    if (Auth::user()->canListarMotorista()) {
-        $data_inicial = $request->data_inicial;
+        $ativos = true;
+
+        if ($request->status == 'Inativos') {
+            $ativos = false;
+        }
+
+
+        if (Auth::user()->canListarMotorista()) {
+            $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
 
-            if($data_inicial && $data_final) {
-                $whereData = 'motoristas.data_validade_habilitacao between \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\' and \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+            if ($data_inicial && $data_final) {
+                $whereData = 'motoristas.data_validade_habilitacao between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
             } elseif ($data_inicial) {
-                $whereData = 'motoristas.data_validade_habilitacao >= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial.'00:00:00'), 'Y-m-d H:i:s').'\'';
+                $whereData = 'motoristas.data_validade_habilitacao >= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\'';
             } elseif ($data_final) {
-                $whereData = 'motoristas.data_validade_habilitacao <= \''.date_format(date_create_from_format('d/m/Y H:i:s', $data_final.'23:59:59'), 'Y-m-d H:i:s').'\'';
+                $whereData = 'motoristas.data_validade_habilitacao <= \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
             } else {
                 $whereData = '1 = 1'; //busca qualquer coisa
             }
-        if ($request->searchField) {
-            
-            $motoristas = DB::table('motoristas')
-            ->select('motoristas.*')
-            //->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
-            ->whereRaw($whereData)
-            ->where('nome', 'like', '%'.$request->searchField.'%')
-            ->orWhere('cpf', 'like', '%'.$request->searchField.'%')
-            /* ->orderBy('abastecimentos.id', 'desc') */
-            ->orderBy('nome', 'desc')
-            ->paginate();
-        }else if ($request->data_inicial){
-                $motoristas = DB::table('motoristas')
-                ->select('motoristas.*')
-                //->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
-                ->whereRaw($whereData)
-                ->orderBy('nome', 'desc')
-                ->paginate();
-                //dd($motoristas);
-        } else {
-            $motoristas = Motorista::paginate();
-        }
+            if ($request->searchField) {
 
-        return View('motorista.index', [
-            'motoristas' => $motoristas,
-            'fields' => $this->fields
-        ]);
-     } else {
-        Session::flash('error', __('messages.access_denied'));
-        return redirect()->back();
-     }
+
+                $motoristas = DB::table('motoristas')
+                    ->select('motoristas.*')
+                    //->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+                    ->whereRaw($whereData)
+                    ->where('nome', 'like', '%' . $request->searchField . '%')
+                    ->where('ativo', $ativos)
+
+                    ->orWhere('cpf', 'like', '%' . $request->searchField . '%')
+                    /* ->orderBy('abastecimentos.id', 'desc') */
+                    ->orderBy('nome', 'desc')
+                    ->paginate();
+            } else if ($request->data_inicial) {
+                $motoristas = DB::table('motoristas')
+                    ->select('motoristas.*')
+                    //->whereRaw('((abastecimentos.abastecimento_local = '.(isset($request->abast_local) ? $request->abast_local : -1).') or ('.(isset($request->abast_local) ? $request->abast_local : -1).' = -1))')
+                    ->whereRaw($whereData)
+                    ->orderBy('nome', 'desc')
+                    ->paginate();
+                //dd($motoristas);
+            } else {
+
+                $motoristas = Motorista::where('ativo', $ativos)->paginate();
+            }
+
+            return View('motorista.index', [
+                'motoristas' => $motoristas,
+                'fields' => $this->fields
+            ]);
+        } else {
+            Session::flash('error', __('messages.access_denied'));
+            return redirect()->back();
+        }
     }
 
     /**
@@ -91,14 +100,14 @@ class MotoristaController extends Controller
     {
         if (Auth::user()->canCadastrarMotorista()) {
             $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
-                                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                                ->where('veiculos.ativo', true)
-                                ->get();
-           
+                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                ->where('veiculos.ativo', true)
+                ->get();
+
             return View('motorista.create', [
-                'ufs' => Uf::all()])->withveiculos($veiculos);
-          
+                'ufs' => Uf::all()
+            ])->withveiculos($veiculos);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -113,7 +122,7 @@ class MotoristaController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         if (Auth::user()->canCadastrarMotorista()) {
             $this->validate($request, [
                 'nome' => 'required|string|unique:motoristas',
@@ -122,7 +131,7 @@ class MotoristaController extends Controller
                 'rg' => 'nullable',
                 'habilitacao' => 'nullable|string',
                 'categoria' => 'nullable',
-               // 'data_validade_habilitacao' => 'required|date_format:d/m/Y H:i:s',
+                // 'data_validade_habilitacao' => 'required|date_format:d/m/Y H:i:s',
                 'pontos_habilitacao' => 'nullable|string',
                 'observacoes' => 'nullable|string',
                 'endereco' => 'nullable|string|min:3|max:200',
@@ -134,18 +143,18 @@ class MotoristaController extends Controller
                 'fone' => 'nullable|string',
                 //'fone' =>  ['required', new telefoneComDDD],
                 'email' => 'nullable|string',
-               // 'data_nascimento' => 'required|date_format:d/m/Y H:i:s',
-               // 'data_admissao' => 'required|date_format:d/m/Y H:i:s',
+                // 'data_nascimento' => 'required|date_format:d/m/Y H:i:s',
+                // 'data_admissao' => 'required|date_format:d/m/Y H:i:s',
                 'estado_civil' => 'nullable|estado_civil',
                 'tipo_sanguineo' => 'nullable|string',
                 'veiculo_padrao_id' => 'nullable|numeric',
                 'tag' => 'nullable|string'
-    
+
             ]);
 
             try {
                 $motorista = new Motorista($request->all());
-                
+
                 $motorista->data_nascimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_nascimento)->format('Y-m-d H:i:s');
                 $motorista->data_admissao = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_admissao)->format('Y-m-d H:i:s');
                 $motorista->data_validade_habilitacao =  \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_validade_habilitacao)->format('Y-m-d H:i:s');
@@ -172,7 +181,7 @@ class MotoristaController extends Controller
             return redirect()->back();
         }
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -182,19 +191,19 @@ class MotoristaController extends Controller
 
     public function edit(Motorista $motorista)
     {
-       //dd($motorista);
+        //dd($motorista);
         if (Auth::user()->canAlterarMotorista()) {
-       
 
-            
+
+
             return View('motorista.edit', [
                 'ufs' => Uf::all(),
                 //'veiculos' => Veiculo::all(),
                 'veiculos' => Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
-                ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
-                ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-                ->where('veiculos.ativo', true)
-                ->get(),
+                    ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
+                    ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+                    ->where('veiculos.ativo', true)
+                    ->get(),
                 'motorista' => $motorista
             ]);
         } else {
@@ -212,7 +221,7 @@ class MotoristaController extends Controller
      */
     public function update(Request $request, Motorista $motorista)
     {
-        
+
         if (Auth::user()->canAlterarMotorista()) {
             $this->validate($request, [
                 'nome' => 'required|string|unique:motoristas,id,' . $motorista->id,
@@ -239,13 +248,13 @@ class MotoristaController extends Controller
                 'estado_civil' => 'nullable|estado_civil',
                 'tipo_sanguineo' => 'nullable|string',
                 'veiculo_padrao_id' => 'nullable|numeric',
-                
+
 
             ]);
 
             try {
-                
-               
+
+
                 $motorista->data_nascimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_nascimento)->format('Y-m-d H:i:s');
                 $motorista->data_admissao = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_admissao)->format('Y-m-d H:i:s');
                 $motorista->data_validade_habilitacao =  \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_validade_habilitacao)->format('Y-m-d H:i:s');
@@ -256,7 +265,7 @@ class MotoristaController extends Controller
                 $motorista->rg = $request->rg;
                 $motorista->habilitacao = $request->habilitacao;
                 $motorista->categoria = $request->categoria;
-               
+
                 $motorista->pontos_habilitacao = $request->pontos_habilitacao;
                 $motorista->endereco = $request->endereco;
                 $motorista->numero = $request->numero;
@@ -271,7 +280,7 @@ class MotoristaController extends Controller
 
 
                 if ($motorista->save()) {
-                    
+
                     event(new NovoRegistroAtualizacaoApp($motorista));
 
                     Session::flash('success', __('messages.update_success', [
@@ -280,19 +289,16 @@ class MotoristaController extends Controller
                     ]));
                     return redirect()->action('MotoristaController@index');
                 }
-                
             } catch (\Exception $e) {
                 Session::flash('error', __('messages.exception', [
                     'exception' => $e->getMessage()
                 ]));
                 return redirect()->back()->withInput();
             }
-          
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
-        
     }
 
     public function listagemMotoristas()
@@ -333,16 +339,15 @@ class MotoristaController extends Controller
         }
     }
 
-    public function apiMotoristas() {
-        return response()->json(  DB::table('motoristas')
-        ->select('motoristas.*')
-        ->where('ativo', true)
-        ->get());
+    public function apiMotoristas()
+    {
+        return response()->json(DB::table('motoristas')
+            ->select('motoristas.*')
+            ->where('ativo', true)
+            ->get());
     }
-    public function apiMotoristaid($id) {
+    public function apiMotoristaid($id)
+    {
         return response()->json(Motorista::ativo()->where('id', $id)->get());
     }
-
-
-
 }

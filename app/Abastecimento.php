@@ -58,7 +58,7 @@ class Abastecimento extends Model
                 ->orderBy('data_hora_abastecimento', 'desc')
                 ->firstOrFail();    
         } 
-        //dd($query);
+        
         return $query->where('veiculo_id', $veiculo_id)
             ->orderBy('data_hora_abastecimento', 'desc')
             ->firstOrFail();

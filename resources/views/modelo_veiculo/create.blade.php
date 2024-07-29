@@ -3,14 +3,14 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Novo Modelo de Veículo', 
-            'routeUrl' => route('modelo_veiculo.store'), 
+            'title' => 'Novo Modelo de Veículo',
+            'routeUrl' => route('modelo_veiculo.store'),
             'method' => 'POST',
             'formButtons' => [
                 ['type' => 'submit', 'label' => 'Salvar', 'icon' => 'check'],
-                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
-                ]
-            ])
+                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times'],
+            ],
+        ])
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
@@ -20,7 +20,7 @@
                             'label' => 'Modelo de Veículo',
                             'required' => true,
                             'autofocus' => true,
-                            'inputSize' => 6
+                            'inputSize' => 4,
                         ],
                         [
                             'type' => 'select',
@@ -28,12 +28,12 @@
                             'label' => 'Marca de Veículo',
                             'required' => true,
                             'items' => $marcaVeiculos,
-                            'inputSize' => 6,
+                            'inputSize' => 4,
                             'displayField' => 'marca_veiculo',
                             'keyField' => 'id',
                             'liveSearch' => true,
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
                 @endcomponent
                 @component('components.form-group', [
@@ -43,7 +43,7 @@
                             'field' => 'capacidade_tanque',
                             'label' => 'Capacidade do Tanque',
                             'required' => true,
-                            'inputSize' => 6
+                            'inputSize' => 4,
                         ],
                         [
                             'type' => 'select',
@@ -51,14 +51,63 @@
                             'label' => 'Tipo de Controle',
                             'required' => true,
                             'items' => $tipoControleVeiculos,
-                            'inputSize' => 6,
+                            'inputSize' => 4,
                             'displayField' => 'tipo_controle_veiculo',
                             'keyField' => 'id',
                             'liveSearch' => true,
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
                 @endcomponent
+
+                <div class="card">
+                    <div class="card-header">
+                        <strong>CONTROLE</strong>
+                    </div>
+                    <div class="card-body">
+                        @component('components.form-group', [
+                            'inputs' => [
+                                [
+                                    'type' => 'select',
+                                    'field' => 'tipo_controle_bloqueio',
+                                    'label' => 'Controle de Bloqueio (Ativa o )',
+                                    'required' => true,
+                                    'items' => Array('Não Bloquear', 'Apenas Alertar', 'Bloquear'),
+                                    'inputSize' => 4,
+                                    'displayField' => 'tipo_controle_bloqueio',
+                                    'keyField' => 'id',
+                                    'liveSearch' => true,
+                                    'inputValue' => 1,
+                                ],
+                                [
+                                    'type' => 'number',
+                                    'field' => 'media_ideal',
+                                    'label' => 'Média Ideal',
+                                    'required' => true,
+                                    'inputSize' => 2,
+                                    'inputValue' => 0,
+                                ],
+                                [
+                                    'type' => 'number',
+                                    'field' => 'variacao_negativa',
+                                    'label' => 'Variação Negativa',
+                                    'required' => true,
+                                    'inputSize' => 2,
+                                    'inputValue' => 0,
+                                ],
+                                [
+                                    'type' => 'number',
+                                    'field' => 'variacao_positiva',
+                                    'label' => 'Variação Positiva',
+                                    'required' => true,
+                                    'inputSize' => 2,
+                                    'inputValue' => 0,
+                                ],
+                            ],
+                        ])
+                        @endcomponent
+                    </div>
+                </div>
             @endsection
         @endcomponent
     </div>

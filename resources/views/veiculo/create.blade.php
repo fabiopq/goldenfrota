@@ -152,7 +152,13 @@
                             'type' => 'number',
                             'field' => 'media_minima',
                             'label' => 'Média Mínima',
-                            'inputSize' => 3
+                            'inputSize' => 2
+                        ],
+                        [
+                            'type' => 'number',
+                            'field' => 'media_atual',
+                            'label' => 'Média Atual',
+                            'inputSize' => 2
                         ],
                     ]
                 ])

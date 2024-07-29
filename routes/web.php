@@ -44,6 +44,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::resource('/modelo_veiculo', 'ModeloVeiculoController')->except('show');
     Route::resource('/cliente', 'ClienteController')->except('show');
     Route::resource('/veiculo', 'VeiculoController')->except('show');
+    Route::resource('/veiculo_status', 'VeiculoStatusController')->except('show');
     Route::resource('/grupo_veiculo', 'GrupoVeiculoController')->except('show');
     Route::resource('/atendente', 'AtendenteController')->except('show');
     Route::resource('/abastecimento', 'AbastecimentoController');
