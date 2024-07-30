@@ -30,6 +30,7 @@ class OrdemServicoController extends Controller
         'nome_razao' => 'Cliente',
         'placa' => 'Veículo',
         'name' => 'Usuário',
+        'valor_total' =>['label' => 'Valor', 'type' => 'decimal', 'decimais' => 3],
 
         'os_status' => 'Status'
     ];
@@ -71,7 +72,7 @@ class OrdemServicoController extends Controller
                     ->orWhere('veiculos.placa', 'like', '%' . $request->searchField . '%')
                     ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
                     ->whereRaw($whereData)
-                    ->orderBy('id', 'desc')
+                    ->orderBy('ordem_servicos.created_at', 'desc')
                     ->paginate();
             } else {
 
@@ -86,7 +87,7 @@ class OrdemServicoController extends Controller
                     ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
                     ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
                     ->whereRaw($whereData)
-                    ->orderBy('id', 'desc')
+                    ->orderBy('ordem_servicos.created_at', 'desc')
                     ->paginate();
             }
 

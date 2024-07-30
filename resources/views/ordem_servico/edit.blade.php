@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
@@ -23,8 +22,19 @@
                             'inputSize' => 2,
                             'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
                             'sideBySide' => true,
-                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $ordemServico->created_at)->format('d/m/Y H:i:s'),
-              
+                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $ordemServico->created_at)->format(
+                                'd/m/Y H:i:s'),
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'ordem_servico_status_id',
+                            'label' => 'Status',
+                            'inputSize' => 2,
+                            'items' => $ordemServicoStatus,
+                            'displayField' => 'os_status',
+                            'keyField' => 'id',
+                            'disabled' => !$ordemServico->ordem_servico_status->em_aberto,
+                            'indexSelected' => $ordemServico->ordem_servico_status_id,
                         ],
                         [
                             'type' => 'select',
@@ -38,12 +48,17 @@
                             'liveSearch' => true,
                             'indexSelected' => isset($ordemServico->cliente_id) ? $ordemServico->cliente_id : 0,
                         ],
-                       /* [
-                            'type' => 'hidden',
-                            'field' => 'cliente_id',
-                            'inputValue' => $ordemServico->cliente_id,
-                        ],
-                        */
+                    ],
+                ])
+                @endcomponent
+                @component('components.form-group', [
+                    'inputs' => [
+                        /* [
+                                            'type' => 'hidden',
+                                            'field' => 'cliente_id',
+                                            'inputValue' => $ordemServico->cliente_id,
+                                        ],
+                                        */
                         [
                             'type' => 'select',
                             'field' => 'veiculo_id',
@@ -54,15 +69,15 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 6,
+                            'inputSize' => 3,
                             'indexSelected' => $ordemServico->veiculo_id,
                         ],
-                      /*  [
-                            'type' => 'hidden',
-                            'field' => 'veiculo_id',
-                            'inputValue' => $ordemServico->veiculo_id,
-                        ],
-                        */
+                        /*  [
+                                            'type' => 'hidden',
+                                            'field' => 'veiculo_id',
+                                            'inputValue' => $ordemServico->veiculo_id,
+                                        ],
+                                        */
                         [
                             'type' => 'number',
                             'field' => 'km_veiculo',
@@ -70,17 +85,6 @@
                             'required' => true,
                             'inputSize' => 2,
                             'inputValue' => $ordemServico->km_veiculo,
-                        ],
-                        [
-                            'type' => 'select',
-                            'field' => 'ordem_servico_status_id',
-                            'label' => 'Status',
-                            'inputSize' => 2,
-                            'items' => $ordemServicoStatus,
-                            'displayField' => 'os_status',
-                            'keyField' => 'id',
-                            'disabled' => !$ordemServico->ordem_servico_status->em_aberto,
-                            'indexSelected' => $ordemServico->ordem_servico_status_id,
                         ],
                     ],
                 ])
@@ -108,7 +112,7 @@
             @endsection
         @endcomponent
     </div>
-    
+
     @push('bottom-scripts')
         <script src="{{ mix('js/os.js') }}"></script>
 
