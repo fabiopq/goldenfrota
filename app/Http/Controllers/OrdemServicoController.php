@@ -30,7 +30,7 @@ class OrdemServicoController extends Controller
         'nome_razao' => 'Cliente',
         'placa' => 'Veículo',
         'name' => 'Usuário',
-        'valor_total' =>['label' => 'Valor', 'type' => 'decimal', 'decimais' => 3],
+        'valor_total' =>['label' => 'Valor', 'type' => 'decimal', 'decimais' => 2],
 
         'os_status' => 'Status'
     ];
