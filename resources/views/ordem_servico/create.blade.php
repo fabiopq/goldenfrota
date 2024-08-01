@@ -25,6 +25,7 @@
                                 'sideBySide' => true,
                                 'inputValue' => date('d/m/Y H:i:s'),
                             ],
+                    
                             [
                                 'type' => 'select',
                                 'field' => 'ordem_servico_status_id',
@@ -34,7 +35,6 @@
                                 'displayField' => 'os_status',
                                 'keyField' => 'id',
                             ],
-                            
                         ],
                     ])
                     @endcomponent
@@ -75,7 +75,7 @@
                         ],
                     ])
                     @endcomponent
-                    
+
                     <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
                         :old-servicos-data="{{ json_encode(old('servicos')) }}" v-bind:estoques="{{ json_encode($estoques) }}"
                         :old-estoque-id="{{ json_encode(old('estoque_id')) }}"

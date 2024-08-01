@@ -151,7 +151,7 @@
             </div>
             <div class="col col-sm-6 col-md-6 col-lg-6">
                 <div class="card nf-panel">
-                    Produto
+                    Produtos
                 </div>
             </div>
             <div class="col col-sm-1 col-md-1 col-lg-1">

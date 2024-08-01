@@ -144,6 +144,7 @@ class OrdemServicoController extends Controller
         if (Auth::user()->canCadastrarOrdemServico()) {
             $this->validate($request, [
                 'cliente_id' => 'required',
+                //'created_at' => 'required|date_format:d/m/Y H:i:s',
                 //'veiculo_id' => 'nullable|numeric',
                 //'veiculo_id' => 'required',
                 //'km_veiculo' => 'required|numeric|min:0',
@@ -159,7 +160,8 @@ class OrdemServicoController extends Controller
 
                     'user_id' => Auth::user()->id,
                     'km_veiculo' => $request->km_veiculo,
-                    'created_at' => \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s'),
+                    'created_at' => \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s'),
+                                    
                     'cliente_id' => $request->cliente_id,
                     'veiculo_id' => $request->veiculo_id,
                     'ordem_servico_status_id' => $request->ordem_servico_status_id,
