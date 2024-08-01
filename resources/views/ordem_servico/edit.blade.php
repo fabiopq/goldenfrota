@@ -103,7 +103,18 @@
                         [
                             'type' => 'textarea',
                             'field' => 'obs',
-                            'label' => 'Observações',
+                            'label' => 'Motivo',
+                            'inputValue' => $ordemServico->defeito,
+                        ],
+                    ],
+                ])
+                @endcomponent
+                @component('components.form-group', [
+                    'inputs' => [
+                        [
+                            'type' => 'textarea',
+                            'field' => 'obs',
+                            'label' => 'Atividade Realizada',
                             'inputValue' => $ordemServico->obs,
                         ],
                     ],

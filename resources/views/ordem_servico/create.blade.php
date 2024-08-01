@@ -34,6 +34,12 @@
                                 'displayField' => 'os_status',
                                 'keyField' => 'id',
                             ],
+                            
+                        ],
+                    ])
+                    @endcomponent
+                    @component('components.form-group', [
+                        'inputs' => [
                             [
                                 'type' => 'select',
                                 'field' => 'cliente_id',
@@ -46,11 +52,6 @@
                                 'liveSearch' => true,
                                 'defaultNone' => true,
                             ],
-                        ],
-                    ])
-                    @endcomponent
-                    @component('components.form-group', [
-                        'inputs' => [
                             [
                                 'type' => 'select',
                                 'field' => 'veiculo_id',
@@ -74,6 +75,7 @@
                         ],
                     ])
                     @endcomponent
+                    
                     <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
                         :old-servicos-data="{{ json_encode(old('servicos')) }}" v-bind:estoques="{{ json_encode($estoques) }}"
                         :old-estoque-id="{{ json_encode(old('estoque_id')) }}"
@@ -83,8 +85,18 @@
                         'inputs' => [
                             [
                                 'type' => 'textarea',
+                                'field' => 'defeito',
+                                'label' => 'Motivo',
+                            ],
+                        ],
+                    ])
+                    @endcomponent
+                    @component('components.form-group', [
+                        'inputs' => [
+                            [
+                                'type' => 'textarea',
                                 'field' => 'obs',
-                                'label' => 'Observações',
+                                'label' => 'Atividade Realizada',
                             ],
                         ],
                     ])

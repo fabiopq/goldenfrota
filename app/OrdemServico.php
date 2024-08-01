@@ -21,6 +21,7 @@ class OrdemServico extends Model
         'veiculo_id',
         'km_veiculo',
         'obs', 
+        'defeito', 
         'user_id',
         'valor_total',
         'ordem_servico_status_id'

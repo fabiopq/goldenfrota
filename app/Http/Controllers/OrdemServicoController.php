@@ -166,6 +166,7 @@ class OrdemServicoController extends Controller
                     'estoque_id' => $request->estoque_id,
                     'valor_total' => $request->valor_total,
                     'obs' => $request->obs,
+                    'defeito' => $request->defeito,
 
                 ]);
                 /* dd($ordemServico);
