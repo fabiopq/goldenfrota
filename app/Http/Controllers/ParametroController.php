@@ -46,6 +46,7 @@ class ParametroController extends Controller
      */
     public function store(Request $request)
     {
+       
         $this->validate($request, [
             'cliente_id' => 'required',
             'logotipo' => 'image|mimes:png'
@@ -53,14 +54,18 @@ class ParametroController extends Controller
 
         try {
             if ($request->hasFile('logotipo')) {
+                                
                 $logtipo_relatorio = $request->logotipo->storeAs('images', 'logo_relatorio.png');
+                $request->logotipo->move(public_path('images'), 'logo_relatorio.png');
             }
 
             $parametro = Parametro::firstOrNew(['cliente_id' => $request->cliente_id]);
             $parametro->fill($request->all());
-            $parametro->logotipo = Storage::url('logo_relatorio.png');
+            $parametro->logotipo = 'images/'. 'logo_relatorio.png';
+            //$parametro->logotipo = Storage::url('logo_relatorio.png');
 
             if ($parametro->save()) {
+                
                 Session::flash('success', 'Parâmetros cadastrados com sucesso.');
             }
 

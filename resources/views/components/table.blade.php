@@ -28,15 +28,7 @@
                     <div class="form-group">
 
                         <div class="input-group">
-                            <div class="col-auto">
 
-                                <select class="selectpicker" id="status" name="status">
-                                    <option>Ativos</option>
-                                    <option>Inativos</option>
-
-                                </select>
-
-                            </div>
 
                             <input type="text" class="form-control" id="searchField" name="searchField"
                                 placeholder="Digite aqui para buscar"
@@ -75,6 +67,26 @@
                 @endif
             </div>
         </form>
+
+        <div class="row">
+            <div class="col-sm">
+
+            </div>
+            <div class="col-sm">
+
+            </div>
+
+            @if (isset($total))
+                <div class="col-sm" style="text-align: right;">
+
+                    <h5>{{ __(isset($total) ? 'R$ ' . number_format($total[0]->total, 2, ',', '.') : 'R$ 0,00') }}</h5>
+
+                </div>
+            @endif
+
+        </div>
+
+
     </div>
     <table class="table table-sm table-bordered table-striped table-hover" style="margin: 0px">
         <thead class="thead-light">
@@ -126,7 +138,7 @@
                         </td>
                     @endif
                 @endforeach
-              
+
                 <td scope="row" class="text-center">
                     @if (is_array($actions))
                         @foreach ($actions as $action)

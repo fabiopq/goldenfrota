@@ -30,7 +30,7 @@ class OrdemServicoController extends Controller
         'nome_razao' => 'Cliente',
         'placa' => 'Veículo',
         'name' => 'Usuário',
-        'valor_total' =>['label' => 'Valor', 'type' => 'decimal', 'decimais' => 2],
+        'valor_total' => ['label' => 'Valor', 'type' => 'decimal', 'decimais' => 2],
 
         'os_status' => 'Status'
     ];
@@ -74,6 +74,25 @@ class OrdemServicoController extends Controller
                     ->whereRaw($whereData)
                     ->orderBy('ordem_servicos.created_at', 'desc')
                     ->paginate();
+
+                    $totalOrdemServicos = DB::table('ordem_servicos')
+                    ->select(
+    
+                       
+                        DB::raw('SUM(ordem_servicos.valor_total) AS total')
+                        
+                    )    ->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
+                    ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
+                    ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
+                    ->where('ordem_servicos.id', $request->searchField)
+                    ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('veiculos.placa', 'like', '%' . $request->searchField . '%')
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
+                    ->whereRaw($whereData)
+                   
+                    ->get();
+                    //dd($totalOrdemServicos);
             } else {
 
                 $ordemServicoStatus = DB::table('ordem_servico_status')
@@ -89,13 +108,29 @@ class OrdemServicoController extends Controller
                     ->whereRaw($whereData)
                     ->orderBy('ordem_servicos.created_at', 'desc')
                     ->paginate();
+
+                $totalOrdemServicos = DB::table('ordem_servicos')
+                ->select(
+
+                   
+                    DB::raw('SUM(ordem_servicos.valor_total) AS total')
+                    
+                )   ->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
+                    ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
+                    ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    
+                    ->get();
             }
 
 
 
             return View('ordem_servico.index', [
                 'ordem_servicos' => $ordemServicos,
-                'fields' => $this->fields
+                'fields' => $this->fields,
+                'totalOrdemServicos' => $totalOrdemServicos,
             ])->withordemServicoStatus($ordemServicoStatus);
         } else {
             Session::flash('error', __('messages.access_denied'));
@@ -161,7 +196,7 @@ class OrdemServicoController extends Controller
                     'user_id' => Auth::user()->id,
                     'km_veiculo' => $request->km_veiculo,
                     'created_at' => \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s'),
-                                    
+
                     'cliente_id' => $request->cliente_id,
                     'veiculo_id' => $request->veiculo_id,
                     'ordem_servico_status_id' => $request->ordem_servico_status_id,

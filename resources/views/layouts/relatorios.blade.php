@@ -9,13 +9,14 @@
     <div class="card" style="margin-bottom: 80px">
         <div class="card-header">
             <div class="row">
-                <div class="col-sm-2 col-md-2 col-lg-2">
+                <div class="col-sm-3 col-md-3 col-lg-3">
                     @if (isset($parametro))
                         <img src="{{ asset($parametro->logotipo) }}" width="200px">
                     @else
                         <img src="{{ asset('images/logo_golden_relatorio.png') }}"
                             alt="Golden Service - Controle de Frotas">
                     @endif
+
 
                 </div>
                 @if (isset($parametro))

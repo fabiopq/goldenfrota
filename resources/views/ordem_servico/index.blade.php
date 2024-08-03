@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
     @component('components.table', [
         'captions' => $fields,
@@ -16,6 +17,7 @@
             ],
         ],
         'searchParms' => 'ordem_servico.search_parms',
+        'total' => $totalOrdemServicos,
     ])
         ;
     @endcomponent
