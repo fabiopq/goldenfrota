@@ -86,7 +86,7 @@
                             [
                                 'type' => 'textarea',
                                 'field' => 'defeito',
-                                'label' => 'Motivo',
+                                'label' => 'Problema Relatado',
                             ],
                         ],
                     ])

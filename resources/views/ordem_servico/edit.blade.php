@@ -103,7 +103,7 @@
                         [
                             'type' => 'textarea',
                             'field' => 'obs',
-                            'label' => 'Motivo',
+                            'label' => 'Problema Relatado',
                             'inputValue' => $ordemServico->defeito,
                         ],
                     ],
