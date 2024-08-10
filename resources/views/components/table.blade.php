@@ -28,6 +28,10 @@
                     <div class="form-group">
 
                         <div class="input-group">
+                            <div _ngcontent-pcv-c127="" class="input-group-prepend">
+                                <div _ngcontent-pcv-c127="" class="input-group-text">
+                                <input _ngcontent-pcv-c127="" id="ativos" type="checkbox" class="ng-valid ng-dirty ng-touched"> &nbsp;Ativos </div>
+                                </div>
 
 
                             <input type="text" class="form-control" id="searchField" name="searchField"
@@ -166,10 +170,25 @@
                                     'keyField' => $keyField,
                                 ])
                                 @endcomponent
+
                             @endif
                         @endforeach
                     @endif
                 </td>
+               
+               {{-- <td>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" >Visualizar</a>
+                            <a class="dropdown-item" >Editar</a>
+                            
+                        </div>
+                    </div>
+                </td>
+                --}}
                 </tr>
             @endforeach
         </tbody>

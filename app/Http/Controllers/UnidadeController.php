@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Unidade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class UnidadeController extends Controller
@@ -25,6 +26,7 @@ class UnidadeController extends Controller
     public function index(Request $request)
     {
         if (Auth::user()->canListarUnidade()) {
+            
             if (isset($request->searchField)) {
                 $unidades = Unidade::where('unidade', 'like', '%'.$request->searchField.'%')
                                     ->paginate();
@@ -62,15 +64,18 @@ class UnidadeController extends Controller
      */
     public function store(Request $request)
     {
+        
         if (Auth::user()->canCadastrarUnidade()) {
             $this->validate($request, [
                 'unidade' => 'required|string|min:2|max:20|unique:unidades'
             ]);
+            
 
             try {
                 $unidade = new Unidade($request->all());
 
                 if ($unidade->save()) {
+                    
                     Session::flash('success', __('messages.create_success_f', [
                         'model' => 'unidade',
                         'name' => $unidade->unidade

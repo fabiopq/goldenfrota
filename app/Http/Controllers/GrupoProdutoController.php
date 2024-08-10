@@ -29,8 +29,8 @@ class GrupoProdutoController extends Controller
     {
         if (Auth::user()->canListarGrupoProduto()) {
             if (isset($request->searchField)) {
-                $grupoProdutos = GrupoProduto::where('grupo_produto', 'like', '%'.$request->searchField.'%')
-                                                ->paginate();
+                $grupoProdutos = GrupoProduto::where('grupo_produto', 'like', '%' . $request->searchField . '%')
+                    ->paginate();
             } else {
                 $grupoProdutos = GrupoProduto::paginate();
             }
@@ -42,7 +42,7 @@ class GrupoProdutoController extends Controller
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
-        } 
+        }
     }
 
     /**
@@ -113,7 +113,7 @@ class GrupoProdutoController extends Controller
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
-        } 
+        }
     }
 
     /**
@@ -127,7 +127,7 @@ class GrupoProdutoController extends Controller
     {
         if (Auth::user()->canAlterarGrupoProduto()) {
             $this->validate($request, [
-                'grupo_produto' => 'required|string|min:3|max:80|unique:grupo_produtos,id,'.$grupoProduto->id
+                'grupo_produto' => 'required|string|min:3|max:80|unique:grupo_produtos,id,' . $grupoProduto->id
             ]);
 
             try {
@@ -153,7 +153,7 @@ class GrupoProdutoController extends Controller
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
-        } 
+        }
     }
 
     /**
@@ -192,71 +192,79 @@ class GrupoProdutoController extends Controller
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
-        } 
+        }
     }
 
-    public function getGrupoProdutoJson(Request $request) {
+    public function getGrupoProdutoJson(Request $request)
+    {
         $estoque = Estoque::find($request->id);
         $grupos = $estoque->produtos->unique('grupo_produto_id')->pluck('grupo_produto_id');
 
         return response()->json(GrupoProduto::whereIn('id', $grupos)->get());
     }
 
-    public function apiGrupoProdutos() {
+    public function getGrupoProdutosJson(Request $request)
+    {
+        $grupoProdutos = GrupoProduto::where([
+            ['ativo', '=', 1]
+        ])->get();
+
+        return response()->json($grupoProdutos);
+    }
+
+    public function apiGrupoProdutos()
+    {
         return response()->json(GrupoProduto::ativo()->get());
     }
 
-    public function apiGrupoProduto($id) {
+    public function apiGrupoProduto($id)
+    {
         return response()->json(GrupoProduto::ativo()->where('id', $id)->get());
     }
 
-    public function listagemGrupoProduto() {
+    public function listagemGrupoProduto()
+    {
         $grupoproduto = DB::table('grupo_produtos')
-        ->select('grupo_produtos.*')
-        ->orderBy('grupo_produto', 'desc')
-        ->get();
+            ->select('grupo_produtos.*')
+            ->orderBy('grupo_produto', 'desc')
+            ->get();
         return View('relatorios.grupo_produto.listagem_grupo_produto')->withgrupoproduto($grupoproduto)->withTitulo('Listagem de Grupo de Produto')->withParametro(Parametro::first());
-        
     }
 
     public function apiStore(Request $request)
     {
-        
+
         $grupoproduto = new GrupoProduto();
         $grupoproduto->fill($request->all());
         $grupoproduto->save();
 
         return response()->json($grupoproduto, 201);
     }
-    
+
     public function teste()
     {
         $handle = fopen("d:\posto.csv", "r");
         $row = 0;
         while ($line = fgetcsv($handle, 1000, ";")) {
-	    if ($row++ == 0) {
-		continue;
-	    }
-	
-	    $peoples[] = [
-		'modelo' => $line[0],
-		'marca' => $line[1]
-		
-        ];
-        
-        
+            if ($row++ == 0) {
+                continue;
+            }
+
+            $peoples[] = [
+                'modelo' => $line[0],
+                'marca' => $line[1]
+
+            ];
         }
-       // dd($peoples);
+        // dd($peoples);
         foreach ($peoples as $people) {
             $grupoProduto = new GrupoProduto();
             $grupoProduto->grupo_produto = strtoupper($people['modelo']);
-    
+
             $grupoProduto->save();
-    
         }
-        
-       
+
+
         fclose($handle);
     }
-
 }

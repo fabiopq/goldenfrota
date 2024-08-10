@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\UnidadeController;
 use App\Mail\newEmail;
 use Illuminate\Support\Facades\Mail;
 
@@ -95,15 +96,16 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModelosJson')->name('modelo_veiculos.json');
     Route::post('modelo_veiculo_marca/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
-    Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
+    //Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
+    //Route::post('unidade', [UnidadeController::class, 'store'])->name('unidade.storejson');
 
     Route::post('veiculo/jsonComponent', 'VeiculoController@getVeiculosComponentJson')->name('veiculosComponent.json');
     Route::post('bico/json', 'BicoController@getBicoJson')->name('bico.json');
     Route::post('veiculo_departamento/json', 'VeiculoController@getVeiculosDepartamentoJson')->name('veiculos_departamento.json');
     Route::post('tanques/json', 'TanqueController@getTanquesJson')->name('tanques.json');
     Route::post('ultimo_abastecimento/json', 'VeiculoController@obterKmAbasteciemntoAnterior')->name('ultimo_abastecimento.json');
-    Route::post('grupo_produto/json', 'GrupoProdutoController@getGrupoProdutoJson')->name('grupo_produto.json');
+    //Route::post('grupo_produto/json', 'GrupoProdutoController@getGrupoProdutoJson')->name('grupo_produto.json');
     Route::post('produto_pelo_grupo/json', 'ProdutoController@obterProdutosPeloGrupo')->name('produtos_pelo_grupo.json');
     Route::get('produtos_estoque/{estoqueId}/json', 'ProdutoController@obterProdutosPeloEstoque')->name('produto_pelo_estoque');
     Route::get('posicao_estoque_produto/{produtoId}', 'MovimentacaoProdutoController@posicaoEstoqueProduto')->name('posicao_estoque_produto');
@@ -172,6 +174,7 @@ Route::post('movimentacao_credito/json', 'MovimentacaoCreditoController@getSaldo
 Route::get('renovar', 'MovimentacaoCreditoController@renovarCredito');
 Route::get('chart', [ChartJSController::class, 'index']);
 
+/*
 Route::get(
     'teste/{id}/{arquivo}',
     function ($id, $arquivo) {
@@ -180,6 +183,7 @@ Route::get(
         return response()->download($file);
     }
 )->middleware('auth');
+*/
 
 Route::resource('/posto_abastecimento', 'PostoAbastecimentoController')->except('show');
 //Route::get('/saldo', 'ClienteController@showSaldo')->except('show');
@@ -204,6 +208,10 @@ Route::get('envio-email', function () {
     });
     
 });
+
+Route::post('grupo_produto/json', 'GrupoProdutoController@getGrupoProdutoJson')->name('grupo_produto.json');
+Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json'); 
+Route::post('grupo_produtos/json', 'GrupoProdutoController@getGrupoProdutosJson')->name('grupo_produtos.json');  
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
 

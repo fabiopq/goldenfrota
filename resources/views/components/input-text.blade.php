@@ -16,6 +16,7 @@
         @component('components.label', ['label' => $label, 'field' => $field, 'required' => $required])
         @endcomponent
     @endif  
+    
 
     <input type="text" class="form-control{{ $errors->has($field) ? ' is-invalid' : '' }} {{$css}}" {{ ($vModel) ? 'v-model='.$vModel : '' }} name="{{$name}}" id="{{$id}}" value="{{ isset($inputValue) ? $inputValue : old($field) }}" {{ $required ? 'required' : '' }}  {{ $autofocus ? 'autofocus' : '' }} {{ $disabled ? 'disabled="disabled"' : '' }} {{ $readOnly ? 'readonly' : '' }}>
 
