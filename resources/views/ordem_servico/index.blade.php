@@ -12,9 +12,10 @@
             ['action' => 'show', 'target' => '_blank'],
             'edit',
             'destroy',
-            [
-                'custom_action' => 'components.customActions.FecharOdemServico',
-            ],
+            
+           // [
+           //     'custom_action' => 'components.customActions.FecharOdemServico',
+           // ],
         ],
         'searchParms' => 'ordem_servico.search_parms',
         'total' => $totalOrdemServicos,

@@ -34,6 +34,7 @@ $target = isset($target) ? 'target=' . $target : '';
 @endforeach --}}
 
 @permission($permission)
+
     @if ($action == 'destroy')
         <form id="deleteForm{{ $row->id }}" action="{{ route($model . '.' . $action, ['$model' => $row->$keyField]) }}"
             method="POST" style="display: inline">

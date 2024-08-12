@@ -10,6 +10,10 @@
         $colorLineCondition = false;
     }
     $customMethods = isset($customMethods) ? $customMethods : [];
+
+    $displayField = isset($displayField) ? $displayField : 'name';
+    $keyField = isset($keyField) ? $keyField : 'id';
+    $parameters = Request()->request->all() ?? [];
 @endphp
 <div class="card d-block card-primary">
     <div class="card-header">
@@ -30,8 +34,10 @@
                         <div class="input-group">
                             <div _ngcontent-pcv-c127="" class="input-group-prepend">
                                 <div _ngcontent-pcv-c127="" class="input-group-text">
-                                <input _ngcontent-pcv-c127="" id="ativos" type="checkbox" class="ng-valid ng-dirty ng-touched"> &nbsp;Ativos </div>
+                                    <input _ngcontent-pcv-c127="" id="ativos" type="checkbox"
+                                        class="ng-valid ng-dirty ng-touched"> &nbsp;Ativos
                                 </div>
+                            </div>
 
 
                             <input type="text" class="form-control" id="searchField" name="searchField"
@@ -144,6 +150,8 @@
                 @endforeach
 
                 <td scope="row" class="text-center">
+
+                    {{--  
                     @if (is_array($actions))
                         @foreach ($actions as $action)
                             @if (is_array($action))
@@ -152,44 +160,109 @@
                                     @endcomponent
                                 @else
                                     @component('components.action', [
-                                        'action' => $action['action'],
-                                        'model' => $model,
-                                        'row' => $row,
-                                        'displayField' => $displayField,
-                                        'keyField' => $keyField,
-                                        'target' => $action['target'],
-                                    ])
+    'action' => $action['action'],
+    'model' => $model,
+    'row' => $row,
+    'displayField' => $displayField,
+    'keyField' => $keyField,
+    'target' => $action['target'],
+])
                                     @endcomponent
                                 @endif
                             @else
                                 @component('components.action', [
-                                    'action' => $action,
-                                    'model' => $model,
-                                    'row' => $row,
-                                    'displayField' => $displayField,
-                                    'keyField' => $keyField,
-                                ])
+    'action' => $action,
+    'model' => $model,
+    'row' => $row,
+    'displayField' => $displayField,
+    'keyField' => $keyField,
+])
                                 @endcomponent
-
                             @endif
                         @endforeach
                     @endif
-                </td>
-               
-               {{-- <td>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" >Visualizar</a>
-                            <a class="dropdown-item" >Editar</a>
-                            
+
+                    --}}
+
+
+                    <div class="btn-group dropleft">
+                        <a data-toggle="dropdown" aria-expanded="false" type="button">
+                            <i class="fa fa-ellipsis-v"></i></a>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            @if (is_array($actions))
+                                @foreach ($actions as $action)
+                                    <?php
+                                    switch ($action) {
+                                        case 'show':
+                                            $btn_style = 'btn-success';
+                                            $btn_icon = 'eye';
+                                            $tooltip = 'Visualizar';
+                                            $permission = 'listar-' . str_replace('_', '-', $model);
+                                            break;
+                                        case 'edit':
+                                            $btn_style = 'btn-warning';
+                                            $btn_icon = 'edit';
+                                            $tooltip = 'Editar';
+                                            $permission = 'alterar-' . str_replace('_', '-', $model);
+                                            break;
+                                        case 'destroy':
+                                            $btn_style = 'btn-danger';
+                                            $btn_icon = 'trash-alt';
+                                            $tooltip = 'Remover';
+                                            $permission = 'excluir-' . str_replace('_', '-', $model);
+                                            break;
+                                    }
+                                    $target = isset($target) ? 'target=' . $target : '';
+                                    ?>
+
+                                    @if (is_array($action))
+                                        @if (isset($action['custom_action']))
+                                            @component($action['custom_action'], ['data' => $row])
+                                            @endcomponent
+                                        @else
+                                            <a class="dropdown-item"
+                                                href="{{ route($model . '.' . $action['action'], array_add($parameters, $model, $row->$keyField)) }}"
+                                                {{ $action['target'] }}>Show</a>
+                                        @endif
+                                    @else
+                                        @permission($permission)
+                                            @if ($action == 'destroy')
+                                                <form id="deleteForm{{ $row->id }}"
+                                                    action="{{ route($model . '.' . $action, ['$model' => $row->$keyField]) }}"
+                                                    method="POST" style="display: inline">
+                                                    <input type="hidden" name="backUrlParams"
+                                                        value="{{ json_encode(Request()->request->all()) }}">
+                                                    <span data-toggle="tooltip" data-placement="top"
+                                                        title="{{ $tooltip }}"
+                                                        data-original-title="{{ $tooltip }}">
+
+                                                        <a class="dropdown-item" data-toggle="modal"
+                                                            data-target="#confirmDelete"
+                                                            data-title="{{ __('Remover ') . __('models.' . $model) }}"
+                                                            data-message="Remover {{ __('models.' . $model) . ': ' . $row->$displayField }}?">{{ $tooltip }}</a>
+                                                    </span>
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                </form>
+                                            @else
+                                                <a class="dropdown-item"
+                                                    href="{{ route($model . '.' . $action, array_add($parameters, $model, $row->$keyField)) }}">{{ $tooltip }}</a>
+                                            @endif
+                                        @endpermission
+                                    @endif
+                                @endforeach
+                            @endif
+
+
                         </div>
                     </div>
+
+
                 </td>
-                --}}
-                </tr>
+
+
+                </td>
+
             @endforeach
         </tbody>
     </table>
