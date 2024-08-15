@@ -197,4 +197,13 @@ class GrupoVeiculoController extends Controller
     public function apiGrupoVeiculo($id) {
         return response()->json(GrupoVeiculo::ativo()->where('id', $id)->get());
     }
+
+    public function getGrupoVeiculosJson(Request $request)
+    {
+        $grupoVeiculos = GrupoVeiculo::where([
+            ['ativo', '=', 1]
+        ])->get();
+
+        return response()->json($grupoVeiculos);
+    }
 }

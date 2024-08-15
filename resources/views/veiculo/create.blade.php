@@ -57,11 +57,21 @@
                             'label' => 'Grupo de Veículos',
                             'required' => true,
                             'items' => $grupoVeiculos,
-                            'inputSize' => 6,
+                            'inputSize' => 4,
                             'displayField' => 'grupo_veiculo',
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true
+                        ],
+                        [
+                            'type' => 'input-btn',
+                            'field' => 'grupo_id',
+                            'label' => 'Novo',
+                            'required' => true,
+                            'inputSize' => 1,
+                            'displayField' => 'grupo',
+                            'keyField' => 'id',
+                            'comando' => 'grupoVeiculoModal',
                         ],
                         [
                             'type' => 'text',
@@ -91,12 +101,22 @@
                             'label' => 'Marca',
                             'required' => true,
                             'items' => $marcaVeiculos,
-                            'inputSize' => 5,
+                            'inputSize' => 4,
                             'displayField' => 'marca_veiculo',
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'indexSelected' => isset($veiculo->marca_veiculo_id) ? $veiculo->marca_veiculo_id : ''
+                        ],
+                        [
+                            'type' => 'input-btn',
+                            'field' => 'marca_id',
+                            'label' => 'Novo',
+                            'required' => true,
+                            'inputSize' => 1,
+                            'displayField' => 'marca',
+                            'keyField' => 'id',
+                            'comando' => 'marcaVeiculoModal',
                         ],
                         [
                             'type' => 'select',
@@ -105,7 +125,7 @@
                             'required' => true,
                             'items' => null,
                             'disabled' => true,
-                            'inputSize' => 5,
+                            'inputSize' => 4,
                             'displayField' => 'modelo_veiculo',
                             'liveSearch' => true,
                             'keyField' => 'id'
@@ -167,7 +187,9 @@
         @endcomponent
        
 @include('veiculo.modal')
-
+@include('grupo_veiculo.modal')
+@include('marca_veiculo.modal')
+<meta name="csrf-token" content="{{ Session::token() }}">
 <!-- Modal -->
 
 
@@ -247,6 +269,168 @@
                 $('.selectpicker').selectpicker('refresh');
             }
         });
+    }
+
+    $('#saveGrupoVeiculo').click(function() {
+        var grupoNome = $('#grupoVeiculo').val();
+       
+        console.log(grupoNome);
+        $.ajax({
+            url: "{{ route('grupo_veiculo.store') }}",
+            method: 'POST',
+            data: {
+                grupo_veiculo: grupoNome,
+                _token: $('meta[name=csrf-token]').attr('content'),
+                 
+            },
+            
+            success: function(response) {
+            
+                buscarGrupoVeiculo();
+                $('#grupoVeiculoModal').modal('hide');
+               
+                {{-- $('#unidade_id').append('<option value="' + response.id + '">' + response
+                //     .name + '</option>');
+                // $('#unidade_id').val(response.id);
+                --}}
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseJSON.message);
+                
+            }
+        });
+    });
+
+    var buscarGrupoVeiculo = function() {
+        var grupo = {};
+
+       
+
+        $.ajax({
+            url: '{{ route("grupo_veiculos.json") }}',
+            type: 'POST',
+            
+            data: {
+                grupo_veiculo: grupo,
+                _token: $('meta[name=csrf-token]').attr('content'),
+                 
+            },
+            dataType: 'JSON',
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data.length > 0) {
+                    $("#grupo_veiculo_id")
+                        .removeAttr('disabled')
+                        .find('option')
+                        .remove();
+                } else {
+                    if ($('#grupo_veiculo_id').val() == -1) {
+                        $("#grupo_veiculo_id").attr('disabled', 'disabled');
+                    }
+                }
+
+                $('#grupo_veiculo_id').append($('<option>', { 
+                        value: -1,
+                        text : 'NADA SELECIONADO'
+                }));
+                $.each(data, function (i, item) {
+                    $('#grupo_veiculo_id').append($('<option>', { 
+                        value: item.id,
+                        text : item.grupo_veiculo 
+                    }));
+                });
+                
+                @if(old('grupo_veiculo_id'))
+                $('#grupo_veiculo_id').selectpicker('val', {{old('grupo_veiculo_id')}});
+                @endif
+
+                $('.selectpicker').selectpicker('refresh');
+            }
+
+            
+        });   
+    }
+
+    $('#saveMarcaVeiculo').click(function() {
+        var grupoNome = $('#marcaVeiculo').val();
+       
+        console.log(grupoNome);
+        $.ajax({
+            url: "{{ route('marca_veiculo.store') }}",
+            method: 'POST',
+            data: {
+                marca_veiculo: grupoNome,
+                _token: $('meta[name=csrf-token]').attr('content'),
+                 
+            },
+            
+            success: function(response) {
+            
+                buscarMarcaVeiculo();
+                $('#marcaVeiculoModal').modal('hide');
+               
+                {{-- $('#unidade_id').append('<option value="' + response.id + '">' + response
+                //     .name + '</option>');
+                // $('#unidade_id').val(response.id);
+                --}}
+            },
+            error: function(xhr) {
+                alert('Error: ' + xhr.responseJSON.message);
+                
+            }
+        });
+    });
+
+    var buscarMarcaVeiculo = function() {
+        var grupo = {};
+
+       
+
+        $.ajax({
+            url: '{{ route("marca_veiculos.json") }}',
+            type: 'POST',
+            
+            data: {
+                marca_veiculo: grupo,
+                _token: $('meta[name=csrf-token]').attr('content'),
+                 
+            },
+            dataType: 'JSON',
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data.length > 0) {
+                    $("#marca_veiculo_id")
+                        .removeAttr('disabled')
+                        .find('option')
+                        .remove();
+                } else {
+                    if ($('#marca_veiculo_id').val() == -1) {
+                        $("#marca_veiculo_id").attr('disabled', 'disabled');
+                    }
+                }
+
+                $('#marca_veiculo_id').append($('<option>', { 
+                        value: -1,
+                        text : 'NADA SELECIONADO'
+                }));
+                $.each(data, function (i, item) {
+                    $('#marca_veiculo_id').append($('<option>', { 
+                        value: item.id,
+                        text : item.marca_veiculo 
+                    }));
+                });
+                
+                @if(old('marca_veiculo_id'))
+                $('#marca_veiculo_id').selectpicker('val', {{old('marca_veiculo_id')}});
+                @endif
+
+                $('.selectpicker').selectpicker('refresh');
+            }
+
+            
+        });   
     }
 
     $('#cliente_id').on('changed.bs.select', buscarDepartamentos);

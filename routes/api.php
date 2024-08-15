@@ -99,4 +99,6 @@ Route::get('utimosabastecimentos', 'DashboardController@ultimosAbastecimentos');
 Route::get('saidascomb', 'DashboardController@saidasCombustiveis');
 Route::get('total_veiculos_frota', 'DashboardController@totalVeiculosFrota');
 
+Route::post('grupo_veiculos/json', 'GrupoVeiculoController@getGrupoVeiculosJson')->name('grupo_veiculos.json'); 
+
 

@@ -70,6 +70,8 @@ class MarcaVeiculoController extends Controller
                 'marca_veiculo' => 'required|string|min:3|max:30|unique:marca_veiculos'
             ]);
 
+                       
+
             try {
                 $marcaVeiculo = new MarcaVeiculo($request->all());
 
@@ -198,5 +200,14 @@ class MarcaVeiculoController extends Controller
 
     public function apiMarcaVeiculo($id) {
         return response()->json(MarcaVeiculo::ativo()->where('id', $id)->get());
+    }
+
+    public function getMarcaVeiculosJson(Request $request)
+    {
+        $marcaVeiculos = MarcaVeiculo::where([
+            ['ativo', '=', 1]
+        ])->get();
+
+        return response()->json($marcaVeiculos);
     }
 }

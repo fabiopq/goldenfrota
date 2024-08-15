@@ -195,7 +195,7 @@ class OrdemServicoController extends Controller
 
                     'user_id' => Auth::user()->id,
                     'km_veiculo' => $request->km_veiculo,
-                    'created_at' => \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s'),
+                    'created_at' => \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s'),
 
                     'cliente_id' => $request->cliente_id,
                     'veiculo_id' => $request->veiculo_id,

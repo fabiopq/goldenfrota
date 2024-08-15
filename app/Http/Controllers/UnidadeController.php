@@ -197,4 +197,70 @@ class UnidadeController extends Controller
 
         return response()->json($unidades);
     }
+
+    public function add(Request $p_oRequest)
+
+
+    {
+       
+       
+       
+        try {
+        
+            $arrValid = array(
+                'unidade' => 'required|string|min:2|max:20|unique:unidades',
+                
+            );
+            $p_oRequest->validate(
+                $arrValid,
+                array(
+                    'unidade.required' => 'Name is missing',
+                    'unidade.unique' => 'Name must be alphanumeric',
+                    
+                )
+            );
+            $unidade = new Unidade($p_oRequest->all());
+
+            if ($unidade->save()) {}
+        } catch (\Illuminate\Validation\ValidationException $e ) {
+        
+            /**
+             * Validation failed
+             * Tell the end-user why
+             */
+            $arrError = $e->errors(); // Useful method - thank you Laravel
+            /**
+             * Compile a string of error-messages
+             */
+            foreach ($arrValid as $key=>$value ) {
+                $arrImplode[] = implode( ', ', $arrError[$key] );
+            }
+            $message = implode(', ', $arrImplode);
+            /**
+             * Populate the respose array for the JSON
+             */
+            $arrResponse = array(
+                'result' => 0,
+                'reason' => $message,
+                'data' => array(),
+                'statusCode' => $e->status,
+            );
+
+        } catch (\Exception $ex) {
+
+            $arrResponse = array(
+                'result' => 0,
+                'reason' => $ex->getMessage(),
+                'data' => array(),
+                'statusCode' => 404
+            );
+
+        } finally {
+            
+
+            return response()->json($arrResponse);
+
+        }
+        
+    }
 }

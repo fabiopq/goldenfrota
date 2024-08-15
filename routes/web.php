@@ -98,7 +98,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
     //Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
-    //Route::post('unidade', [UnidadeController::class, 'store'])->name('unidade.storejson');
+    //Route::post('unidade', [UnidadeController::class, 'add'])->name('unidade.add');
 
     Route::post('veiculo/jsonComponent', 'VeiculoController@getVeiculosComponentJson')->name('veiculosComponent.json');
     Route::post('bico/json', 'BicoController@getBicoJson')->name('bico.json');
@@ -212,6 +212,8 @@ Route::get('envio-email', function () {
 Route::post('grupo_produto/json', 'GrupoProdutoController@getGrupoProdutoJson')->name('grupo_produto.json');
 Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json'); 
 Route::post('grupo_produtos/json', 'GrupoProdutoController@getGrupoProdutosJson')->name('grupo_produtos.json');  
+Route::post('grupo_veiculos/json', 'GrupoVeiculoController@getGrupoVeiculosJson')->name('grupo_veiculos.json'); 
+Route::post('marca_veiculos/json', 'MarcaVeiculoController@getMarcaVeiculosJson')->name('marca_veiculos.json'); 
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
 

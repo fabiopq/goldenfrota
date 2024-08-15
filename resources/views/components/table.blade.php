@@ -212,17 +212,20 @@
                                             $permission = 'excluir-' . str_replace('_', '-', $model);
                                             break;
                                     }
-                                    $target = isset($target) ? 'target=' . $target : '';
+                                    $target = isset($action['target']) ? 'target=' . $action['target'] : '';
+                                    
                                     ?>
-
                                     @if (is_array($action))
                                         @if (isset($action['custom_action']))
-                                            @component($action['custom_action'], ['data' => $row])
-                                            @endcomponent
+                                       
+                                            @component($action['custom_action'], ['data' => $row,'target'=> $target])
+                                            @endcomponent/
                                         @else
+                                           
+                                          
                                             <a class="dropdown-item"
                                                 href="{{ route($model . '.' . $action['action'], array_add($parameters, $model, $row->$keyField)) }}"
-                                                {{ $action['target'] }}>Show</a>
+                                                {{  $target }}>Show</a>
                                         @endif
                                     @else
                                         @permission($permission)

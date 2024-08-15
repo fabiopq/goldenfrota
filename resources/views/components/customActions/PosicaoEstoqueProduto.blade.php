@@ -5,6 +5,14 @@
         data-original-title="{{ __('Saldo em Estoque') }}"></i>
 </a>
 --}}
+@php
+
+    $target = isset($target) ?  $target : '';
+    
+    
+@endphp
+
+
 
 <a class="dropdown-item"
-href="{{ route('posicao_estoque_produto', ['produtoId' => $data->id]) }}">Saldo em Estoque</a>
+href="{{ route('posicao_estoque_produto', ['produtoId' => $data->id]) }} "{{ $target }}>Saldo em Estoque</a>

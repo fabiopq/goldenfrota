@@ -9,7 +9,8 @@
         'displayField' => 'produto_descricao',
         'actions' => [
             [
-                'custom_action' => 'components.customActions.PosicaoEstoqueProduto'
+                'custom_action' => 'components.customActions.PosicaoEstoqueProduto',
+                'target' => '_blank'
             ],
             'edit',
             'destroy'
