@@ -23,6 +23,7 @@
                             'inputValue' => isset($bico->num_bico) ? $bico->num_bico : '',
                             'inputSize' => 1
                         ],
+                        
                         [
                             'type' => 'select',
                             'field' => 'bomba_id',

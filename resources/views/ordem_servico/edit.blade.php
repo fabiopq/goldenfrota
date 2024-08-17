@@ -16,14 +16,15 @@
                     'inputs' => [
                         [
                             'type' => 'datetime',
-                            'field' => 'data',
+                            'field' => 'created_at',
                             'label' => 'Data/Hora',
                             'required' => true,
                             'inputSize' => 2,
-                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
                             'sideBySide' => true,
-                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $ordemServico->created_at)->format(
-                                'd/m/Y H:i:s'),
+                            'dateTimeFormat' => 'DD/MM/YYYY HH:mm',
+                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $ordemServico->created_at)->format('d/m/Y H:i:s'),
+
+                          
                         ],
                         [
                             'type' => 'select',
@@ -102,7 +103,7 @@
                     'inputs' => [
                         [
                             'type' => 'textarea',
-                            'field' => 'obs',
+                            'field' => 'defeito',
                             'label' => 'Problema Relatado',
                             'inputValue' => $ordemServico->defeito,
                         ],

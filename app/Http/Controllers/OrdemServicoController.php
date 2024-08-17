@@ -195,7 +195,7 @@ class OrdemServicoController extends Controller
 
                     'user_id' => Auth::user()->id,
                     'km_veiculo' => $request->km_veiculo,
-                    'created_at' => \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s'),
+                    'created_at' => \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s'),
 
                     'cliente_id' => $request->cliente_id,
                     'veiculo_id' => $request->veiculo_id,
@@ -206,9 +206,10 @@ class OrdemServicoController extends Controller
                     'defeito' => $request->defeito,
 
                 ]);
-                /* dd($ordemServico);
-                //$ordemServico = new OrdemServico();
-                $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data)->format('Y-m-d H:i:s');
+                //dd($ordemServico);
+                /*
+                $ordemServico = new OrdemServico();
+                $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s');
                 $ordemServico->cliente_id = $request->cliente_id;
                 $ordemServico->veiculo_id = $request->veiculo_id;
                 $ordemServico->km_veiculo = $request->km_veiculo;
@@ -218,7 +219,7 @@ class OrdemServicoController extends Controller
                 $ordemServico->obs = $request->obs;
                 $ordemServico->user_id = $request->user_id;
                 */
-
+                
 
                 $ordemServico->save();
 
@@ -364,10 +365,32 @@ class OrdemServicoController extends Controller
                 'km_veiculo' => 'required|numeric|min:0',
                 //'servicos' => 'array|size:1',
             ]);
+           
             try {
                 DB::beginTransaction();
 
-                $ordemServico->fill($request->all());
+              
+
+               // $ordemServico->fill($request->all());
+               // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s');
+
+      
+             // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->create_at)->format('Y-m-d H:i:s');
+              $ordemServico->created_at =  \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s');
+
+              //$ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data)->format('Y-m-d H:i:s');
+     //dd($ordemServico);
+              $ordemServico->cliente_id = $request->cliente_id;
+              $ordemServico->veiculo_id = $request->veiculo_id;
+              $ordemServico->km_veiculo = $request->km_veiculo;
+              $ordemServico->ordem_servico_status_id = $request->ordem_servico_status_id;
+              $ordemServico->estoque_id = $request->estoque_id;
+              //$ordemServico->valor_total = $request->valor_total;
+              $ordemServico->obs = $request->obs;
+              $ordemServico->defeito = $request->defeito;
+             // $ordemServico->user_id = $request->user_id;
+              
+              
 
                 $osStatus = OrdemServicoStatus::find($ordemServico->ordem_servico_status_id);
                 if (!$osStatus->em_aberto) {

@@ -21,9 +21,9 @@
                                 'label' => 'Data/Hora',
                                 'required' => true,
                                 'inputSize' => 2,
-                                'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
+                                'dateTimeFormat' => 'DD/MM/YYYY HH:mm',
                                 'sideBySide' => true,
-                                'inputValue' => date('d/m/Y H:i:s'),
+                                'inputValue' => date('d/m/Y H:i'),
                             ],
                     
                             [
@@ -40,6 +40,7 @@
                     @endcomponent
                     @component('components.form-group', [
                         'inputs' => [
+                           
                             [
                                 'type' => 'select',
                                 'field' => 'cliente_id',
