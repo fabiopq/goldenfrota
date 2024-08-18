@@ -58,7 +58,7 @@
                         [
                             'type' => 'input-btn',
                             'field' => 'busca_cnpj',
-                            'label' => 'Novo',
+                            'label' => 'Buscar',
                             'required' => true,
                             'inputSize' => 1,
                             'displayField' => 'busca_cnpj',
