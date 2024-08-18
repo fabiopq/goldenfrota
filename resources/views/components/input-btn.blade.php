@@ -8,26 +8,7 @@
     $css = isset($css) ? $css : '';
     $defaultValue = isset($defaultValue) ? $defaultValue : false;
 
-    switch ($action) {
-        case 'show':
-            $btn_style = 'btn-success';
-            $btn_icon = 'eye';
-            $tooltip = 'Visualizar';
-            $permission = 'listar-' . str_replace('_', '-', $model);
-            break;
-        case 'edit':
-            $btn_style = 'btn-warning';
-            $btn_icon = 'edit';
-            $tooltip = 'Editar';
-            $permission = 'alterar-' . str_replace('_', '-', $model);
-            break;
-        case 'destroy':
-            $btn_style = 'btn-danger';
-            $btn_icon = 'trash-alt';
-            $tooltip = 'Remover';
-            $permission = 'excluir-' . str_replace('_', '-', $model);
-            break;
-    }
+    
 
 @endphp
 
