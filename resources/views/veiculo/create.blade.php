@@ -72,6 +72,7 @@
                             'displayField' => 'grupo',
                             'keyField' => 'id',
                             'comando' => 'grupoVeiculoModal',
+                            'action' => 'create',
                         ],
                         [
                             'type' => 'text',
@@ -116,7 +117,10 @@
                             'inputSize' => 1,
                             'displayField' => 'marca',
                             'keyField' => 'id',
+                            'action' => 'create',
                             'comando' => 'marcaVeiculoModal',
+                            
+                            
                         ],
                         [
                             'type' => 'select',

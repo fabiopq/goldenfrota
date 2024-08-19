@@ -63,6 +63,7 @@
                             'inputSize' => 1,
                             'displayField' => 'busca_cnpj',
                             'keyField' => 'id',
+                            'action' => 'search',
                             
                         ],
                         [

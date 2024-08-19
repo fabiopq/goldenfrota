@@ -242,6 +242,7 @@
                     'vModel' => $input['vModel'],
                     'visible' => $input['visible'],
                     'comando' => $input['comando'],
+                    'action' => $input['action'],
                 ])
                 @endcomponent
             @endif

@@ -53,20 +53,7 @@
                             'keyField' => 'id',
                             'liveSearch' => true,
                         ],
-                       /*
-                        [
-                            'type' => 'select-btn',
-                            'field' => 'unidade_id',
-                            'label' => 'Unidade',
-                            'required' => true,
-                            'items' => $unidades,
-                            'inputSize' => 3,
-                            'displayField' => 'unidade',
-                            'keyField' => 'id',
-                            'liveSearch' => true,
-                        ],
-                        */
-                       
+                     
                 
                         [
                             'type' => 'input-btn',
@@ -76,7 +63,8 @@
                             'inputSize' => 1,
                             'displayField' => 'unidade',
                             'keyField' => 'id',
-                            'comando' => 'unidadeModal'
+                            'comando' => 'unidadeModal',
+                            'action' => 'create'
                         ],
                         [
                             'type' => 'select',
@@ -97,7 +85,8 @@
                             'inputSize' => 1,
                             'displayField' => 'grupo',
                             'keyField' => 'id',
-                            'comando' => 'grupoProdutoModal'
+                            'comando' => 'grupoProdutoModal',
+                            'action' => 'create'
                         ],
                 
                        

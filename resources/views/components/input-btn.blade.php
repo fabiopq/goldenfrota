@@ -8,7 +8,32 @@
     $css = isset($css) ? $css : '';
     $defaultValue = isset($defaultValue) ? $defaultValue : false;
 
-    
+    switch ($action) {
+        case 'search':
+            $btn_style = 'btn-primary';
+            $btn_icon = 'search';
+            $tooltip = 'Pesquisar';
+            // $permission = 'listar-' . str_replace('_', '-', $model);
+            break;
+        case 'edit':
+            $btn_style = 'btn-warning';
+            $btn_icon = 'edit';
+            $tooltip = 'Editar';
+            // $permission = 'alterar-' . str_replace('_', '-', $model);
+            break;
+        case 'destroy':
+            $btn_style = 'btn-danger';
+            $btn_icon = 'trash-alt';
+            $tooltip = 'Remover';
+            // $permission = 'excluir-' . str_replace('_', '-', $model);
+            break;
+        case 'create':
+            $btn_style = 'btn-success';
+            $btn_icon = 'plus';
+            $tooltip = 'Novo';
+            // $permission = 'excluir-' . str_replace('_', '-', $model);
+            break;
+    }
 
 @endphp
 
@@ -24,8 +49,9 @@
         <div class="input-group">
             <div id="{{ $field }}" class="btn-group btn-group-toggle" data-toggle="buttons">
 
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ $comando }}">
-                    +
+                <button type="button" class="btn btn-sm {{ $btn_style }}" data-toggle="modal" title="{{ $tooltip }}"
+                data-original-title="{{ $tooltip }}" data-target="#{{ $comando }}">
+                    <i class="fas fa-{{ $btn_icon }}"></i>
                 </button>
             </div>
         </div>
