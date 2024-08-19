@@ -31,7 +31,7 @@
                             'dateTimeFormat' => 'DD/MM/YYYY',
                             'picker_begin' => 'data_inicial',
                             'picker_end' => 'data_final',
-                            'inputValue' => date('dd/mm/yyyy',$data_incio)
+                            'inputValue' => date('01/m/Y')
                         ],
                         [
                             'type' => 'datetime',
@@ -41,7 +41,7 @@
                             'dateTimeFormat' => 'DD/MM/YYYY',
                             'picker_begin' => 'data_inicial',
                             'picker_end' => 'data_final',
-                            'inputValue' => date('dd/mm/yyyy',$data_fim)
+                            'inputValue' => date('t/m/Y'),
                         ],
                         [
                             'type' => 'btn-group',
