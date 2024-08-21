@@ -321,8 +321,6 @@
     var buscarGrupo = function() {
         var grupo = {};
 
-       
-
         $.ajax({
             url: '{{ route("grupo_produtos.json") }}',
             type: 'POST',

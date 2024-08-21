@@ -22,6 +22,7 @@ class OrdemServicoStatusController extends Controller
      */
     public function index(Request $request) 
     {
+        
         if (Auth::user()->canListarOrdemServicoStatus()) {
             if ($request->searchField) {
                 $ordemServicoStatus = OrdemServicoStatus::where('os_status', 'like', '%'.$request->searchField.'%')
@@ -179,5 +180,11 @@ class OrdemServicoStatusController extends Controller
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
+    }
+
+    public function getStatusJson(Request $request) {
+        $ordemServicoStatus = OrdemServicoStatus::all();
+
+        return response()->json($ordemServicoStatus);
     }
 }

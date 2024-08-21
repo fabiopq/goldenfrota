@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Events\UtilizadoProdutoControleVencimento;
 use App\Http\Controllers\MovimentacaoProdutoController;
+use SebastianBergmann\CodeCoverage\Report\PHP;
 
 class OrdemServicoController extends Controller
 {
@@ -41,10 +42,15 @@ class OrdemServicoController extends Controller
      */
     public function index(Request $request)
     {
+
         if (Auth::user()->canListarOrdemServico()) {
 
-            $data_inicial = $request->data_inicial;
-            $data_final = $request->data_final;
+
+            $data_inicial = isset($request->data_inicial) ? ($request->data_inicial) : date('01/m/Y');
+            $data_final = isset($request->data_final) ? ($request->data_final) : date('t/m/Y');
+
+            //$data_inicial = $request->data_inicial;
+            //$data_final = $request->data_final;
 
             if ($data_inicial && $data_final) {
                 $whereData = 'ordem_servicos.created_at between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
@@ -56,10 +62,11 @@ class OrdemServicoController extends Controller
                 $whereData = '1 = 1'; //busca qualquer coisa
             }
 
+            $ordemServicoStatus = DB::table('ordem_servico_status')
+                ->select('ordem_servico_status.*')->get();
+
             if ($request->searchField) {
-
-                $ordemServicoStatus = DB::table('ordem_servico_status')
-                    ->select('ordem_servico_status.*');
+                //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1) . '))')
 
                 $ordemServicos = DB::table('ordem_servicos')
                     ->select('ordem_servicos.*', 'clientes.nome_razao', 'veiculos.placa', 'users.name', 'ordem_servico_status.os_status')
@@ -70,58 +77,67 @@ class OrdemServicoController extends Controller
                     ->where('ordem_servicos.id', $request->searchField)
                     ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
                     ->orWhere('veiculos.placa', 'like', '%' . $request->searchField . '%')
-                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
-                    ->whereRaw($whereData)
-                    ->orderBy('ordem_servicos.created_at', 'desc')
-                    ->paginate();
+                    //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1) . '))')
 
-                    $totalOrdemServicos = DB::table('ordem_servicos')
-                    ->select(
-    
-                       
-                        DB::raw('SUM(ordem_servicos.valor_total) AS total')
-                        
-                    )    ->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
-                    ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
-                    ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
-                    ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
-                    ->where('ordem_servicos.id', $request->searchField)
-                    ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
-                    ->orWhere('veiculos.placa', 'like', '%' . $request->searchField . '%')
-                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
-                    ->whereRaw($whereData)
-                   
-                    ->get();
-                    //dd($totalOrdemServicos);
-            } else {
-
-                $ordemServicoStatus = DB::table('ordem_servico_status')
-                    ->select('ordem_servico_status.*');
-
-                $ordemServicos = DB::table('ordem_servicos')
-                    ->select('ordem_servicos.*', 'clientes.nome_razao', 'veiculos.placa', 'users.name', 'ordem_servico_status.os_status')
-                    ->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
-                    ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
-                    ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
-                    ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
-                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
                     ->whereRaw($whereData)
                     ->orderBy('ordem_servicos.created_at', 'desc')
                     ->paginate();
 
                 $totalOrdemServicos = DB::table('ordem_servicos')
-                ->select(
+                    ->select(
 
-                   
-                    DB::raw('SUM(ordem_servicos.valor_total) AS total')
-                    
-                )   ->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
+
+                        DB::raw('SUM(ordem_servicos.valor_total) AS total')
+
+                    )->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
+                    ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
+                    ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
+                    ->where('ordem_servicos.id', $request->searchField)
+                    ->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
+                    ->orWhere('veiculos.placa', 'like', '%' . $request->searchField . '%')
+                    //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1) . '))')
+
+                    ->whereRaw($whereData)
+
+                    ->get();
+                //dd($totalOrdemServicos);
+            } else {
+
+                //  dd('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))');
+                //dd('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ') or (' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ' = -1))');
+
+
+                $ordemServicos = DB::table('ordem_servicos')
+                    ->select('ordem_servicos.*', 'clientes.nome_razao', 'veiculos.placa', 'users.name', 'ordem_servico_status.os_status')
+                    ->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
+                    ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
+                    ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
+                    //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ') or (' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ' = -1))')
+
+                    // ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1) . '))')
+
+                    ->whereRaw($whereData)
+                    ->orderBy('ordem_servicos.created_at', 'desc')
+                    ->paginate();
+
+                $totalOrdemServicos = DB::table('ordem_servicos')
+                    ->select(
+
+
+                        DB::raw('SUM(ordem_servicos.valor_total) AS total')
+
+                    )->leftJoin('clientes', 'clientes.id', 'ordem_servicos.cliente_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
                     ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
                     ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
                     ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
                     ->whereRaw($whereData)
-                    
+
                     ->get();
             }
 
@@ -131,7 +147,8 @@ class OrdemServicoController extends Controller
                 'ordem_servicos' => $ordemServicos,
                 'fields' => $this->fields,
                 'totalOrdemServicos' => $totalOrdemServicos,
-            ])->withordemServicoStatus($ordemServicoStatus);
+                'ordemServicoStatus' => $ordemServicoStatus,
+            ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -219,7 +236,7 @@ class OrdemServicoController extends Controller
                 $ordemServico->obs = $request->obs;
                 $ordemServico->user_id = $request->user_id;
                 */
-                
+
 
                 $ordemServico->save();
 
@@ -365,32 +382,32 @@ class OrdemServicoController extends Controller
                 'km_veiculo' => 'required|numeric|min:0',
                 //'servicos' => 'array|size:1',
             ]);
-           
+
             try {
                 DB::beginTransaction();
 
-              
 
-               // $ordemServico->fill($request->all());
-               // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s');
 
-      
-             // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->create_at)->format('Y-m-d H:i:s');
-              $ordemServico->created_at =  \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s');
+                // $ordemServico->fill($request->all());
+                // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s');
 
-              //$ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data)->format('Y-m-d H:i:s');
-     //dd($ordemServico);
-              $ordemServico->cliente_id = $request->cliente_id;
-              $ordemServico->veiculo_id = $request->veiculo_id;
-              $ordemServico->km_veiculo = $request->km_veiculo;
-              $ordemServico->ordem_servico_status_id = $request->ordem_servico_status_id;
-              $ordemServico->estoque_id = $request->estoque_id;
-              //$ordemServico->valor_total = $request->valor_total;
-              $ordemServico->obs = $request->obs;
-              $ordemServico->defeito = $request->defeito;
-             // $ordemServico->user_id = $request->user_id;
-              
-              
+
+                // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->create_at)->format('Y-m-d H:i:s');
+                $ordemServico->created_at =  \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s');
+
+                //$ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data)->format('Y-m-d H:i:s');
+                //dd($ordemServico);
+                $ordemServico->cliente_id = $request->cliente_id;
+                $ordemServico->veiculo_id = $request->veiculo_id;
+                $ordemServico->km_veiculo = $request->km_veiculo;
+                $ordemServico->ordem_servico_status_id = $request->ordem_servico_status_id;
+                $ordemServico->estoque_id = $request->estoque_id;
+                //$ordemServico->valor_total = $request->valor_total;
+                $ordemServico->obs = $request->obs;
+                $ordemServico->defeito = $request->defeito;
+                // $ordemServico->user_id = $request->user_id;
+
+
 
                 $osStatus = OrdemServicoStatus::find($ordemServico->ordem_servico_status_id);
                 if (!$osStatus->em_aberto) {
@@ -494,8 +511,10 @@ class OrdemServicoController extends Controller
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
             ->where('veiculos.ativo', true)
             ->get();
+        $status = OrdemServicoStatus::all();
 
-        return View('relatorios.ordem_servicos.param_relatorio_ordem_servicos')->withClientes($clientes)->withVeiculos($veiculos);
+
+        return View('relatorios.ordem_servicos.param_relatorio_ordem_servicos')->withClientes($clientes)->withVeiculos($veiculos)->withOrdemServicoStatus($status);
     }
 
     public function RelatorioOrdemServicos(Request $request)

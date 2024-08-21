@@ -70,6 +70,7 @@
                     @endforeach
                 </div>
             </div>
+        
             <div class="row">
                 @if (isset($searchParms))
                     @component($searchParms)
@@ -122,6 +123,11 @@
                     @if (is_array($caption))
                         @if ($caption['type'] == 'bool')
                             <td scope="row">{{ __($row->$field == '1' ? 'Sim' : 'Não') }}</td>
+                        @endif
+                        @if ($caption['type'] == 'tag')
+                        <td scope="row"><span class="badge badge-pill badge-primary">{{ __($row->$field) }}</span></td>
+                            
+                           
                         @endif
                         @if ($caption['type'] == 'datetime')
                             <td scope="row">{{ date_format(date_create($row->$field), 'd/m/Y H:i:s') }}</td>
@@ -217,15 +223,12 @@
                                     ?>
                                     @if (is_array($action))
                                         @if (isset($action['custom_action']))
-                                       
-                                            @component($action['custom_action'], ['data' => $row,'target'=> $target])
+                                            @component($action['custom_action'], ['data' => $row, 'target' => $target])
                                             @endcomponent/
                                         @else
-                                           
-                                          
                                             <a class="dropdown-item"
                                                 href="{{ route($model . '.' . $action['action'], array_add($parameters, $model, $row->$keyField)) }}"
-                                                {{  $target }}>Show</a>
+                                                {{ $target }}>Show</a>
                                         @endif
                                     @else
                                         @permission($permission)

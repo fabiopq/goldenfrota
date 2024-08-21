@@ -27,7 +27,7 @@ class VeiculoStatusController extends Controller
         'id' => 'ID',
         'data' => ['label' => 'Data/Hora', 'type' => 'datetime'],
         'placa' => 'Placa',
-        'status_id' => 'Status',
+        'status_id' => ['label' => 'Status', 'type' => 'tag'],
         'historico' => 'Historico',
         'ativo' => ['label' => 'Ativo', 'type' => 'bool']
     );
