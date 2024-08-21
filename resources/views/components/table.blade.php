@@ -70,15 +70,33 @@
                     @endforeach
                 </div>
             </div>
-        
+
             <div class="row">
+
                 @if (isset($searchParms))
                     @component($searchParms)
                     @endcomponent
                 @endif
+                @if (isset($total))
+                    @component('components.input-text', [
+                        'id' => 'total',
+                        'name' => 'total',
+                        'inputValue' => isset($total) ? 'R$ ' . number_format($total[0]->total, 2, ',', '.') : 'R$ 0,00',
+                        'type' => 'number',
+                        'field' => 'valor_abastecimento',
+                        'label' => 'Valor Total',
+                        'inputSize' => 2,
+                        'readOnly' => true,
+                    ])
+                    @endcomponent
+
+                @endif
+
+
+
             </div>
         </form>
-
+{{--  
         <div class="row">
             <div class="col-sm">
 
@@ -96,7 +114,7 @@
             @endif
 
         </div>
-
+--}}
 
     </div>
     <table class="table table-sm table-bordered table-striped table-hover" style="margin: 0px">
@@ -125,9 +143,8 @@
                             <td scope="row">{{ __($row->$field == '1' ? 'Sim' : 'Não') }}</td>
                         @endif
                         @if ($caption['type'] == 'tag')
-                        <td scope="row"><span class="badge badge-pill badge-primary">{{ __($row->$field) }}</span></td>
-                            
-                           
+                            <td scope="row"><span
+                                    class="badge badge-pill badge-primary">{{ __($row->$field) }}</span></td>
                         @endif
                         @if ($caption['type'] == 'datetime')
                             <td scope="row">{{ date_format(date_create($row->$field), 'd/m/Y H:i:s') }}</td>
@@ -277,6 +294,7 @@
             <div class="d-flex">
                 <div class="mx-auto">
                     {{ $rows->links() }}
+
                 </div>
             </div>
         </div>

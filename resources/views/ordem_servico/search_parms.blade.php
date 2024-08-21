@@ -16,7 +16,7 @@
     'name' => 'data_inicial',
     'field' => 'data_inicial',
     'label' => 'Data Inicial',
-    'inputSize' => 2,
+    'inputSize' => 3,
     'dateTimeFormat' => 'DD/MM/YYYY',
     'picker_begin' => 'data_inicial',
     'picker_end' => 'data_final',
@@ -28,47 +28,21 @@
     'name' => 'data_final',
     'field' => 'data_final',
     'label' => 'Data Final',
-    'inputSize' => 2,
+    'inputSize' => 3,
     'dateTimeFormat' => 'DD/MM/YYYY',
     'picker_begin' => 'data_inicial',
     'picker_end' => 'data_final',
     'inputValue' => $data_final,
 ])
 @endcomponent
-{{-- 
-<div class="col-sm-12 col-md-3 col-lg-3">
 
-    <div class="form-group">
-        @component('components.label', ['label' => 'Status Ordem de Serviços', 'field' => $abast_local])
-        @endcomponent
-        <div class="input-group">
-            <div id="tipo_abastecimento" class="btn-group btn-group-toggle" data-toggle="buttons">
-                <buttom class="btn btn-secondary {{ $abast_local == 1 ? ' active' : '' }}">
-                    <input type="radio" name="abast_local" id="abast_local" value="1"> Aberta
-                </buttom>
-                <buttom class="btn btn-secondary {{ $abast_local == 0 ? ' active' : '' }}">
-                    <input type="radio" name="abast_local" id="abast_externo" value="2"> Fechada
-                </buttom>
-                <buttom class="btn btn-secondary {{ $abast_local == -1 ? ' active' : '' }}">
-                    <input type="radio" name="abast_local" id="abast_todos" value="-1"> Todos
-                </buttom>
-
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
- --}}
 
 @component('components.input-select', [
     'id' => 'ordem_servico_status',
     'name' => 'ordem_servico_status_id',
     'type' => 'select',
     'field' => 'ordem_servico_status_id',
-    'label' => 'Status Ordem de Serviços',
+    'label' => 'Status da O.S',
     'sideBySide' => true,
     'inputSize' => 3,
     'items' => $ordemServicoStatus,
