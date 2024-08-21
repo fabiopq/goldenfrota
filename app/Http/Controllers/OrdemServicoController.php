@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Events\UtilizadoProdutoControleVencimento;
 use App\Http\Controllers\MovimentacaoProdutoController;
+use Illuminate\Support\Facades\Input;
 use SebastianBergmann\CodeCoverage\Report\PHP;
 
 class OrdemServicoController extends Controller
@@ -46,11 +47,11 @@ class OrdemServicoController extends Controller
         if (Auth::user()->canListarOrdemServico()) {
 
 
-            $data_inicial = isset($request->data_inicial) ? ($request->data_inicial) : date('01/m/Y');
-            $data_final = isset($request->data_final) ? ($request->data_final) : date('t/m/Y');
+             $data_inicial = isset($request->data_inicial) ? ($request->data_inicial) : date('01/m/Y');
+             $data_final = isset($request->data_final) ? ($request->data_final) : date('t/m/Y');
 
-            //$data_inicial = $request->data_inicial;
-            //$data_final = $request->data_final;
+           // $data_inicial = $request->data_inicial;
+           // $data_final = $request->data_final;
 
             if ($data_inicial && $data_final) {
                 $whereData = 'ordem_servicos.created_at between \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s') . '\' and \'' . date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s') . '\'';
@@ -144,7 +145,8 @@ class OrdemServicoController extends Controller
 
 
             return View('ordem_servico.index', [
-                'ordem_servicos' => $ordemServicos,
+                
+                'ordem_servicos' => $ordemServicos->appends(Input::except('page')),
                 'fields' => $this->fields,
                 'totalOrdemServicos' => $totalOrdemServicos,
                 'ordemServicoStatus' => $ordemServicoStatus,

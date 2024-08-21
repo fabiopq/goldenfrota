@@ -113,6 +113,7 @@ class AbastecimentoController extends Controller
 
             return View('abastecimento.index', [
                 'abastecimentos' => $abastecimentos->appends(Input::except('page')),
+                
                 'fields' => $this->fields
             ]);
         } else {
