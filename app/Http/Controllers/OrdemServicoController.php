@@ -136,8 +136,10 @@ class OrdemServicoController extends Controller
                     ->leftJoin('veiculos', 'veiculos.id', 'ordem_servicos.veiculo_id')
                     ->leftJoin('users', 'users.id', 'ordem_servicos.user_id')
                     ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
-                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
-                    ->whereRaw($whereData)
+                   // ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
+                   ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ') or (' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ' = -1))')
+
+                   ->whereRaw($whereData)
 
                     ->get();
             }
