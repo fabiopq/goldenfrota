@@ -51,7 +51,7 @@ class OrdemServicoController extends Controller
             $data_final = isset($request->data_final) ? ($request->data_final) : date('t/m/Y');
             $ordem_servico_status_id = isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1;
             if (is_null($ordem_servico_status_id)) {
-                
+
                 $ordem_servico_status_id = -1;
             }
             // $data_inicial = $request->data_inicial;
@@ -72,7 +72,7 @@ class OrdemServicoController extends Controller
                 ->select('id', 'os_status')->get();
 
             if ($request->searchField) {
-             
+
 
                 $ordemServicos = DB::table('ordem_servicos')
                     ->select('ordem_servicos.*', 'clientes.nome_razao', 'veiculos.placa', 'users.name', 'ordem_servico_status.os_status')
@@ -104,7 +104,7 @@ class OrdemServicoController extends Controller
                     ->orWhere('veiculos.placa', 'like', '%' . $request->searchField . '%')
                     //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
                     // ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1) . '))')
-                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . $ordem_servico_status_id . ') or (' .  $ordem_servico_status_id . ' = -1))')    ->whereRaw($whereData)
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . $ordem_servico_status_id . ') or (' .  $ordem_servico_status_id . ' = -1))')->whereRaw($whereData)
 
                     ->get();
                 //dd($totalOrdemServicos);
@@ -136,7 +136,7 @@ class OrdemServicoController extends Controller
                     ->leftJoin('ordem_servico_status', 'ordem_servico_status.id', 'ordem_servico_status_id')
                     // ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
                     //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ') or (' . (isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : 1) . ' = -1))')
-                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . $ordem_servico_status_id . ') or (' .  $ordem_servico_status_id . ' = -1))')      ->whereRaw($whereData)
+                    ->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . $ordem_servico_status_id . ') or (' .  $ordem_servico_status_id . ' = -1))')->whereRaw($whereData)
 
                     ->get();
             }
@@ -349,8 +349,6 @@ class OrdemServicoController extends Controller
             $estoques = Estoque::where('ativo', true)->orderBy('estoque', 'asc')->get();
             $clientes = Cliente::where('ativo', true)->orderBy('nome_razao', 'asc')->get();
             $veiculos = Veiculo::where('ativo', true)->orderBy('placa', 'asc')->get();
-            // $veiculos = $ordemServico->veiculo->get();
-            // $clientes = $ordemServico->veiculo->cliente->get();
             $ordemServicoStatus = OrdemServicoStatus::orderBy('os_status', 'asc')->get();
 
             return View('ordem_servico.edit', [
@@ -388,14 +386,6 @@ class OrdemServicoController extends Controller
 
             try {
                 DB::beginTransaction();
-
-
-
-                // $ordemServico->fill($request->all());
-                // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->created_at)->format('Y-m-d H:i:s');
-
-
-                // $ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->create_at)->format('Y-m-d H:i:s');
                 $ordemServico->created_at =  \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s');
 
                 //$ordemServico->created_at = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data)->format('Y-m-d H:i:s');
@@ -405,7 +395,7 @@ class OrdemServicoController extends Controller
                 $ordemServico->km_veiculo = $request->km_veiculo;
                 $ordemServico->ordem_servico_status_id = $request->ordem_servico_status_id;
                 $ordemServico->estoque_id = $request->estoque_id;
-                //$ordemServico->valor_total = $request->valor_total;
+                $ordemServico->valor_total = $request->valor_total;
                 $ordemServico->obs = $request->obs;
                 $ordemServico->defeito = $request->defeito;
                 // $ordemServico->user_id = $request->user_id;

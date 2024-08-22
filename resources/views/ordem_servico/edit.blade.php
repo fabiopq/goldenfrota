@@ -54,12 +54,7 @@
                 @endcomponent
                 @component('components.form-group', [
                     'inputs' => [
-                        /* [
-                                            'type' => 'hidden',
-                                            'field' => 'cliente_id',
-                                            'inputValue' => $ordemServico->cliente_id,
-                                        ],
-                                        */
+                      
                         [
                             'type' => 'select',
                             'field' => 'veiculo_id',
@@ -73,12 +68,7 @@
                             'inputSize' => 3,
                             'indexSelected' => $ordemServico->veiculo_id,
                         ],
-                        /*  [
-                                            'type' => 'hidden',
-                                            'field' => 'veiculo_id',
-                                            'inputValue' => $ordemServico->veiculo_id,
-                                        ],
-                                        */
+                        
                         [
                             'type' => 'number',
                             'field' => 'km_veiculo',
@@ -91,13 +81,24 @@
                 ])
                 @endcomponent
                 <div id="ordem_servico">
-                    <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
-                        :old-servicos-data="{{ old('servicos') ? json_encode(old('servicos')) : json_encode($ordemServico->servicos) }}"
-                        v-bind:estoques="{{ json_encode($estoques) }}"
-                        :old-estoque-id="{{ old('estoque_id') ? json_encode(old('estoque_id')) : $ordemServico->estoque_id }}"
-                        :old-produtos-data="{{ old('produtos') ? json_encode(old('produtos')) : json_encode($ordemServico->produtos) }}">
-                    </ordem-servico>
+                   @if ($ordemServico->estoque_id)
+                   <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
+                   :old-servicos-data="{{ old('servicos') ? json_encode(old('servicos')) : json_encode($ordemServico->servicos) }}"
+                   v-bind:estoques="{{ json_encode($estoques) }}"
+                   :old-estoque-id="{{ old('estoque_id') ? json_encode(old('estoque_id')) : $ordemServico->estoque_id }}"
+                   :old-produtos-data="{{ old('produtos') ? json_encode(old('produtos')) : json_encode($ordemServico->produtos) }}">
+                    </ordem-servico> 
+                   @else
+                        <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
+                        :old-servicos-data="{{ json_encode(old('servicos')) }}" v-bind:estoques="{{ json_encode($estoques) }}"
+                        :old-estoque-id="{{ json_encode(old('estoque_id')) }}"
+                        :old-produtos-data="{{ json_encode(old('produtos')) }}">
+                         </ordem-servico>
+                   @endif
+                    
+                   
                 </div>
+                
 
                 @component('components.form-group', [
                     'inputs' => [
