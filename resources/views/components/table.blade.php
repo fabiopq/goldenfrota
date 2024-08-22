@@ -72,8 +72,11 @@
             </div>
 
             <div class="row">
+        
 
                 @if (isset($searchParms))
+
+                   {{--@component($searchParms,['ordemServicoStatus' => $ordemServicoStatus])  --}}
                     @component($searchParms)
                     @endcomponent
                 @endif
@@ -92,29 +95,9 @@
 
                 @endif
 
-
-
             </div>
         </form>
-{{--  
-        <div class="row">
-            <div class="col-sm">
 
-            </div>
-            <div class="col-sm">
-
-            </div>
-
-            @if (isset($total))
-                <div class="col-sm" style="text-align: right;">
-
-                    <h5>{{ __(isset($total) ? 'R$ ' . number_format($total[0]->total, 2, ',', '.') : 'R$ 0,00') }}</h5>
-
-                </div>
-            @endif
-
-        </div>
---}}
 
     </div>
     <table class="table table-sm table-bordered table-striped table-hover" style="margin: 0px">

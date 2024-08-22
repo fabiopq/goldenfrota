@@ -2,7 +2,11 @@
        
     $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : date('01/m/Y');
     $data_final = isset($_GET['data_final']) ? $_GET['data_final'] : date('t/m/Y');
-    $ordemServicoStatus = isset($_GET['ordem_servico_status']) ? $_GET['ordem_servico_status'] : null;
+    $ordemServicoStatus = isset($_GET['ordem_servico_status']) ? compact($_GET['ordem_servico_status']) : null;
+    $selecionado = isset($_GET['ordem_servico_status_id']) ? $_GET['ordem_servico_status_id'] : null;
+       
+    
+    
 
     $abast_local = isset($_GET['abast_local']) ? $_GET['abast_local'] : -1;
    // $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : null;
@@ -45,9 +49,10 @@
     'label' => 'Status da O.S',
     'sideBySide' => true,
     'inputSize' => 3,
-    'items' => $ordemServicoStatus,
+    'items' =>$ordemServicoStatus,
     'displayField' => 'ordem_servico_status',
     'keyField' => 'id',
+    'defaultNone' => false,
 ])
 @endcomponent
 <meta name="csrf-token" content="{{ Session::token() }}">
@@ -56,10 +61,25 @@
     $("#searchForm").submit();
     })
 
-    var buscarOrdemServicoStatus = function() {
-        var status = {};
+    var theValue = '<?php echo isset($_GET['ordem_servico_status_id']) ? $_GET['ordem_servico_status_id'] : -1; ?>';
+    console.log('theValue');
+    console.log(theValue);
+    
 
-        $.ajax({
+    $(document).ready(function() {
+      
+       $("#ordem_servico_status_id").val('theValue');
+   });
+
+    var buscarOrdemServicoStatus = function() {
+       
+        var status = {};
+        let opts = $("ordem_servico_status option");
+         console.log(opts.length);
+      
+       
+        console.log('nulo');
+            $.ajax({
             url: '{{ route("ordemservicostatus.json") }}',
             type: 'POST',
             data: {
@@ -102,8 +122,7 @@
                         text : item.os_status 
                     }));
                 });
-                let opts = $('#ordem_servico_status option');
-                console.log($('#ordem_servico_status option').length);
+                
                 
                 @if(old('ordem_servico_status_id'))
                 
@@ -111,15 +130,20 @@
                 @endif
                 
                 $('.selectpicker').selectpicker('refresh');
+                $('.selectpicker').selectpicker('val', theValue);
+               
             }
-
-            
-        });                
+        
+           
+        }); 
+         
+      
+           
     }
 
     {{--  $('#busca').on('changed.bs.select', buscarOrdemServicoStatus);--}}
-     window.onload = buscarOrdemServicoStatus();
-
+    
+    window.onload = buscarOrdemServicoStatus(); 
     {{-- $('#ordem_servico_status').on('changed.bs.select',$("#searchForm").submit()); --}}
   
 
