@@ -275,6 +275,7 @@
                 </td>
 
                 @if (isset($details))
+               
                     @foreach ($details as $fieldDetail => $captiondetail)
                         @if (is_array($captiondetail))
                             @if ($captiondetail['type'] == 'bool')
@@ -304,7 +305,7 @@
                             @endif
                         @else
                             <tr class="detail-row" id="detail-{{ $row->id }}" style="display: none;">
-                                <td colspan="3">
+                                <td colspan="10">
                                     <strong>{{ $captiondetail }}</strong> {{ $row->$fieldDetail }}
                                 </td>
                             </tr>
