@@ -191,12 +191,12 @@
                             --}}
 
                     @if (isset($details))
-                        <button type="button" tabindex="-1" class="btn btn-sm btn-observacoes-item" title=""
-                            rel="tooltip" data-original-title="Detalhes"><i style="display:block"
+                        <button type="button" data-id="{{ $row->id }}" tabindex="-1" class="btn btn-sm btn-observacoes-item" 
+                            data-toggle="tooltip" title="Detalhes" data-original-title="Detalhes"><i style="display:block"
                                 class="fa fa-angle-down submenu-icon"></i></button>
                     @endif
 
-                    <div class="btn-group dropleft">
+                    <div class="btn-group dropleft" data-toggle="tooltip" title="Ações">
                         <a data-toggle="dropdown" aria-expanded="false" type="button">
                             <i class="fa fa-ellipsis-v"></i></a>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
@@ -275,8 +275,6 @@
                 </td>
 
                 @if (isset($details))
-                    {
-
                     @foreach ($details as $fieldDetail => $captiondetail)
                         @if (is_array($captiondetail))
                             @if ($captiondetail['type'] == 'bool')
@@ -312,11 +310,6 @@
                             </tr>
                         @endif
                     @endforeach
-
-
-
-
-                    }
                 @endif
 
 
@@ -366,10 +359,12 @@
         });
         });
         --}}
-    $('.clickable-row').click(function () {
+  
+    $('.btn-observacoes-item').click(function () {
 
-    var id = $(this).data('id');
-
-    $('#detail-' + id).toggle();
-    });
+        var id = $(this).data('id');
+        
+    
+        $('#detail-' + id).toggle();
+        });
 @endpush

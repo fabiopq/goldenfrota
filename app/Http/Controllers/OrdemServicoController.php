@@ -38,7 +38,7 @@ class OrdemServicoController extends Controller
     ];
 
     public $detailFields = [
-        'obs' => 'Obsercação'
+        'obs' => 'Atividade Realizada: '
 
     ];
     /**
