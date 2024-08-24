@@ -36,6 +36,11 @@ class OrdemServicoController extends Controller
 
         'os_status' => 'Status'
     ];
+
+    public $detailFields = [
+        'obs' => 'Obsercação'
+
+    ];
     /**
      * Display a listing of the resource.
      *
@@ -147,6 +152,7 @@ class OrdemServicoController extends Controller
 
                 'ordem_servicos' => $ordemServicos->appends(Input::except('page')),
                 'fields' => $this->fields,
+                'detailFields' => $this->detailFields,
                 'totalOrdemServicos' => $totalOrdemServicos,
                 'ordemServicoStatus' => $ordemServicoStatus,
             ]);

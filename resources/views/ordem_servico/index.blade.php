@@ -20,7 +20,7 @@
         'searchParms' => 'ordem_servico.search_parms',
         'total' => $totalOrdemServicos,
         'ordemServicoStatus' => $ordemServicoStatus,
-    ])
-        ;
+        'details' => $detailFields,
+    ]);
     @endcomponent
 @endsection

@@ -72,11 +72,11 @@
             </div>
 
             <div class="row">
-        
+
 
                 @if (isset($searchParms))
 
-                   {{--@component($searchParms,['ordemServicoStatus' => $ordemServicoStatus])  --}}
+                    {{-- @component($searchParms, ['ordemServicoStatus' => $ordemServicoStatus])  --}}
                     @component($searchParms)
                     @endcomponent
                 @endif
@@ -118,7 +118,7 @@
                 @if ($colorLineCondition)
                     <tr {{ $row->$lineConditionField == $lineConditionValue ? 'class=' . $lineCondicionClass : '' }}>
                     @else
-                    <tr {{--  {{(!$row->ativo) ? 'class=danger' : ''}}  --}}>
+                    <tr class="clickable-row" data-id="{{ $row->id }}"{{--  {{(!$row->ativo) ? 'class=danger' : ''}}  --}}>
                 @endif
                 @foreach ($captions as $field => $caption)
                     @if (is_array($caption))
@@ -158,14 +158,14 @@
                 <td scope="row" class="text-center">
 
                     {{--  
-                    @if (is_array($actions))
-                        @foreach ($actions as $action)
-                            @if (is_array($action))
-                                @if (isset($action['custom_action']))
-                                    @component($action['custom_action'], ['data' => $row])
-                                    @endcomponent
-                                @else
-                                    @component('components.action', [
+                            @if (is_array($actions))
+                                @foreach ($actions as $action)
+                                    @if (is_array($action))
+                                        @if (isset($action['custom_action']))
+                                            @component($action['custom_action'], ['data' => $row])
+                                            @endcomponent
+                                        @else
+                                                                @component('components.action', [
     'action' => $action['action'],
     'model' => $model,
     'row' => $row,
@@ -173,8 +173,8 @@
     'keyField' => $keyField,
     'target' => $action['target'],
 ])
-                                    @endcomponent
-                                @endif
+                                            @endcomponent
+                                        @endif
                             @else
                                 @component('components.action', [
     'action' => $action,
@@ -183,13 +183,18 @@
     'displayField' => $displayField,
     'keyField' => $keyField,
 ])
-                                @endcomponent
+                                        @endcomponent
+                                    @endif
+                                @endforeach
                             @endif
-                        @endforeach
+
+                            --}}
+
+                    @if (isset($details))
+                        <button type="button" tabindex="-1" class="btn btn-sm btn-observacoes-item" title=""
+                            rel="tooltip" data-original-title="Detalhes"><i style="display:block"
+                                class="fa fa-angle-down submenu-icon"></i></button>
                     @endif
-
-                    --}}
-
 
                     <div class="btn-group dropleft">
                         <a data-toggle="dropdown" aria-expanded="false" type="button">
@@ -269,6 +274,54 @@
 
                 </td>
 
+                @if (isset($details))
+                    {
+
+                    @foreach ($details as $fieldDetail => $captiondetail)
+                        @if (is_array($captiondetail))
+                            @if ($captiondetail['type'] == 'bool')
+                                <td scope="row">{{ __($row->$field == '1' ? 'Sim' : 'Não') }}</td>
+                            @endif
+                            @if ($captiondetail['type'] == 'tag')
+                                <td scope="row"><span
+                                        class="badge badge-pill badge-primary">{{ __($row->$field) }}</span></td>
+                            @endif
+                            @if ($captiondetail['type'] == 'datetime')
+                                <td scope="row">{{ date_format(date_create($row->$field), 'd/m/Y H:i:s') }}</td>
+                            @endif
+                            @if ($captiondetail['type'] == 'date')
+                                <td scope="row">{{ date_format(date_create($row->$field), 'd/m/Y') }}</td>
+                            @endif
+                            @if ($captiondetail['type'] == 'decimal')
+                                <td scope="row">
+                                    <div align="right">
+                                        {{ number_format($row->$field, $caption['decimais'], ',', '.') }}
+                                    </div>
+                                </td>
+                            @endif
+                            @if ($captiondetail['type'] == 'list')
+                                <td scope="row">
+                                    <div align="right">{{ $captiondetail['values'][$row->$field] }}</div>
+                                </td>
+                            @endif
+                        @else
+                            <tr class="detail-row" id="detail-{{ $row->id }}" style="display: none;">
+                                <td colspan="3">
+                                    <strong>{{ $captiondetail }}</strong> {{ $row->$fieldDetail }}
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+
+
+
+
+                    }
+                @endif
+
+
+
+
             @endforeach
         </tbody>
     </table>
@@ -304,5 +357,19 @@
     <!-- Form confirm (yes/ok) handler, submits form -->
     $('#confirmDelete').find('.modal-footer #confirm').on('click', function(){
     $(this).data('form').submit();
+    });
+    {{--
+    $(function(){
+        $("table tr").click(function(){
+            $(".tabelaOculta").hide(); 
+        alert(this.rowIndex);
+        });
+        });
+        --}}
+    $('.clickable-row').click(function () {
+
+    var id = $(this).data('id');
+
+    $('#detail-' + id).toggle();
     });
 @endpush
