@@ -69,6 +69,7 @@ Route::get('atendentes', 'AtendenteController@apiAtendentes');
 Route::get('motoristas', 'MotoristaController@apiMotoristas');
 Route::get('tanques', 'TanqueController@apiTanques');
 Route::get('bicos', 'BicoController@apiBicos');
+Route::post('bicosv2', 'BicoController@apiBicosv2');
 
 Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
 Route::get('abastecimentoscodigo', 'AbastecimentoController@apiAbastecimentosCodigo');
@@ -80,6 +81,7 @@ Route::get('clientes', 'ClienteController@apiClientes');
 Route::get('memoria_identificadores', 'MemoriaIdentificadoresController@apiMemoriaIdentificadores');
 Route::get('cliente/{id}', 'ClienteController@apiClienteCnpj');
 Route::get('departamentos', 'DepartamentoController@apiDepartamentos');
+Route::get('postoabastecimentos', 'PostoAbastecimentoController@apiPostoAvastecimentos');
 
 //Route::post('departamentos', 'DepartamentoController@apiStore');
 
@@ -98,6 +100,7 @@ Route::get('abastecimentoshoje', 'DashboardController@abastecimentosHoje');
 Route::get('utimosabastecimentos', 'DashboardController@ultimosAbastecimentos');
 Route::get('saidascomb', 'DashboardController@saidasCombustiveis');
 Route::get('total_veiculos_frota', 'DashboardController@totalVeiculosFrota');
+Route::post('unidade/storeJson', 'UnidadeController@storeJson')->name('unidades.storeJson');
 
 Route::post('grupo_veiculos/json', 'GrupoVeiculoController@getGrupoVeiculosJson')->name('grupo_veiculos.json'); 
 

@@ -264,4 +264,11 @@ class PostoAbastecimentoController extends Controller
     {
         return response()->json(Motorista::ativo()->where('id', $id)->get());
     }
+
+    public function apiPostoAvastecimentos()
+    {
+        
+        return response()->json(PostoAbastecimento::get());
+    }
+
 }

@@ -19,5 +19,6 @@ class PostoAbastecimento extends Model
         'ftp_timeout',
         'automacao_valor_combustivel',
         
+        
     ];
 }

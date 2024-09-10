@@ -242,6 +242,24 @@ class BicoController extends Controller
         return response()->json(Bico::find($request->id)->with('tanque.combustivel')->first());
     }
 
+    public function apiBicosv2(Request $request)
+    {
+       //posto_abastecimentos_id
+       
+       if(isset($request->id)){
+            return response()->json(DB::table('bicos')
+            ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao as combustivel')
+            ->join('tanques', 'tanques.id', 'bicos.tanque_id')
+            ->join('posto_abastecimentos', 'tanques.posto_abastecimento_id', 'posto_abastecimentos.id')
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->join('bombas', 'bombas.id', 'bicos.bomba_id')
+            ->where('tanques.posto_abastecimento_id','=',$request->id)
+            ->orderBy('bicos.id')
+            ->get());
+        }
+       
+    }
+
     public function apiBicos()
     {
         return response()->json(DB::table('bicos')

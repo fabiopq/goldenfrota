@@ -38,14 +38,14 @@ class TanqueController extends Controller
                 $tanques = DB::table('tanques')
                     ->select('tanques.*', 'combustiveis.descricao','posto_abastecimentos.nome as posto_abastecimento')
                     ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-                    ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
+                    ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
                     ->where('descricao_tanque', 'like', '%' . $request->searchField . '%')
                     ->paginate();
             } else {
                 $tanques = DB::table('tanques')
                     ->select('tanques.*', 'combustiveis.descricao','posto_abastecimentos.nome as posto_abastecimento')
                     ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-                    ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
+                    ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
                     ->paginate();
             }
 

@@ -620,6 +620,7 @@ class VeiculoController extends Controller
         try {
 
             Log::debug('AbastecimentoController::obterMediaVeiculo');
+            Log::debug('obterMediaVeiculo - ehUpdate  ' . ($ehUpdate) ? 'Sim' : 'Não');
 
             if ($ehUpdate) {
                 $ultimoAbastecimento = AbastecimentoController::ObterUltimoAbastecimentoVeiculo($veiculo);
@@ -628,7 +629,7 @@ class VeiculoController extends Controller
             }
 
 
-            Log::debug('obterMediaVeiculo - ehUpdate => ' . ($ehUpdate) ? 'Sim' : 'Não');
+           
             Log::debug('obterMediaVeiculo - ultimoAbastecimento => ' . $ultimoAbastecimento);
 
 

@@ -66,8 +66,8 @@ class CombustivelController extends Controller
     {
         if (Auth::user()->canCadastrarCombustivel()) {
             $this->validate($request, [
-                'descricao' => 'string|required|min:5|unique:combustiveis',
-                'descricao_reduzida' => 'string|required|min:3|max:8|unique:combustiveis',
+                'descricao' => 'string|required|min:2|unique:combustiveis',
+                'descricao_reduzida' => 'string|required|min:2|max:8|unique:combustiveis',
                 'valor' => 'numeric|required'
             ]);
 

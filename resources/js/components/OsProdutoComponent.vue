@@ -25,7 +25,7 @@
                             <th class="col-md-1">Id</th>
                             <th class="col-md-5">Produto</th>
                             <th class="col-md-1">Qtd</th>
-                            <th class="col-md-1">R$ Un.</th>
+                            <th class="col-md-1">R$ Uni.</th>
                             <th class="col-md-1">R$ Acrés.</th>
                             <th class="col-md-1">R$ Desc.</th>
                             <th class="col-md-1">R$ Final</th>

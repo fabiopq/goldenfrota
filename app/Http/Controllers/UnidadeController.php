@@ -96,6 +96,19 @@ class UnidadeController extends Controller
         } 
     }
 
+    public function storeJson(Request $request)
+{
+    $validated = $request->validate([
+        'unidade' => 'required|string|min:2|max:20|unique:unidades' // Validação para máximo de 100 caracteres
+    ]);
+
+   
+
+    Unidade::create($validated);
+
+    return response()->json(['success' => true, 'message' => 'Unidade de produtos criado com sucesso!']);
+}
+
     /**
      * Show the form for editing the specified resource.
      *
