@@ -69,7 +69,7 @@ Route::get('atendentes', 'AtendenteController@apiAtendentes');
 Route::get('motoristas', 'MotoristaController@apiMotoristas');
 Route::get('tanques', 'TanqueController@apiTanques');
 Route::get('bicos', 'BicoController@apiBicos');
-Route::post('bicosv2', 'BicoController@apiBicosv2');
+
 
 Route::get('abastecimentos', 'AbastecimentoController@apiAbastecimentos');
 Route::get('abastecimentoscodigo', 'AbastecimentoController@apiAbastecimentosCodigo');
@@ -103,5 +103,5 @@ Route::get('total_veiculos_frota', 'DashboardController@totalVeiculosFrota');
 Route::post('unidade/storeJson', 'UnidadeController@storeJson')->name('unidades.storeJson');
 
 Route::post('grupo_veiculos/json', 'GrupoVeiculoController@getGrupoVeiculosJson')->name('grupo_veiculos.json'); 
-
+Route::post('bicosv2', 'BicoController@apiBicosv2');
 
