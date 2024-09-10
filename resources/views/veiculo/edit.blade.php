@@ -76,6 +76,7 @@
                             'displayField' => 'grupo',
                             'keyField' => 'id',
                             'comando' => 'grupoVeiculoModal',
+                            'action' => 'create',
                         ],
                         [
                             'type' => 'text',
