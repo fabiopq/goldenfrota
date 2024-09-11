@@ -673,9 +673,10 @@ class AbastecimentoController extends Controller
 
         if ($posto_abastecimento_id > 0) {
             array_push($parametros, 'Posto de Abastecimentos: ' . PostoAbastecimento::find($posto_abastecimento_id)->nome);
-            if ($whereParam) {
+            if (isset($whereParam)) {
                 $whereParam = $whereParam . ' and posto_abastecimentos_id = ' . $posto_abastecimento_id;
             } else {
+                array_push($parametros, 'Posto de Abastecimentos: Todos' );
                 $whereParam = 'posto_abastecimentos_id = ' . $posto_abastecimento_id;
             }
         }
