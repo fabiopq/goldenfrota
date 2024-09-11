@@ -171,6 +171,7 @@ Route::resource('/importa', 'ImportaController')->except('show');
 Route::resource('/ticket', 'TicketController');
 Route::post('combustivel/json', 'CombustivelController@getCombustivelJson')->name('combustivel.json');
 Route::post('ordem_servico_status/json', 'OrdemServicoStatusController@getStatusJson')->name('ordemservicostatus.json');
+Route::post('posto_abastecimentos/json', 'PostoAbastecimentoController@json')->name('postoabastecimentos.json');
 Route::post('movimentacao_credito/json', 'MovimentacaoCreditoController@getSaldoCreditoJson')->name('saldocredito.json');
 Route::get('renovar', 'MovimentacaoCreditoController@renovarCredito');
 Route::get('chart', [ChartJSController::class, 'index']);

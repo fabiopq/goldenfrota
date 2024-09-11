@@ -23,7 +23,8 @@
             'value' => '1',
             'class' => 'danger'
             ],
-            'searchParms' => 'abastecimento.search_parms'
+            'searchParms' => 'abastecimento.search_parms',
+            'posto_abastecimentos' => $posto_abastecimentos,
         ]);
     @endcomponent
 @endsection

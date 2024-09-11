@@ -61,7 +61,10 @@ class AbastecimentoController extends Controller
      */
     public function index(Request $request)
     {
+        
+        $posto_abastecimentos = PostoAbastecimento::where('ativo', true)->get();
         if (Auth::user()->canListarAbastecimento()) {
+            
             $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
 
@@ -111,8 +114,10 @@ class AbastecimentoController extends Controller
                     ->paginate();
             }
 
+           
             return View('abastecimento.index', [
                 'abastecimentos' => $abastecimentos->appends(Input::except('page')),
+                'posto_abastecimentos' => $posto_abastecimentos,
 
                 'fields' => $this->fields
             ]);
@@ -1342,6 +1347,8 @@ class AbastecimentoController extends Controller
 
     {
 
+     
+       
         try {
 
             $cfgPreco = DB::table('settings')
@@ -1349,7 +1356,7 @@ class AbastecimentoController extends Controller
                 ->where('settings.key', 'automacao_valor_combustivel')
                 ->first();
 
-
+                
 
             DB::beginTransaction();
 
@@ -1377,9 +1384,9 @@ class AbastecimentoController extends Controller
             }
 
             // log::debug($cfgPreco->value);
-           
-            if (isset($cfgPreco->value)) {
-                
+            
+            if (isset($cfgPreco->value) && $cfgPreco->value > 0 ) {
+              
                 $preco = DB::table('combustiveis')
                     ->select('combustiveis.valor')
                     ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')

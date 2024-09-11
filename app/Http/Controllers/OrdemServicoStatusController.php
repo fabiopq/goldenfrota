@@ -184,6 +184,7 @@ class OrdemServicoStatusController extends Controller
 
     public function getStatusJson(Request $request) {
         $ordemServicoStatus = OrdemServicoStatus::all();
+       
 
         return response()->json($ordemServicoStatus);
     }

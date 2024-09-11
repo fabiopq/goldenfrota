@@ -2,6 +2,8 @@
     $displayField = isset($displayField) ? $displayField : 'name';
     $keyField = isset($keyField) ? $keyField : 'id';
 
+   
+     
     if (isset($colorLineCondition)) {
         $lineConditionField = $colorLineCondition['field'];
         $lineConditionValue = $colorLineCondition['value'];
@@ -75,6 +77,7 @@
 
 
                 @if (isset($searchParms))
+                             
 
                     {{-- @component($searchParms, ['ordemServicoStatus' => $ordemServicoStatus])  --}}
                     @component($searchParms)

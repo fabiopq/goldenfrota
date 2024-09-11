@@ -268,6 +268,14 @@ class PostoAbastecimentoController extends Controller
     public function apiPostoAvastecimentos()
     {
         
+       
+        return response()->json(PostoAbastecimento::get());
+    }
+
+    public function json(Request $request)
+    {
+        
+       
         return response()->json(PostoAbastecimento::get());
     }
 
