@@ -1357,7 +1357,7 @@ class AbastecimentoController extends Controller
 
     {
 
-        Log::debug('request  : ' . $request);
+       // Log::debug('request  : ' . $request);
 
        
         try {
