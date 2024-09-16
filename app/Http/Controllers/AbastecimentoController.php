@@ -94,10 +94,8 @@ class AbastecimentoController extends Controller
                     ->leftJoin('motoristas', 'motoristas.id', 'abastecimentos.motorista_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
-
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
-
                     ->whereRaw($whereData)
                     ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
                     //->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
@@ -115,7 +113,6 @@ class AbastecimentoController extends Controller
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('motoristas', 'motoristas.id', 'abastecimentos.motorista_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
-
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
                     ->whereRaw($whereData)
@@ -1281,7 +1278,11 @@ class AbastecimentoController extends Controller
         $data_final = $request->data_final;
         $parametros = array();
 
-        //dd($request);
+        $posto_abastecimentos_id = isset($request->posto_abastecimentos_id) ? $request->posto_abastecimentos_id : -1;
+        if (is_null($posto_abastecimentos_id)) {
+
+            $posto_abastecimentos_id = -1;
+        }
 
         if ($data_inicial && $data_final) {
             $whereData = 'abastecimentos.data_hora_abastecimento between \'' . $data_inicial . ' 00:00:00' . '\' and \'' .  $data_final . ' 23:59:59' . '\'';
@@ -1308,10 +1309,10 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes',         'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-
-            //->whereRaw($whereData)
-            // ->whereDate('abastecimentos.data_hora_abastecimento', $request->data_inicial)
-            //->whereDate('abastecimentos.data_hora_abastecimento', $request->data_final)
+            ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+            //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
+        
             ->whereRaw($whereData)
             //->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
             ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
@@ -1323,6 +1324,11 @@ class AbastecimentoController extends Controller
         $data_inicial = $request->data_inicial;
         $data_final = $request->data_final;
         $parametros = array();
+        $posto_abastecimentos_id = isset($request->posto_abastecimentos_id) ? $request->posto_abastecimentos_id : -1;
+        if (is_null($posto_abastecimentos_id)) {
+
+            $posto_abastecimentos_id = -1;
+        }
 
         if ($data_inicial && $data_final) {
             $whereData = 'abastecimentos.data_hora_abastecimento between \'' . $data_inicial . ' 00:00:00' . '\' and \'' .  $data_final . ' 23:59:59' . '\'';
@@ -1338,6 +1344,10 @@ class AbastecimentoController extends Controller
             ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
             ->leftJoin('tanques', 'tanques.id', 'bicos.tanque_id')
             ->leftJoin('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+            //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
+       
             ->whereNull('abastecimentos.veiculo_id')
             ->orderByDesc('abastecimentos.id')
             ->whereRaw($whereData)
@@ -1357,7 +1367,7 @@ class AbastecimentoController extends Controller
 
     {
 
-       // Log::debug('request  : ' . $request);
+       Log::debug('Abastecimento recebido : ' . isset($request->data_hora_abastecimento) .$request->data_hora_abastecimento ?? '');
 
        
         try {
