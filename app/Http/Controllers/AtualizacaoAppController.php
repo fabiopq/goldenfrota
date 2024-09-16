@@ -87,4 +87,6 @@ class AtualizacaoAppController extends Controller
     public function obterAtualizacoes($idUltimaAtualizacao = 0) {
         return response()->json(AtualizacaoApp::naoImportado($idUltimaAtualizacao)->get());
     } 
+
+   
 }

@@ -65,6 +65,13 @@ class AbastecimentoController extends Controller
         $posto_abastecimentos = PostoAbastecimento::where('ativo', true)->get();
         if (Auth::user()->canListarAbastecimento()) {
             
+            
+            $posto_abastecimentos_id = isset($request->posto_abastecimentos_id) ? $request->posto_abastecimentos_id : -1;
+            if (is_null($posto_abastecimentos_id)) {
+
+                $posto_abastecimentos_id = -1;
+            }
+            
             $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
 
@@ -89,6 +96,8 @@ class AbastecimentoController extends Controller
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
 
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
+
                     ->whereRaw($whereData)
                     ->where('veiculos.placa', 'like', '%' . $request->searchField . '%')
                     //->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
@@ -108,6 +117,7 @@ class AbastecimentoController extends Controller
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
 
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
                     ->whereRaw($whereData)
                     /* ->orderBy('abastecimentos.id', 'desc') */
                     ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
@@ -1347,7 +1357,8 @@ class AbastecimentoController extends Controller
 
     {
 
-     
+        Log::debug('request  : ' . $request);
+
        
         try {
 

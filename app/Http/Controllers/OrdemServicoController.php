@@ -39,7 +39,7 @@ class OrdemServicoController extends Controller
 
     public $detailFields = [
         'obs' => 'Atividade Realizada: ',
-        
+
 
     ];
     /**
@@ -750,5 +750,14 @@ class OrdemServicoController extends Controller
 
             return View('relatorios.ordem_servicos.relatorio_ordem_servicos_analitico')->withClientes($clientes)->withTitulo('Relatório de Ordem de Serviços - Analítico')->withParametros($parametros)->withParametro(Parametro::first());
         }
+    }
+
+    public function fechar(Request $request)
+    {
+        $ordemServico = OrdemServico::where([
+            ['id', '=', $request->id]
+        ])->get();
+
+        return response()->json($ordemServico);
     }
 }

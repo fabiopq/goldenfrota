@@ -64,6 +64,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::resource('/posicao_pneu', 'PosicaoPneuController')->except(['show']);
     Route::resource('/servico', 'ServicoController')->except(['show']);
     Route::resource('/ordem_servico', 'OrdemServicoController');
+    //Route::post('/ordem_servico/fechar/{id}', [OrdemServicoController::class, 'fechar'])->name('ordem_servico.fechar');
+
+    //Route::post('/ordem_servico_fechar', 'OrdemServicoController@fechar')->name('ordem_servico.fechar');
     Route::resource('/ajuste_tanque', 'AjusteTanqueController')->except(['show', 'edit']);
     Route::resource('/ordem_servico_status', 'OrdemServicoStatusController')->except(['show']);
     Route::resource('/motorista', 'MotoristaController')->except(['show', 'edit', 'update', 'delete']);
@@ -96,6 +99,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('modelo_veiculo/json', 'ModeloVeiculoController@getModelosJson')->name('modelo_veiculos.json');
     Route::post('modelo_veiculo_marca/json', 'ModeloVeiculoController@getModeloMarcaJson')->name('modelo_veiculos_marca.json');
     Route::post('departamento/json', 'DepartamentoController@getDepartamentosJson')->name('departamentos.json');
+    
     //Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
     //Route::post('unidade', [UnidadeController::class, 'add'])->name('unidade.add');
@@ -187,9 +191,11 @@ Route::get(
 )->middleware('auth');
 */
 
+
 Route::resource('/posto_abastecimento', 'PostoAbastecimentoController')->except('show');
 //Route::get('/saldo', 'ClienteController@showSaldo')->except('show');
 Route::get('/cliente/saldo', 'ClienteController@formSaldo')->name('clente.saldo');
+Route::get('/app', 'AtualizacaoAppController@downloadArquivo')->name('app');
 Route::post('/cliente/consultar-saldo', 'ClienteController@showSaldo')->name('saldo.json');
 Route::get('/motorista/{motorista}/edit', 'MotoristaController@edit')->name('motorista.edit');
 Route::post('login_cliente', 'AuthController@loginCliente')->name('login_cliente');

@@ -104,4 +104,6 @@ Route::post('unidade/storeJson', 'UnidadeController@storeJson')->name('unidades.
 
 Route::post('grupo_veiculos/json', 'GrupoVeiculoController@getGrupoVeiculosJson')->name('grupo_veiculos.json'); 
 Route::post('bicosv2', 'BicoController@apiBicosv2');
+Route::post('/ordem_servico/fechar/{id}', 'OrdemServicoController@fechar')->name('ordem_servico.fechar');
+
 

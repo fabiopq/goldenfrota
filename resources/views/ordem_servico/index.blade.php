@@ -12,6 +12,9 @@
             ['action' => 'show', 'target' => '_blank'],
             'edit',
             'destroy',
+            [
+                'custom_action' => 'components.customActions.FecharOdemServico'
+            ],
             
            // [
            //     'custom_action' => 'components.customActions.FecharOdemServico',
