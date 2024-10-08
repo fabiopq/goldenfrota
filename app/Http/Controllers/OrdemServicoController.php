@@ -23,6 +23,7 @@ use App\Events\UtilizadoProdutoControleVencimento;
 use App\Http\Controllers\MovimentacaoProdutoController;
 use Illuminate\Support\Facades\Input;
 use SebastianBergmann\CodeCoverage\Report\PHP;
+use Illuminate\Support\Facades\Log;
 
 class OrdemServicoController extends Controller
 {
@@ -51,8 +52,7 @@ class OrdemServicoController extends Controller
     {
 
         if (Auth::user()->canListarOrdemServico()) {
-
-
+            log::debug('ordem_servico_status_id '.$request->ordem_servico_status_id);
             $data_inicial = isset($request->data_inicial) ? ($request->data_inicial) : date('01/m/Y');
             $data_final = isset($request->data_final) ? ($request->data_final) : date('t/m/Y');
             $ordem_servico_status_id = isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1;
@@ -441,8 +441,8 @@ class OrdemServicoController extends Controller
                         'model' => __('models.ordem_servico'),
                         'name' => $ordemServico->id
                     ]));
-
-                    return redirect()->action('OrdemServicoController@index');
+                    return redirect()->action('OrdemServicoController@index', $request->query->all() ?? []);
+                    //return redirect()->action('OrdemServicoController@index');
                 } else {
                     DB::rollback();
 

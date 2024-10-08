@@ -77,7 +77,7 @@
 
 
                 @if (isset($searchParms))
-                             
+                   
 
                     {{-- @component($searchParms, ['ordemServicoStatus' => $ordemServicoStatus])  --}}
                     @component($searchParms)

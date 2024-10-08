@@ -61,17 +61,17 @@ class AbastecimentoController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $posto_abastecimentos = PostoAbastecimento::where('ativo', true)->get();
         if (Auth::user()->canListarAbastecimento()) {
-            
-            
+
+
             $posto_abastecimentos_id = isset($request->posto_abastecimentos_id) ? $request->posto_abastecimentos_id : -1;
             if (is_null($posto_abastecimentos_id)) {
 
                 $posto_abastecimentos_id = -1;
             }
-            
+
             $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
 
@@ -121,7 +121,7 @@ class AbastecimentoController extends Controller
                     ->paginate();
             }
 
-           
+
             return View('abastecimento.index', [
                 'abastecimentos' => $abastecimentos->appends(Input::except('page')),
                 'posto_abastecimentos' => $posto_abastecimentos,
@@ -581,7 +581,7 @@ class AbastecimentoController extends Controller
         $clientes = Cliente::all();
         $posto_abastecimentos = PostoAbastecimento::all();
         $departamentos = Departamento::all();
-        
+
         $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as veiculo"), 'veiculos.id')
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
@@ -688,7 +688,7 @@ class AbastecimentoController extends Controller
             if (isset($whereParam)) {
                 $whereParam = $whereParam . ' and posto_abastecimentos_id = ' . $posto_abastecimento_id;
             } else {
-                array_push($parametros, 'Posto de Abastecimentos: Todos' );
+                array_push($parametros, 'Posto de Abastecimentos: Todos');
                 $whereParam = 'posto_abastecimentos_id = ' . $posto_abastecimento_id;
             }
         }
@@ -806,7 +806,7 @@ class AbastecimentoController extends Controller
                     $cliente->abastecimentos = $abastecimentos;
                 }
             }
-            
+
             return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else if ($request->tipo_relatorio == 2) {
             /* relatório Analítico */
@@ -836,7 +836,7 @@ class AbastecimentoController extends Controller
                     ->get();
                 $cliente->abastecimentos = $abastecimentos;
             }
-           
+
 
             return View('relatorios.abastecimentos.relatorio_abastecimentos_analitico')->withClientes($clientes)->withClientesNulloAnalitico($clientesNulloAnalitico)->withTitulo('Relatório de Abastecimentos - Analítico')->withParametros($parametros)->withParametro(Parametro::first());
         } else if ($request->tipo_relatorio == 3) {
@@ -874,7 +874,6 @@ class AbastecimentoController extends Controller
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
-              
             }
 
 
@@ -1312,7 +1311,7 @@ class AbastecimentoController extends Controller
             ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
             //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
             ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
-        
+
             ->whereRaw($whereData)
             //->whereBetween('abastecimentos.data_hora_abastecimento', [$request->data_inicial, $request->data_final])
             ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
@@ -1347,7 +1346,7 @@ class AbastecimentoController extends Controller
             ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
             //->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
             ->whereRaw('((abastecimentos.posto_abastecimentos_id = ' . $posto_abastecimentos_id . ') or (' .  $posto_abastecimentos_id . ' = -1))')
-       
+
             ->whereNull('abastecimentos.veiculo_id')
             ->orderByDesc('abastecimentos.id')
             ->whereRaw($whereData)
@@ -1367,9 +1366,11 @@ class AbastecimentoController extends Controller
 
     {
 
-       Log::debug('Abastecimento recebido : ' . isset($request->data_hora_abastecimento) .$request->data_hora_abastecimento ?? '');
+       // Log::debug('Abastecimento recebido : ' . (isset($request->data_hora_abastecimento) . $request->data_hora_abastecimento ?? ' data_hora nao recebida'));
+       // Log::debug('Posto_abastecimento_id :'.isset($request->posto_abastecimentos_id) . $request->posto_abastecimentos_id ?? 'posto_abastecimentos_id = null' .
+        //    'quantidade: ' . isset($request->volume_abastecimento) . $request->volume_abastecimento ?? 'null');
 
-       
+
         try {
 
             $cfgPreco = DB::table('settings')
@@ -1377,37 +1378,36 @@ class AbastecimentoController extends Controller
                 ->where('settings.key', 'automacao_valor_combustivel')
                 ->first();
 
-                
+
 
             DB::beginTransaction();
 
             $abastecimento = new Abastecimento;
 
 
-            $veiculo = new Veiculo();
+            //$veiculo = new Veiculo();
             $atendente = new Atendente();
 
             if ($request->data_hora_abastecimento) {
-             
+
                 $abastecimento->data_hora_abastecimento = $request->data_hora_abastecimento;
-                
             } else {
                 $abastecimento->data_hora_abastecimento =  new \DateTime(now());
             }
 
             //$abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
 
-            $abastecimento->id_automacao = $request->id; 
+            $abastecimento->id_automacao = $request->id;
             //campo com id do abastecimento na memoria
-            
+
             if ($request->veiculo_id > 0) {
                 $abastecimento->veiculo_id = $request->veiculo_id;
             }
 
             // log::debug($cfgPreco->value);
-            
-            if (isset($cfgPreco->value) && $cfgPreco->value > 0 ) {
-              
+
+            if (isset($cfgPreco->value) && $cfgPreco->value > 0) {
+
                 $preco = DB::table('combustiveis')
                     ->select('combustiveis.valor')
                     ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
@@ -1426,7 +1426,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
                 $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
             }
-           
+
             $abastecimento->km_veiculo = $request->km_veiculo;
             $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
             $abastecimento->abastecimento_local = false;
@@ -1436,7 +1436,7 @@ class AbastecimentoController extends Controller
             if (isset($request->posto_abastecimentos_id)) {
                 $abastecimento->posto_abastecimentos_id =   $request->posto_abastecimentos_id;
             }
-            
+
             if ($request->bico_id) {
 
                 $abastecimento->bico_id = $request->bico_id;
@@ -1448,7 +1448,7 @@ class AbastecimentoController extends Controller
                     $abastecimento->bico_id = $bico->id;
                 }
             }
-            
+
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
 
@@ -1467,10 +1467,10 @@ class AbastecimentoController extends Controller
                     }
                 }
             }
-            
+
 
             if ($request->veiculo_id) {
-                
+
                 $veiculo = Veiculo::where('id', '=', $request->veiculo_id)->first();
 
                 if (isset($veiculo->id)) {
@@ -1478,29 +1478,32 @@ class AbastecimentoController extends Controller
                     $abastecimento->veiculo_id = $veiculo->id;
                 }
             } else if ($request->tag_atendente) {
-                
+
                 $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
             } else if ($request->tag_cliente) {
 
                 $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
             }
-             
-           
+
+
             if (isset($veiculo->id)) {
-                
+
+
+
                 $abastecimento->veiculo_id = $veiculo->id;
+                
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                 // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
 
 
             } else {
-                
+
                 $abastecimento->veiculo_id = null;
                 $abastecimento->media_veiculo = 0;
             }
 
 
-           
+
 
             if ($abastecimento->save()) {
                 if (isset($veiculo->id)) {
@@ -1533,7 +1536,7 @@ class AbastecimentoController extends Controller
 
                         MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
                     }
-                    
+
                     if (!BicoController::atualizarEncerranteBico($abastecimento->bico_id, $request->encerrante_final)) {
                         throw new \Exception(__('messages.exception', [
                             'exception' => 'Não foi possível atualizar o encerrante do bico'

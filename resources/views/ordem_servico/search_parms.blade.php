@@ -3,8 +3,9 @@
     $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : date('01/m/Y');
     $data_final = isset($_GET['data_final']) ? $_GET['data_final'] : date('t/m/Y');
     $ordemServicoStatus = isset($_GET['ordem_servico_status']) ? compact($_GET['ordem_servico_status']) : null;
-    $selecionado = isset($_GET['ordem_servico_status_id']) ? $_GET['ordem_servico_status_id'] : null;
-       
+    $selecionado = isset($_GET['ordem_servico_status_id']) ? $_GET['ordem_servico_status_id'] : -1;
+    
+    //dd($_GET);
     
     
 
@@ -62,8 +63,8 @@
     })
 
     var theValue = '<?php echo isset($_GET['ordem_servico_status_id']) ? $_GET['ordem_servico_status_id'] : -1; ?>';
-    console.log('theValue');
     console.log(theValue);
+    
     
 
     $(document).ready(function() {
@@ -75,10 +76,9 @@
        
         var status = {};
         let opts = $("ordem_servico_status option");
-         console.log(opts.length);
-      
+         
        
-        console.log('nulo');
+       
             $.ajax({
             url: '{{ route("ordemservicostatus.json") }}',
             type: 'POST',
@@ -90,8 +90,7 @@
             dataType: 'JSON',
             cache: false,
             success: function (data) {
-                console.log(data);
-                console.log($('#ordem_servico_status option').length); 
+               
                 if (('#ordem_servico_status option').length <= 0){
 
                     if (data.length > 0) {

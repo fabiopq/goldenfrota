@@ -22,7 +22,9 @@
                 @if (isset($parametro))
                     <div class="col-sm-2 col-md-10 col-lg-10">
                         <div class="row">
-                            {{ $parametro->cliente->nome_razao }}
+                            {{ $parametro->cliente->nome_razao }} 
+
+                            
                         </div>
                         <div class="row">
                             CNPJ: {{ $parametro->cliente->cpf_cnpj }}
