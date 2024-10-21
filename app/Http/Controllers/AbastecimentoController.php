@@ -397,6 +397,7 @@ class AbastecimentoController extends Controller
                         'name' => $abastecimento->id
                     ]));
                     //return redirect(url()->previous());
+                   
                     return redirect()->action('AbastecimentoController@index', $request->query->all() ?? []);
                 } else {
                     Session::flash('error', __('messages.update_error', [

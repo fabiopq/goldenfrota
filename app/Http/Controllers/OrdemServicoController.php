@@ -39,7 +39,8 @@ class OrdemServicoController extends Controller
     ];
 
     public $detailFields = [
-        'obs' => 'Atividade Realizada: ',
+        
+        'obs' => 'Atividade Realizada: '
 
 
     ];
@@ -441,6 +442,7 @@ class OrdemServicoController extends Controller
                         'model' => __('models.ordem_servico'),
                         'name' => $ordemServico->id
                     ]));
+                    dd($request->query->all());
                     return redirect()->action('OrdemServicoController@index', $request->query->all() ?? []);
                     //return redirect()->action('OrdemServicoController@index');
                 } else {

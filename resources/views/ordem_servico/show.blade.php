@@ -43,14 +43,14 @@
                 <div class="card nf-panel">
                     <label for="#departamento" class="nf-label">Departamento:</label>
                     <div id="departamento">
-                        {{ isset($ordemServico->veiculo->departamento) ? $ordemServico->veiculo->departamento->departamento : '' }}
+                        {{ isset($ordemServico->veiculo->departamento) ? $ordemServico->veiculo->departamento->departamento : 'Não Informado ' }}
                     </div>
                 </div>
             </div>
             <div class="col col-sm-2 col-md-2 col-lg-2">
                 <div class="card nf-panel">
                     <label for="#veiculo" class="nf-label">Veículo:</label>
-                    <div id="veiculo">{{ isset($ordemServico->veiculo->placa) ? $ordemServico->veiculo->placa : '' }}
+                    <div id="veiculo">{{ isset($ordemServico->veiculo->placa) ? $ordemServico->veiculo->placa : 'Não Informado' }}
                     </div>
                 </div>
             </div>

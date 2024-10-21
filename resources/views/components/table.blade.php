@@ -193,7 +193,7 @@
 
                             --}}
 
-                    @if (isset($details))
+                    @if (isset($detailFields))
                         <button type="button" data-id="{{ $row->id }}" tabindex="-1" class="btn btn-sm btn-observacoes-item" 
                             data-toggle="tooltip" title="Detalhes" data-original-title="Detalhes"><i style="display:block"
                                 class="fa fa-angle-down submenu-icon"></i></button>
@@ -276,10 +276,11 @@
 
 
                 </td>
-
-                @if (isset($details))
+             
+                
+                @if (isset($detailFields))
                
-                    @foreach ($details as $fieldDetail => $captiondetail)
+                    @foreach ($detailFields as $fieldDetail => $captiondetail)
                         @if (is_array($captiondetail))
                             @if ($captiondetail['type'] == 'bool')
                                 <td scope="row">{{ __($row->$field == '1' ? 'Sim' : 'Não') }}</td>
