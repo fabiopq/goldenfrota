@@ -232,11 +232,11 @@
                                     @if (is_array($action))
                                         @if (isset($action['custom_action']))
                                             @component($action['custom_action'], ['data' => $row, 'target' => $target])
-                                            @endcomponent/
+                                            @endcomponent
                                         @else
                                             <a class="dropdown-item"
                                                 href="{{ route($model . '.' . $action['action'], array_add($parameters, $model, $row->$keyField)) }}"
-                                                {{ $target }}>Show</a>
+                                                {{ $target }}>Visualizar</a>
                                         @endif
                                     @else
                                         @permission($permission)
