@@ -77,6 +77,9 @@ class ModeloVeiculoController extends Controller
      */
     public function store(Request $request)
     {
+        
+        
+        
         if (Auth::user()->canCadastrarModeloVeiculo()) {
             $this->validate($request, [
                 'modelo_veiculo' => 'required|string|min:3|max:30|unique:modelo_veiculos',

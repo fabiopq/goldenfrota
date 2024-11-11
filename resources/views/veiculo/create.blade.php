@@ -135,6 +135,19 @@
                             'keyField' => 'id'
                         ],
                         [
+                            'type' => 'input-btn',
+                            'field' => 'modelo_id',
+                            'label' => 'Novo',
+                            'required' => true,
+                            'inputSize' => 1,
+                            'displayField' => 'modelo',
+                            'keyField' => 'id',
+                            'action' => 'create',
+                            'comando' => 'modeloVeiculoModal',
+                            
+                            
+                        ],
+                        [
                             'type' => 'number',
                             'field' => 'ano',
                             'label' => 'Ano',
@@ -192,6 +205,7 @@
        
 @include('veiculo.modal')
 @include('grupo_veiculo.modal')
+@include('modelo_veiculo.modal')
 @include('marca_veiculo.modal')
 <meta name="csrf-token" content="{{ Session::token() }}">
 <!-- Modal -->
@@ -238,43 +252,7 @@
         });
     }
 
-    var buscarModeloVeiculos = function() {
-        var marca = {};
-
-        marca.id = $('#marca_veiculo_id').val();
-        marca._token = $('input[name="_token"]').val();
-
-        console.log(marca);
-        $.ajax({
-            url: '{{ route("modelo_veiculos.json") }}',
-            type: 'POST',
-            data: marca,
-            dataType: 'JSON',
-            cache: false,
-            success: function (data) {
-                console.log(data);
-                $("#modelo_veiculo_id")
-                    .removeAttr('disabled')
-                    .find('option')
-                    .remove();
-
-
-                $.each(data, function (i, item) {
-                    $('#modelo_veiculo_id').append($('<option>', { 
-                        value: item.id,
-                        text : item.modelo_veiculo 
-                    }));
-                });
-
-                @if(old('modelo_veiculo_id'))
-                $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
-                @endif
-
-                $('.selectpicker').selectpicker('refresh');
-            }
-        });
-    }
-
+    
     $('#saveGrupoVeiculo').click(function() {
         var grupoNome = $('#grupoVeiculo').val();
        
@@ -299,8 +277,13 @@
                 --}}
             },
             error: function(xhr) {
-                alert('Error: ' + xhr.responseJSON.message);
-                
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = Object.values(errors).map(error => error.join(' ')).join('\n');
+                    alert(errorMessage);
+                } else {
+                    alert("Erro ao cadastrar o produto");
+                }
             }
         });
     });
@@ -356,6 +339,59 @@
         });   
     }
 
+    $('#saveModeloVeiculo').click(function() {
+        var modeloNome = $('#modelo_veiculo').val();
+        var modeloMarca = $('#modal_marca_veiculo_id').val();
+        var modeloCapacidade = $('#capacidade_tanque').val();
+        var modeloTipoControle = $('#tipo_controle_veiculo_id').val();
+        var modeloBloqueio = $('#tipo_controle_bloqueio').val();
+        var modeloMediaIdeal = $('#media_ideal').val();
+        var modeloVariacaoNegativa = $('#variacao_negativa').val();
+        var modeloVariacaoPositiva = $('#variacao_positiva').val();
+        
+       
+       
+        
+        $.ajax({
+            url: "{{ route('modelo_veiculo.store') }}",
+            method: 'POST',
+            data: {
+                modelo_veiculo: modeloNome,
+                marca_veiculo_id: modeloMarca,
+                capacidade_tanque: modeloCapacidade,
+                tipo_controle_veiculo_id: modeloTipoControle,
+                tipo_controle_bloqueio: modeloBloqueio,
+                media_ideal: modeloMediaIdeal,
+                variacao_negativa: modeloVariacaoNegativa,
+                variacao_positiva:modeloVariacaoPositiva,
+                _token: $('meta[name=csrf-token]').attr('content'),
+                 
+            },
+            
+            success: function(response) {
+            
+                buscarModeloVeiculos();
+                $('#modeloVeiculoModal').modal('hide');
+               
+                {{-- $('#unidade_id').append('<option value="' + response.id + '">' + response
+                //     .name + '</option>');
+                // $('#unidade_id').val(response.id);
+                --}}
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = Object.values(errors).map(error => error.join(' ')).join('\n');
+                    alert(errorMessage);
+                } else {
+                    alert("Erro ao cadastrar o produto");
+                }
+            }
+
+
+        });
+    });
+
     $('#saveMarcaVeiculo').click(function() {
         var grupoNome = $('#marcaVeiculo').val();
        
@@ -380,8 +416,13 @@
                 --}}
             },
             error: function(xhr) {
-                alert('Error: ' + xhr.responseJSON.message);
-                
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = Object.values(errors).map(error => error.join(' ')).join('\n');
+                    alert(errorMessage);
+                } else {
+                    alert("Erro ao cadastrar o produto");
+                }
             }
         });
     });
@@ -409,9 +450,17 @@
                         .removeAttr('disabled')
                         .find('option')
                         .remove();
+                        $("#modal_marca_veiculo_id")
+                        .removeAttr('disabled')
+                        .find('option')
+                        .remove();
+                        
                 } else {
                     if ($('#marca_veiculo_id').val() == -1) {
                         $("#marca_veiculo_id").attr('disabled', 'disabled');
+                    }
+                    if ($('#modal_marca_veiculo_id').val() == -1) {
+                        $("#modal_marca_veiculo_id").attr('disabled', 'disabled');
                     }
                 }
 
@@ -419,8 +468,18 @@
                         value: -1,
                         text : 'NADA SELECIONADO'
                 }));
+                $('#modal_marca_veiculo_id').append($('<option>', { 
+                    value: -1,
+                    text : 'NADA SELECIONADO'
+            }));
                 $.each(data, function (i, item) {
                     $('#marca_veiculo_id').append($('<option>', { 
+                        value: item.id,
+                        text : item.marca_veiculo 
+                    }));
+                });
+                $.each(data, function (i, item) {
+                    $('#modal_marca_veiculo_id').append($('<option>', { 
                         value: item.id,
                         text : item.marca_veiculo 
                     }));
@@ -437,7 +496,46 @@
         });   
     }
 
+    var buscarModeloVeiculos = function() {
+        var marca = {};
+
+        marca.id = $('#marca_veiculo_id').val();
+        marca._token = $('input[name="_token"]').val();
+
+        console.log(marca);
+        $.ajax({
+            url: '{{ route("modelo_veiculos.json") }}',
+            type: 'POST',
+            data: marca,
+            dataType: 'JSON',
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                $("#modelo_veiculo_id")
+                    .removeAttr('disabled')
+                    .find('option')
+                    .remove();
+
+
+                $.each(data, function (i, item) {
+                    $('#modelo_veiculo_id').append($('<option>', { 
+                        value: item.id,
+                        text : item.modelo_veiculo 
+                    }));
+                });
+
+                @if(old('modelo_veiculo_id'))
+                $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
+                @endif
+
+                $('.selectpicker').selectpicker('refresh');
+            }
+        });
+    }
+
+
     $('#cliente_id').on('changed.bs.select', buscarDepartamentos);
+
     $('#marca_veiculo_id').on('changed.bs.select', buscarModeloVeiculos);
     
     if ($('#marca_veiculo_id').val()) {

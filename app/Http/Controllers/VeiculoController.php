@@ -21,8 +21,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Events\NovoRegistroAtualizacaoApp;
 use Illuminate\Support\Facades\Log;
 use App\AtualizacaoApp;
-
-
+use App\TipoControleVeiculo;
 
 class VeiculoController extends Controller
 {
@@ -92,7 +91,8 @@ class VeiculoController extends Controller
             'marcaVeiculos' => $marcaVeiculos,
             'grupoVeiculos' => $grupoVeiculos,
             'clientes' => $clientes,
-            'departamentos' => $departamentos
+            'departamentos' => $departamentos,
+            'tipoControleVeiculos' => TipoControleVeiculo::all(),
         ]);
     }
 
