@@ -1171,7 +1171,7 @@ class IntegracaoAutomacaoController extends Controller
 
 
 
-            Log::debug('configurando ftp  ' . $i . ' - ' . $config->ftp_user);
+           // Log::debug('configurando ftp  ' . $i . ' - ' . $config->ftp_user);
 
             Config::set('filesystems.disks.ftp' . $i . '.host', $config->ftp_server);
 
@@ -1189,8 +1189,8 @@ class IntegracaoAutomacaoController extends Controller
 
             Config::set('filesystems.disks.ftp' . $i . '.timeout', $config->ftp_timeout);
 
-            Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.username'));
-            Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.host'));
+           // Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.username'));
+           // Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.host'));
         } catch (\Exception $e) {
             throw new \Exception('Erro na configuração da Conta FTP. [' . $e->getMessage() . '].');
         }
