@@ -685,7 +685,7 @@ class VeiculoController extends Controller
             )
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-            ->where('veiculos.id', '>' ,' 62')
+           // ->where('veiculos.id', '>' ,' 62')
             ->orderBy('veiculos.placa', 'desc')
             //->orderBy('marca_veiculo', 'asc')
             //->orderBy('modelo_veiculo', 'asc')

@@ -28,7 +28,7 @@
                 @endcomponent
                 <div class="card">
                     <div class="card-header">
-                        <strong>Automação (Hiro)</strong>
+                        <strong>Automação</strong>
                     </div>
                     <div class="card-body">
                         @component('components.form-group', [
