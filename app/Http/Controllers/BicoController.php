@@ -254,6 +254,7 @@ class BicoController extends Controller
             ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
             ->join('bombas', 'bombas.id', 'bicos.bomba_id')
             ->where('tanques.posto_abastecimento_id','=',$request->id)
+            ->whereRaw('bicos.ativo', true)
             ->orderBy('bicos.id')
             ->get());
         }

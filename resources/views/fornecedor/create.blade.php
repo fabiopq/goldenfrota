@@ -56,6 +56,17 @@
                             'inputSize' => 4
                         ],
                         [
+                            'type' => 'input-btn',
+                            'field' => 'busca_cnpj',
+                            'label' => 'Buscar',
+                            'required' => true,
+                            'inputSize' => 1,
+                            'displayField' => 'busca_cnpj',
+                            'keyField' => 'id',
+                            'action' => 'search',
+                            
+                        ],
+                        [
                             'type' => 'text',
                             'field' => 'rg_ie',
                             'label' => 'RG/IE',
@@ -191,4 +202,40 @@
             $("#cpf_cnpj").mask('00.000.000/0000-00', {placeholder: '__.___.___/____-__'}); 
         }
     });
+
+    $('#busca_cnpj').on('click', function() {
+        var cnpj = $('#cpf_cnpj').val().replace(/\D/g, '');
+
+        if (cnpj.length !== 14) {
+            alert('CNPJ inválido!');
+            return;
+        }
+
+        $.ajax({
+            url: 'https://www.receitaws.com.br/v1/cnpj/' + cnpj,
+            method: 'GET',
+            dataType: 'jsonp',
+            success: function(response) {
+                if (response.status === "OK") {
+                    $('#nome_razao').val(response.nome);
+                    $('#fantasia').val(response.fantasia);
+                    
+                    $('#email1').val(response.email);
+                    $('#endereco').val(response.logradouro);
+                    $('#numero').val(response.numero);
+                    $('#bairro').val(response.bairro);
+                    $('#cidade').val(response.municipio);
+                    $('#uf_id').val(response.uf);
+                    $('#cep').val(response.cep);
+                    $('#fone1').val(response.telefone);
+                } else {
+                    alert('CNPJ não encontrado!');
+                }
+            },
+            error: function() {
+                alert('Erro ao buscar CNPJ!');
+            }
+        });
+    });
+
 @endpush

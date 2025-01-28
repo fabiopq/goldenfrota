@@ -232,7 +232,8 @@
                                     'required' => true,
                                     'items' => $ufs,
                                     'inputSize' => 2,
-                                    'displayField' => 'uf',
+                                    '
+                                    ' => 'uf',
                                     'liveSearch' => true,
                                     'keyField' => 'id',
                                     'searchById' => false,
