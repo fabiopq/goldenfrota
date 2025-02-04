@@ -442,7 +442,7 @@ class OrdemServicoController extends Controller
                         'model' => __('models.ordem_servico'),
                         'name' => $ordemServico->id
                     ]));
-                    dd($request->query->all());
+                  //  dd($request->query->all());
                     return redirect()->action('OrdemServicoController@index', $request->query->all() ?? []);
                     //return redirect()->action('OrdemServicoController@index');
                 } else {
