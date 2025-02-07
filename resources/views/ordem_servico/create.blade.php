@@ -118,31 +118,37 @@
                 cliente._token = $('input[name="_token"]').val();
 
                 $.ajax({
-                    url: '{{ route('veiculos.json') }}',
-                    type: 'POST',
-                    data: cliente,
-                    dataType: 'JSON',
-                    cache: false,
-                    success: function(data) {
-                        $("#veiculo_id")
-                            .removeAttr('disabled')
-                            .find('option')
-                            .remove();
+                url: '{{ route("veiculos.json") }}',
+                type: 'POST',
+                data: cliente,
+                dataType: 'JSON',
+                cache: false,
+                success: function (data) {
+                    //console.log(data);
+                    $("#veiculo_id")
+                        .removeAttr('disabled')
+                        .find('option')
+                        .remove();
 
-                        $.each(data, function(i, item) {
-                            $('#veiculo_id').append($('<option>', {
-                                value: item.id,
-                                text: item.placa
-                            }));
-                        });
+                    $('#veiculo_id').append($('<option>', {value: null, text: 'Nada selecionado'}));
 
-                        @if (old('veiculo_id'))
-                            $('#veiculo_id').selectpicker('val', {{ old('veiculo_id') }});
-                        @endif
+                    $.each(data, function (i, item) {
+                        $('#veiculo_id').append($('<option>', { 
+                            value: item.id,
+                            'data-tipo-controle-veiculo': item.modelo_veiculo.tipo_controle_veiculo.id,
+                            text : item.placa + ' - ' + item.modelo_veiculo.marca_veiculo.marca_veiculo + ' ' + item.modelo_veiculo.modelo_veiculo
+                        }));
+                    });
+                    
+                    @if(old('modelo_veiculo_id'))
+                    $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
+                    @endif
 
-                        $('.selectpicker').selectpicker('refresh');
-                    }
-                });
+                    $('.selectpicker').selectpicker('refresh');
+                },
+                error: function (data) {
+                }
+            });
             }
             $('#cliente_id').on('changed.bs.select', buscarVeiculos);
 

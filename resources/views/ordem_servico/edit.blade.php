@@ -22,9 +22,8 @@
                             'inputSize' => 2,
                             'sideBySide' => true,
                             'dateTimeFormat' => 'DD/MM/YYYY HH:mm',
-                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $ordemServico->created_at)->format('d/m/Y H:i:s'),
-
-                          
+                            'inputValue' => \DateTime::createFromFormat('Y-m-d H:i:s', $ordemServico->created_at)->format(
+                                'd/m/Y H:i:s'),
                         ],
                         [
                             'type' => 'select',
@@ -54,7 +53,6 @@
                 @endcomponent
                 @component('components.form-group', [
                     'inputs' => [
-                      
                         [
                             'type' => 'select',
                             'field' => 'veiculo_id',
@@ -68,7 +66,7 @@
                             'inputSize' => 3,
                             'indexSelected' => $ordemServico->veiculo_id,
                         ],
-                        
+                
                         [
                             'type' => 'number',
                             'field' => 'km_veiculo',
@@ -81,24 +79,24 @@
                 ])
                 @endcomponent
                 <div id="ordem_servico">
-                   @if ($ordemServico->estoque_id)
-                   <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
-                   :old-servicos-data="{{ old('servicos') ? json_encode(old('servicos')) : json_encode($ordemServico->servicos) }}"
-                   v-bind:estoques="{{ json_encode($estoques) }}"
-                   :old-estoque-id="{{ old('estoque_id') ? json_encode(old('estoque_id')) : $ordemServico->estoque_id }}"
-                   :old-produtos-data="{{ old('produtos') ? json_encode(old('produtos')) : json_encode($ordemServico->produtos) }}">
-                    </ordem-servico> 
-                   @else
+                    @if ($ordemServico->estoque_id)
                         <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
-                        :old-servicos-data="{{ json_encode(old('servicos')) }}" v-bind:estoques="{{ json_encode($estoques) }}"
-                        :old-estoque-id="{{ json_encode(old('estoque_id')) }}"
-                        :old-produtos-data="{{ json_encode(old('produtos')) }}">
-                         </ordem-servico>
-                   @endif
-                    
-                   
+                            :old-servicos-data="{{ old('servicos') ? json_encode(old('servicos')) : json_encode($ordemServico->servicos) }}"
+                            v-bind:estoques="{{ json_encode($estoques) }}"
+                            :old-estoque-id="{{ old('estoque_id') ? json_encode(old('estoque_id')) : $ordemServico->estoque_id }}"
+                            :old-produtos-data="{{ old('produtos') ? json_encode(old('produtos')) : json_encode($ordemServico->produtos) }}">
+                        </ordem-servico>
+                    @else
+                        <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
+                            :old-servicos-data="{{ json_encode(old('servicos')) }}" v-bind:estoques="{{ json_encode($estoques) }}"
+                            :old-estoque-id="{{ json_encode(old('estoque_id')) }}"
+                            :old-produtos-data="{{ json_encode(old('produtos')) }}">
+                        </ordem-servico>
+                    @endif
+
+
                 </div>
-                
+
 
                 @component('components.form-group', [
                     'inputs' => [
@@ -149,10 +147,22 @@
                                 .find('option')
                                 .remove();
 
+                            /*  $.each(data, function(i, item) {
+                                  $('#veiculo_id').append($('<option>', {
+                                      value: item.id,
+                                      text: item.placa
+                                  }));
+                              });
+                              */
+
                             $.each(data, function(i, item) {
                                 $('#veiculo_id').append($('<option>', {
                                     value: item.id,
-                                    text: item.placa
+                                    'data-tipo-controle-veiculo': item
+                                        .modelo_veiculo.tipo_controle_veiculo.id,
+                                    text: item.placa + ' - ' + item.modelo_veiculo
+                                        .marca_veiculo.marca_veiculo + ' ' + item
+                                        .modelo_veiculo.modelo_veiculo
                                 }));
                             });
 
