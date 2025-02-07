@@ -61,6 +61,7 @@
                             'displayField' => 'grupo',
                             'keyField' => 'id',
                             'comando' => 'grupoProdutoModal',
+                            'action' => 'create'
                         ],
                         [
                             'type' => 'select',
@@ -74,6 +75,7 @@
                             'liveSearch' => true,
                             'indexSelected' => $produto->unidade_id,
                         ],
+                        
                         [
                             'type' => 'input-btn',
                             'field' => 'unidade_id',
@@ -83,6 +85,7 @@
                             'displayField' => 'unidade',
                             'keyField' => 'id',
                             'comando' => 'unidadeModal',
+                            'action' => 'create'
                         ],
                       
                     ],
