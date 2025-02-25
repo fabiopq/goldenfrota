@@ -668,7 +668,7 @@ class VeiculoController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            // Log::debug($e);
+             Log::debug($e);
             throw new \Exception($e->getMessage());
         }
     }

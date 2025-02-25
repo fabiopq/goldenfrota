@@ -709,7 +709,7 @@ class IntegracaoAutomacaoController extends Controller
 
                                 //dd($dataInicio);
                                 if ($dataAbastecimento <= $dataInicio) {
-                                    dd($abastecimento);
+                                    // dd($abastecimento);
                                     continue; //pula para o proximo abastecimento
                                 }
                             } catch (\Exception $e) {
@@ -778,11 +778,12 @@ class IntegracaoAutomacaoController extends Controller
 
     public function ImportarAbastecimentos()
     {
-
+        /*
         if (App::environment('local')) {
             Log::debug('Tarefa agendada: Importação de Abastecimento... [ambiente de desenvolvimento]');
             //return;
         }
+        */
 
         // verifica se na configuracao esta habilitado preco do cadastro do combustivel
         $cfgPreco = DB::table('settings')
@@ -812,6 +813,7 @@ class IntegracaoAutomacaoController extends Controller
 
 
             $i = 1;
+
             foreach ($configs as $config) {
 
                 if ($config->ftp_server !== null) {
@@ -819,8 +821,9 @@ class IntegracaoAutomacaoController extends Controller
                     $errosImportacao = false;
                     try {
 
-
                         if (Storage::disk('ftp' . $i)->exists('abastecimentos.hir')) {
+
+
                             log::debug('Existe abastecimento no ftp' . $i);
                             try {
                                 $arquivo = Storage::disk('ftp' . $i)->get('abastecimentos.hir');
@@ -936,15 +939,19 @@ class IntegracaoAutomacaoController extends Controller
                                             if (!$veiculo) {  // verifica se nao veio veiculo no arquivo
 
 
-                                                if (!$atendente->veiculo_id) { //verifica se no cadastro de atendente nao possui veiculo
+                                                if (!$atendente) { //verifica se no cadastro de atendente nao possui veiculo
+
                                                     $abastecimento->media_veiculo = 0;
                                                     $obs .= 'Veículo [' . trim($registro[14]) . ']: Não encontrado!&#10;';
                                                 } else {
-                                                    $abastecimento->veiculo_id = $atendente->veiculo_id;
-                                                    $veiculo = Veiculo::where('id', '=', $atendente->veiculo_id)->first();
-                                                    $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                                                    if (!$atendente->veiculo_id) {
+                                                        $abastecimento->veiculo_id = $atendente->veiculo_id;
+                                                        $veiculo = Veiculo::where('id', '=', $atendente->veiculo_id)->first();
+                                                        $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
+                                                    }
                                                 }
                                             } else {
+
                                                 $abastecimento->veiculo_id = $veiculo->id;
                                                 $abastecimento->media_veiculo = $abastecimentoController->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                                                 // Log::debug('Media_Veiculo='.$abastecimento->media_veiculo);
@@ -988,7 +995,9 @@ class IntegracaoAutomacaoController extends Controller
                                                 DB::beginTransaction();
 
                                                 if ($abastecimento->save()) {
-                                                    VeiculoController::atualizaKmVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
+                                                    if (Veiculo::find($abastecimento->veiculo_id)) {
+                                                        VeiculoController::atualizaKmVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
+                                                    }
 
 
                                                     if (MovimentacaoCombustivelController::saidaAbastecimento($abastecimento)) {
@@ -1171,7 +1180,7 @@ class IntegracaoAutomacaoController extends Controller
 
 
 
-           // Log::debug('configurando ftp  ' . $i . ' - ' . $config->ftp_user);
+            // Log::debug('configurando ftp  ' . $i . ' - ' . $config->ftp_user);
 
             Config::set('filesystems.disks.ftp' . $i . '.host', $config->ftp_server);
 
@@ -1189,8 +1198,8 @@ class IntegracaoAutomacaoController extends Controller
 
             Config::set('filesystems.disks.ftp' . $i . '.timeout', $config->ftp_timeout);
 
-           // Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.username'));
-           // Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.host'));
+            // Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.username'));
+            // Log::debug('lendo configuracao : ' . Config::get('filesystems.disks.ftp' . $i . '.host'));
         } catch (\Exception $e) {
             throw new \Exception('Erro na configuração da Conta FTP. [' . $e->getMessage() . '].');
         }
