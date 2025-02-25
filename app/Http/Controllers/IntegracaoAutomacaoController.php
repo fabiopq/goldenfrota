@@ -48,7 +48,7 @@ class IntegracaoAutomacaoController extends Controller
         Nome = Nome do funcionario (10 caracteres alfa numericos)
         > = Caracter marcador de fim de regsitro
     */
-    public function ExportarAtendentes()
+    public function ExportarAtendentesold()
     {
 
         try {
@@ -82,7 +82,7 @@ class IntegracaoAutomacaoController extends Controller
         }
     }
 
-    public function ExportarAtendentesNew()
+    public function ExportarAtendentes()
     {
         $configs = PostoAbastecimento::paginate();
 
