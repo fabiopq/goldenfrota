@@ -898,6 +898,7 @@ class IntegracaoAutomacaoController extends Controller
                                             Log::debug('atendente - ' . trim($registro[12]));
                                             if (!$bico) {
                                                 $obs .= 'Bico [' . trim($registro[3]) . ']: Não encontrado!&#10;';
+                                                continue;
                                             } else {
                                                 $abastecimento->bico_id = $bico->id;
                                             }
