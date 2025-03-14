@@ -50,6 +50,7 @@
                     ]
                 ])
                 @endcomponent
+               
                 @component('components.form-group', [
                     'inputs' => [
                         [
@@ -75,6 +76,51 @@
                     ]
                 ])
                 @endcomponent
+                @component('components.form-group', [
+                    'inputs' => [
+                        [
+                            'type' => 'select',
+                            'field' => 'atendente_id',
+                            'label' => 'Atendente',
+                            'required' => true,
+                            'items' => $atendentes,
+                            'inputSize' => 6,
+                            'displayField' => 'nome_atendente',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                           
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'motorista_id',
+                            'label' => 'Motorista',
+                            'required' => true,
+                            'items' => $motoristas,
+                            'inputSize' => 6,
+                            'displayField' => 'nome',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                           
+                        ]
+                        ,
+                        [
+                            'type' => 'select',
+                            'field' => 'posto_abastecimentos_id',
+                            'label' => 'Posto Abastecimento',
+                            'required' => true,
+                            'items' => $postos,
+                            'inputSize' => 6,
+                            'displayField' => 'nome',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            //'defaultNone' => true,
+                           
+                        ]
+                    ]
+                ])
+                @endcomponent
+          
                 <div class="card">
                     <div class="card-header">
                         <strong>AUTOMAÇÃO</strong>

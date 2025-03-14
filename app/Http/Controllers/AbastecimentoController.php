@@ -155,10 +155,24 @@ class AbastecimentoController extends Controller
 
                 ->where('tanques.ativo', true)
                 ->get();
+            $atendentes = Atendente::where('ativo', true)
+                ->get();
+            $motoristas = Motorista::where('ativo', true)
+                ->get();
+            $postos = PostoAbastecimento::where('ativo', true)
+                ->get();
 
             $clientes = Cliente::where('ativo', true)->get();
             // $bicos = Bico::where('permite_insercao', true)->where('ativo', true)->get();
-            return View('abastecimento.create')->withClientes($clientes)->withBicos($bicos);
+            // return View('abastecimento.create')->withClientes($clientes)->withBicos($bicos);
+            return View('abastecimento.create', [
+
+                'clientes' => $clientes,
+                'bicos' => $bicos,
+                'atendentes' => $atendentes,
+                'motoristas' => $motoristas,
+                'postos' => $postos
+            ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -180,7 +194,7 @@ class AbastecimentoController extends Controller
                 'data_hora_abastecimento' => 'required|date_format:d/m/Y H:i:s',
                 'cliente_id' => 'required_if:eh_afericao,false|required_without:eh_afericao',
                 'veiculo_id' => 'required_if:eh_afericao,false|required_without:eh_afericao',
-                //'km_veiculo' => 'required_if:eh_afericao,false|required_without:eh_afericao',
+                'km_veiculo' => 'required_if:eh_afericao,false|required_without:eh_afericao',
                 'volume_abastecimento' => 'required|numeric|min:0',
                 'valor_litro' => 'required|numeric|min:0',
                 'valor_abastecimento' => 'required|numeric|min:0',
@@ -202,6 +216,10 @@ class AbastecimentoController extends Controller
                 $abastecimento->bico_id = $request->bico_id;
                 $abastecimento->encerrante_inicial = $request->encerrante_inicial;
                 $abastecimento->encerrante_final = $request->encerrante_final;
+                $abastecimento->atendente_id = $request->atendente_id;
+                $abastecimento->motorista_id = $request->motorista_id;
+                $abastecimento->posto_abastecimentos_id = $request->posto_abastecimentos_id;
+                
 
                 /* Calcula a média do veículo, caso seja informado um veículo */
 
@@ -397,7 +415,7 @@ class AbastecimentoController extends Controller
                         'name' => $abastecimento->id
                     ]));
                     //return redirect(url()->previous());
-                   
+
                     return redirect()->action('AbastecimentoController@index', $request->query->all() ?? []);
                 } else {
                     Session::flash('error', __('messages.update_error', [
@@ -1367,8 +1385,8 @@ class AbastecimentoController extends Controller
 
     {
 
-       // Log::debug('Abastecimento recebido : ' . (isset($request->data_hora_abastecimento) . $request->data_hora_abastecimento ?? ' data_hora nao recebida'));
-       // Log::debug('Posto_abastecimento_id :'.isset($request->posto_abastecimentos_id) . $request->posto_abastecimentos_id ?? 'posto_abastecimentos_id = null' .
+        // Log::debug('Abastecimento recebido : ' . (isset($request->data_hora_abastecimento) . $request->data_hora_abastecimento ?? ' data_hora nao recebida'));
+        // Log::debug('Posto_abastecimento_id :'.isset($request->posto_abastecimentos_id) . $request->posto_abastecimentos_id ?? 'posto_abastecimentos_id = null' .
         //    'quantidade: ' . isset($request->volume_abastecimento) . $request->volume_abastecimento ?? 'null');
 
 
@@ -1492,7 +1510,7 @@ class AbastecimentoController extends Controller
 
 
                 $abastecimento->veiculo_id = $veiculo->id;
-                
+
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                 // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
 
