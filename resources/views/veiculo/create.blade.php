@@ -174,7 +174,8 @@
                             'type' => 'number',
                             'field' => 'hodometro',
                             'label' => 'Km',
-                            'inputSize' => 2
+                            'inputSize' => 2,
+                            'inputValue' => '0'
                         ],
                         
                         [
@@ -189,7 +190,8 @@
                             'type' => 'number',
                             'field' => 'media_minima',
                             'label' => 'Média Mínima',
-                            'inputSize' => 2
+                            'inputSize' => 2,
+                            'inputValue' => '0'
                         ],
                         [
                             'type' => 'number',
