@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-class TicketstatusController extends Controller
+class TicketStatusController extends Controller
 {
     public $fields = array(
         'id' => 'ID',
