@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-
 class TicketStatusController extends Controller
 {
     public $fields = array(
@@ -22,6 +21,7 @@ class TicketStatusController extends Controller
      */
     public function index(Request $request)
     {
+        
         if (Auth::user()->canListarTicketStatus()) {
             if (isset($request->searchField)) {
                 $ticket_status = TicketStatus::where('descricao', 'like', '%' . $request->searchField . '%')->paginate();
@@ -51,6 +51,7 @@ class TicketStatusController extends Controller
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
         }
+        
     }
 
     /**
@@ -123,10 +124,10 @@ class TicketStatusController extends Controller
     {
         
         if (Auth::user()->canAlterarTicketStatus()) {
-           // $this->validate($request, [
-           //     'descricao' => 'required|string|unique:ticket_Status,id,' . $ticketStatus->id
-           // ]);
-          // dd($request);
+           $this->validate($request, [
+                'descricao' => 'required|string|unique:ticket_Status,id,' . $ticketStatus->id
+            ]);
+           
             try {
                 $ticketStatus->fill($request->all());
                 
