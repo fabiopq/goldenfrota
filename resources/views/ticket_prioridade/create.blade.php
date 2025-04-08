@@ -3,8 +3,8 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Novo Ticket Prioriedade', 
-            'routeUrl' => route('ticket_prioriedade.store'), 
+            'title' => 'Novo Ticket Prioridade', 
+            'routeUrl' => route('ticket_prioridade.store'), 
             'method' => 'POST',
             'formButtons' => [
                 ['type' => 'submit', 'label' => 'Salvar', 'icon' => 'check'],
@@ -17,7 +17,7 @@
                         [
                             'type' => 'text',
                             'field' => 'descricao',
-                            'label' => 'Ticket Prioriedade',
+                            'label' => 'Ticket Prioridade',
                             'required' => true,
                             'autofocus' => true
                         ]

@@ -68,7 +68,8 @@ return [
             'movimentacao_credito' => 'c,r,u,d',
             'posto-abastecimento' => 'c,r,u,d',
             'veiculo-status' => 'c,r,u,d',
-            'ticket_prioriedade'  => 'c,r,u,d',
+            'ticket_prioridade'  => 'c,r,u,d',
+            'ticket_status'  => 'c,r,u,d',
             
             
             

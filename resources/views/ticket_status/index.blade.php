@@ -3,10 +3,10 @@
 @section('content')
     @component('components.table', [
         'captions' => $fields, 
-        'rows' => $ticket_prioriedade, 
-        'model' => 'ticket_prioriedade',
-        'tableTitle' => 'Ticket Prioriedade ',
-        'displayField' => 'ticket_prioriedade',
+        'rows' => $ticket_status, 
+        'model' => 'ticket_status',
+        'tableTitle' => 'Ticket Status ',
+        'displayField' => 'ticket_status',
         'actions' => ['edit', 'destroy']
         ]);
     @endcomponent

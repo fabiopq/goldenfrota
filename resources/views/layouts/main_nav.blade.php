@@ -56,9 +56,13 @@
                         <a class="dropdown-item dropdown-toggle" href="#">Ticket</a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-submenu">
-                                @permission('listar-ticket-prioriedade') 
-                                <li><a class="dropdown-item" href="{{route('ticket_prioriedade.index')}}">Ticket Prioriedade</a></li>
-                               @endpermission 
+                                @permission('listar-ticket-prioridade') 
+                                <li><a class="dropdown-item" href="{{route('ticket_prioridade.index')}}">Ticket Prioridade</a></li>
+                                @endpermission 
+                                @permission('listar-ticket-status') 
+                                <li><a class="dropdown-item" href="{{route('ticket_status.index')}}">Ticket Status</a></li>
+                                @endpermission 
+
                             </li>
                         </ul>
                     </li>

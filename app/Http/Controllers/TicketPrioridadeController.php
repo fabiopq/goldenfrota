@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\TicketPrioriedade;
+use App\TicketPrioridade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-class TicketPrioriedadeController extends Controller
+class TicketPrioridadeController extends Controller
 {
     public $fields = array(
         'id' => 'ID',
-        'descricao' => 'Prioriedade',
+        'descricao' => 'Prioridade',
         'ativo' => ['label' => 'Ativo', 'type' => 'bool']
     );
 
@@ -22,14 +22,14 @@ class TicketPrioriedadeController extends Controller
      */
     public function index(Request $request)
     {
-        if (Auth::user()->canListarTicketPrioriedade()) {
+        if (Auth::user()->canListarTicketPrioridade()) {
             if (isset($request->searchField)) {
-                $ticket_prioriedade = TicketPrioriedade::where('descricao', 'like', '%' . $request->searchField . '%')->paginate();
+                $ticket_prioridade = TicketPrioridade::where('descricao', 'like', '%' . $request->searchField . '%')->paginate();
             } else {
-                $ticket_prioriedade = TicketPrioriedade::paginate();
+                $ticket_prioridade = TicketPrioridade::paginate();
             }
-            return View('ticket_prioriedade.index', [
-                'ticket_prioriedade' => $ticket_prioriedade,
+            return View('ticket_prioridade.index', [
+                'ticket_prioridade' => $ticket_prioridade,
                 'fields' => $this->fields
             ]);
         } else {
@@ -45,8 +45,8 @@ class TicketPrioriedadeController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->canCadastrarTicketPrioriedade()) {
-            return View('ticket_prioriedade.create');
+        if (Auth::user()->canCadastrarTicketPrioridade()) {
+            return View('ticket_prioridade.create');
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();
@@ -62,7 +62,7 @@ class TicketPrioriedadeController extends Controller
     public function store(Request $request)
     {
       
-        if (Auth::user()->canCadastrarTicketPrioriedade()) {
+        if (Auth::user()->canCadastrarTicketPrioridade()) {
             
             $this->validate($request, [
                 //'tickets_prioridade_id' => 'required|integer|min:1',
@@ -70,15 +70,15 @@ class TicketPrioriedadeController extends Controller
                 
             ]);
             try {
-                $ticket_prioriedade = new TicketPrioriedade($request->all());
+                $ticket_prioridade = new TicketPrioridade($request->all());
                 
-                if ($ticket_prioriedade->save()) {
+                if ($ticket_prioridade->save()) {
                     Session::flash('success', __('messages.create_success', [
-                        'model' => __('models.ticket_prioriedade'),
-                        'name' => $ticket_prioriedade->descricao
+                        'model' => __('models.ticket_prioridade'),
+                        'name' => $ticket_prioridade->descricao
                     ]));
 
-                    return redirect()->action('TicketPrioriedadeController@index');
+                    return redirect()->action('TicketPrioridadeController@index');
                 }
             } catch (\Exception $e) {
                 Session::flash('error', __('messages.exception', [
@@ -98,13 +98,13 @@ class TicketPrioriedadeController extends Controller
      * @param  \App\TipoBomba  $tipoBomba
      * @return \Illuminate\Http\Response
      */
-    public function edit(TicketPrioriedade $ticketPrioriedade)
+    public function edit(TicketPrioridade $ticketPrioridade)
     {
         
         
-        if (Auth::user()->canAlterarTicketPrioriedade()) {
-            return View('ticket_prioriedade.edit', [
-                'ticket_prioriedade' => $ticketPrioriedade
+        if (Auth::user()->canAlterarTicketPrioridade()) {
+            return View('ticket_prioridade.edit', [
+                'ticket_prioridade' => $ticketPrioridade
             ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
@@ -119,10 +119,10 @@ class TicketPrioriedadeController extends Controller
      * @param  \App\TipoBomba  $tipoBomba
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TicketPrioriedade $ticketPrioridade)
+    public function update(Request $request, TicketPrioridade $ticketPrioridade)
     {
         
-        if (Auth::user()->canAlterarTicketPrioriedade()) {
+        if (Auth::user()->canAlterarTicketPrioridade()) {
            // $this->validate($request, [
            //     'descricao' => 'required|string|unique:ticket_prioridade,id,' . $ticketPrioridade->id
            // ]);
@@ -133,11 +133,11 @@ class TicketPrioriedadeController extends Controller
            
                 if ($ticketPrioridade->save()) {
                     Session::flash('success', __('messages.update_success', [
-                        'model' => __('models.ticket_prioriedade'),
+                        'model' => __('models.ticket_prioridade'),
                         'name' => $ticketPrioridade->descricao
                     ]));
 
-                    return redirect()->action('TicketPrioriedadeController@index');
+                    return redirect()->action('TicketPrioridadeController@index');
                 }
             } catch (\Exception $e) {
                 Session::flash('error', __('messages.exception', [
@@ -158,17 +158,17 @@ class TicketPrioriedadeController extends Controller
      * @param  \App\TipoBomba  $tipoBomba
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TicketPrioriedade $ticketPrioridade)
+    public function destroy(TicketPrioridade $ticketPrioridade)
     {
-        if (Auth::user()->canAlterarTicketPrioriedade()) {
+        if (Auth::user()->canAlterarTicketPrioridade()) {
             try {
                 if ($ticketPrioridade->delete()) {
                     Session::flash('success', __('messages.delete_success', [
-                        'model' => __('models.ticket_prioriedade'),
+                        'model' => __('models.ticket_prioridade'),
                         'name' => $ticketPrioridade->descricao
                     ]));
 
-                    return redirect()->action('TicketPrioriedadeController@index');
+                    return redirect()->action('TicketPrioridadeController@index');
                 }
             } catch (\Exception $e) {
                 switch ($e->getCode()) {
@@ -181,7 +181,7 @@ class TicketPrioriedadeController extends Controller
                         ]));
                         break;
                 }
-                return redirect()->action('TicketPrioriedadeController@index');
+                return redirect()->action('TicketPrioridadeController@index');
             }
         } else {
             Session::flash('error', __('messages.access_denied'));

@@ -3,8 +3,8 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Alterar Ticket Prioriedade', 
-            'routeUrl' => route('ticket_prioriedade.update', $ticket_prioriedade->id), 
+            'title' => 'Alterar Ticket Prioridade', 
+            'routeUrl' => route('ticket_prioridade.update', $ticket_prioridade->id), 
             'method' => 'PUT',
             'formButtons' => [
                 ['type' => 'submit', 'label' => 'Salvar', 'icon' => 'check'],
@@ -17,10 +17,10 @@
                         [
                             'type' => 'text',
                             'field' => 'descricao',
-                            'label' => 'Ticket Prioriedade',
+                            'label' => 'Ticket Prioridade',
                             'required' => true,
                             'autofocus' => true,
-                            'inputValue' => $ticket_prioriedade->descricao,
+                            'inputValue' => $ticket_prioridade->descricao,
                             'inputSize' => 7
                         ],
                         [
@@ -28,7 +28,7 @@
                             'field' => 'ativo',
                             'label' => 'Ativo',
                             'inputSize' => 1,
-                            'indexSelected' => $ticket_prioriedade->ativo,
+                            'indexSelected' => $ticket_prioridade->ativo,
                             'items' => Array('Não', 'Sim'),
                         ]
                     ]
