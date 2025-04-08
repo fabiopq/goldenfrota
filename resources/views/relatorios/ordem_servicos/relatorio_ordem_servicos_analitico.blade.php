@@ -51,7 +51,7 @@
                                 <td align="left"></td>
                                 @endif
                                 <td align="left"><b>Número da O.S: {{$ordemservico->id}} </b></td>
-                                <td align="right"><b>Placa: {{$ordemservico->placa}} </b></td>
+                                <td align="right"><b>Placa:        {{$ordemservico->placa}} </b></td>
                                 <td align="right"><b>Odômetro / Horímetro: {{number_format($ordemservico->km_veiculo,0, ',', '.')}} </b></td>
                                
                                

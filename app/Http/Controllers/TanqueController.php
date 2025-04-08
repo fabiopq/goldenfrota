@@ -237,16 +237,18 @@ class TanqueController extends Controller
              
 
         $graficos = array();
+       
          foreach ($tanques as $tanque) {
-           /*
+           
             $graficos[] = Charts::create('percentage', 'justgage')
                 ->title($tanque->descricao_tanque . ' (' . $tanque->descricao . ')')
                 ->elementLabel('Litros')
                 ->values([$this->getPosicaoEstoque($tanque), 0, $tanque->capacidade])
                 ->responsive(false)
                 ->height(250);
-                */
+                
             //->width(0);
+            
         }
         return view('chart', compact('labels', 'data'));
        // return View('relatorios.tanques.posicao_tanques')->withTitulo('Posição de Estoque - Tanques')->withGraficos($graficos);

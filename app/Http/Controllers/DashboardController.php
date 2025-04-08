@@ -326,10 +326,10 @@ class DashboardController extends Controller
         foreach ($oss as $os) {
             $daysAgo = (new \Datetime())->diff((new \DateTime($os->created_at)))->format("%a");
             $result[] = [
-                'id' => $os->id,
-                'veiculo' => $os->veiculo->placa,
+                'id' => $os->id ?? '',
+                'veiculo' => $os->veiculo->placa ?? '',
                 'usuario' => $os->user->name ?? '',
-                'dias_em_aberto' => $daysAgo
+                'dias_em_aberto' => $daysAgo ?? ''
             ];
         }
 

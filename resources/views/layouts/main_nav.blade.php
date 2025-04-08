@@ -51,6 +51,17 @@
                             </li>
                         </ul>
                     </li>
+                    {{--  Ticket  --}}
+                    <li>
+                        <a class="dropdown-item dropdown-toggle" href="#">Ticket</a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                @permission('listar-ticket-prioriedade') 
+                                <li><a class="dropdown-item" href="{{route('ticket_prioriedade.index')}}">Ticket Prioriedade</a></li>
+                               @endpermission 
+                            </li>
+                        </ul>
+                    </li>
                     {{--  Controle de Acesso  --}}
                     <li>
                         <a class="dropdown-item dropdown-toggle" href="#">Controle de Acesso</a>

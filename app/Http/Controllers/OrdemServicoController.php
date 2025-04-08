@@ -53,7 +53,7 @@ class OrdemServicoController extends Controller
     {
 
         if (Auth::user()->canListarOrdemServico()) {
-            log::debug('ordem_servico_status_id '.$request->ordem_servico_status_id);
+            //log::debug('ordem_servico_status_id '.$request->ordem_servico_status_id);
             $data_inicial = isset($request->data_inicial) ? ($request->data_inicial) : date('01/m/Y');
             $data_final = isset($request->data_final) ? ($request->data_final) : date('t/m/Y');
             $ordem_servico_status_id = isset($request->ordem_servico_status_id) ? $request->ordem_servico_status_id : -1;

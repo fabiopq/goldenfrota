@@ -1521,7 +1521,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->media_veiculo = 0;
             }
 
-
+            Log::debug('Abastecimento recebido na api: '.$abastecimento);
 
 
             if ($abastecimento->save()) {

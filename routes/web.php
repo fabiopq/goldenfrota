@@ -33,6 +33,7 @@ Route::middleware(['auth:web'])->group(function () {
 
     Route::resource('/tipo_bomba', 'TipoBombaController')->except('show');
     Route::resource('/modelo_bomba', 'ModeloBombaController')->except('show');
+    Route::resource('/ticket_prioriedade', 'TicketPrioriedadeController')->except('show');
     Route::resource('/tanque', 'TanqueController')->except('show');
     Route::resource('/bomba', 'BombaController')->except('show');
     Route::resource('/user', 'UserController')->except('show');

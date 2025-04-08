@@ -168,6 +168,8 @@
 
                             @if (old('veiculo_id'))
                                 $('#veiculo_id').selectpicker('val', {{ old('veiculo_id') }});
+                            @else
+                                $('#veiculo_id').selectpicker('val', {{ $ordemServico->veiculo_id }});
                             @endif
 
                             $('.selectpicker').selectpicker('refresh');

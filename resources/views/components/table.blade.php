@@ -57,6 +57,8 @@
 
 
                 <div class="col-auto">
+         
+                    
                     @permission('cadastrar-' . str_replace('_', '-', $model))
                         @if (Route::has($model . '.create'))
                             <a href="{{ route($model . '.create') }}" class="btn   btn-success" data-toggle="tooltip"

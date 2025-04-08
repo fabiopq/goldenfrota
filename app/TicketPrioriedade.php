@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TicketPrioridade extends Model
+class TicketPrioriedade extends Model
 {
     protected $table = 'ticket_prioridade';
 
