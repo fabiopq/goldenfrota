@@ -19,8 +19,7 @@ class AlterOrdemServicosDropVeiculoIdForeignKeyVeiculo extends Migration
         ALTER TABLE ordem_servicos DROP FOREIGN KEY ordem_servicos_veiculo_id_foreign;
      ');
         Schema::table('ordem_servicos', function (Blueprint $table) {
-
-            //$table->dropUnique('DROP FOREIGN KEY ordem_servicos_veiculo_id_foreign');
+           
             $table->integer('veiculo_id')->nullable()->change();
         });
     }

@@ -94,6 +94,17 @@
                             </li>
                         </ul>
                     </li>
+                     {{--  Preços  --}}
+                     <li>
+                        <a class="dropdown-item dropdown-toggle" href="#">Preços</a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                @permission('listar-preco-cliente')
+                                <li><a class="dropdown-item" href="{{route('preco_cliente.index')}}">Preço x Cliente</a></li>
+                                @endpermission
+                            </li>
+                        </ul>
+                    </li>
                     {{--  Parametros  --}}
                     <div class="dropdown-divider"></div>
                     <li><a class="dropdown-item" href="{{route('parametro.create')}}">Parâmetros</a></li>

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
@@ -22,7 +23,9 @@
                             'inputSize' => 4,
                             'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
                             'sideBySide' => true,
-                            'inputValue' => date('d/m/Y H:i:s')
+                            'inputValue' => date('d/m/Y H:i'),
+                            
+                            
                         ],
                         [
                             'type' => 'select',
@@ -71,7 +74,8 @@
                             'field' => 'km_veiculo',
                             'label' => 'KM do Veículo',
                             'required' => true,
-                            'inputSize' => 4
+                            'inputSize' => 4,
+                            'inputValue' => 0,
                         ]
                     ]
                 ])
@@ -256,9 +260,34 @@ function CalcValorAbastecimento() {
                     $("#combustivel_descricao").val(data.tanque.combustivel.descricao);
                     $("#valor_litro").val(data.tanque.combustivel.valor);
                     $("#volume_abastecimento").focus();
+                    let cliente_id = $('#cliente_id').val();
+                    let combustivel_id = data.tanque.combustivel.id;
+                    if (cliente_id && combustivel_id) {
+                        
+                        
+                        
+                        $.ajax({
+                            url: '{{ route("preco-cliente-item.valor") }}', // você vai criar essa rota
+                            type: 'POST',
+                            data: {
+                                _token: $('input[name="_token"]').val(),
+                                cliente_id: cliente_id,
+                                combustivel_id: combustivel_id
+                            },
+                            dataType: 'JSON',
+                            success: function(res) {
+                                if (res.valor_unitario !== undefined) {
+                                    $("#valor_litro").val(res.valor_unitario);
+                                } else {
+                                    $("#valor_litro").val(data.tanque.combustivel.valor); // fallback
+                                }
+                                $('#volume_abastecimento').focus();
+                            }
+                        });
+                    }
+                   
 
-
-                    $('.selectpicker').selectpicker('refresh');
+                   
                 },
                 error: function (data) {
                 }

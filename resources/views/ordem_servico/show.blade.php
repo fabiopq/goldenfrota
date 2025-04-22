@@ -31,15 +31,27 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
-            <div class="col col-sm-5 col-md-5 col-lg-5">
+            <div class="col col-sm-6 col-md-6 col-lg-6">
                 <div class="card nf-panel">
                     <label for="#cliente" class="nf-label">Cliente:</label>
                     <div id="cliente">{{ isset($ordemServico->cliente_id) ? $ordemServico->cliente_id : '' }} -
                         {{ $ordemServico->cliente->nome_razao }}</div>
                 </div>
             </div>
-            <div class="col col-sm-3 col-md-3 col-lg-3">
+            <div class="col col-sm-6 col-md-6 col-lg-6">
+                <div class="card nf-panel">
+                    <label for="#cliente" class="nf-label">Cpf / Cnpj:</label>
+                    <div id="cliente">{{ isset($ordemServico->cliente->cpf_cnpj) ? $ordemServico->cliente->cpf_cnpj : '' }} 
+                        </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="row">
+            
+            <div class="col col-sm-5 col-md-5 col-lg-5">
                 <div class="card nf-panel">
                     <label for="#departamento" class="nf-label">Departamento:</label>
                     <div id="departamento">
@@ -47,19 +59,21 @@
                     </div>
                 </div>
             </div>
-            <div class="col col-sm-2 col-md-2 col-lg-2">
+            <div class="col col-sm-4 col-md-4 col-lg-4">
                 <div class="card nf-panel">
                     <label for="#veiculo" class="nf-label">Veículo:</label>
                     <div id="veiculo">{{ isset($ordemServico->veiculo->placa) ? $ordemServico->veiculo->placa : 'Não Informado' }}
                     </div>
                 </div>
             </div>
-            <div class="col col-sm-2 col-md-2 col-lg-2">
+            <div class="col col-sm-3 col-md-3 col-lg-3">
                 <div class="card nf-panel">
                     <label for="#km_atual" class="nf-label">Odômetro / Horímetro:</label>
                     <div id="km_atual">{{ $ordemServico->km_veiculo }}</div>
                 </div>
             </div>
+            
+           
         </div>
         {{--  Serviços  --}}
         <div class="row" align="center">
@@ -238,6 +252,7 @@
                     <label for="#obs" class="nf-label"><strong>Problema Relatado:</strong> </label>
                     <div id="obs">{!! $ordemServico->obs ? $ordemServico->defeito : '&nbsp;' !!}</div>
                 </div>
+                
                 <div class="card nf-panel">
                     <label for="#obs" class="nf-label"><strong>Atividades Realizadas:</strong></label>
                     <div id="obs">{!! $ordemServico->obs ? $ordemServico->obs : '&nbsp;' !!}</div>

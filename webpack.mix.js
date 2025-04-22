@@ -29,7 +29,9 @@ mix.js('resources/js/app.js', 'public/js')
    .js('resources/js/osservico.js', 'public/js')
    .js('resources/js/os.js', 'public/js')
    .js('resources/js/dashboard.js', 'public/js')
+   .js('resources/js/precocliente.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
    .sass('resources/sass/report.scss', 'public/css')
    .sass('resources/sass/login.scss', 'public/css')
    .version();
+  

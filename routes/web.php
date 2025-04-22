@@ -58,6 +58,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::resource('/parametro', 'ParametroController')->except('show');
 
 
+
     Route::resource('/tipo_movimentacao_produto', 'TipoMovimentacaoProdutoController')->except('show');
     Route::resource('/entrada_estoque', 'EntradaEstoqueController');
     Route::resource('/entrada_tanque', 'EntradaTanqueController');
@@ -66,6 +67,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::resource('/posicao_pneu', 'PosicaoPneuController')->except(['show']);
     Route::resource('/servico', 'ServicoController')->except(['show']);
     Route::resource('/ordem_servico', 'OrdemServicoController');
+    Route::resource('/preco_cliente', 'PrecoClienteController')->except('show');
     //Route::post('/ordem_servico/fechar/{id}', [OrdemServicoController::class, 'fechar'])->name('ordem_servico.fechar');
 
     //Route::post('/ordem_servico_fechar', 'OrdemServicoController@fechar')->name('ordem_servico.fechar');
@@ -224,6 +226,9 @@ Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades
 Route::post('grupo_produtos/json', 'GrupoProdutoController@getGrupoProdutosJson')->name('grupo_produtos.json');  
 Route::post('grupo_veiculos/json', 'GrupoVeiculoController@getGrupoVeiculosJson')->name('grupo_veiculos.json'); 
 Route::post('marca_veiculos/json', 'MarcaVeiculoController@getMarcaVeiculosJson')->name('marca_veiculos.json'); 
+Route::post('/preco-cliente-item/valor', 'PrecoClienteController@getValorUnitario')->name('preco-cliente-item.valor');
+
+
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
 

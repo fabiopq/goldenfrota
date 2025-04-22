@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1688,10 +1688,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js":
-/*!************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js ***!
-  \************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PrecoClienteItems.vue?vue&type=script&lang=js":
+/*!***************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PrecoClienteItems.vue?vue&type=script&lang=js ***!
+  \***************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1700,194 +1700,110 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modal_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modal.vue */ "./resources/js/components/modal.vue");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'entrada_combustivel',
   components: {
-    'vue-modal': _modal_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+    modal: _modal_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ['oldData', 'estoques', 'oldEstoqueId', 'estoqueError'],
   data: function data() {
     return {
       editing: false,
       editingIndex: false,
       items: [],
-      quantidade: 1,
-      desconto: 0,
-      acrescimo: 0,
+      combustivel_id: false,
       valorUnitario: 0,
+      percDesconto: 0,
+      percAcrescimo: 0,
       isModalVisible: false,
       deleteIndex: false,
-      produtosDisponiveis: [],
-      produtosSelecionados: [],
-      produtosData: [],
-      loadOldDataFlag: true,
+      combustiveisDisponiveis: [],
+      combustiveisSelecionados: [],
       errors: {
-        inputProdutos: false,
-        inputProdutosMsg: '',
-        inputQuantidade: false,
-        inputQuantidadeMsg: '',
+        inputCombustiveis: false,
+        inputCombustiveisMsg: '',
         inputValorUnitario: false,
-        inputValorUnitariodeMsg: '',
-        inputDesconto: false,
-        inputDescontoMsg: '',
-        inputAcrescimo: false,
-        inputAcrescimoMsg: '',
-        estoqueId: false,
-        estoqueIdMsg: ''
-      },
-      _produto_id: false,
-      get produto_id() {
-        return this._produto_id;
-      },
-      set produto_id(value) {
-        this._produto_id = value;
-      },
-      _estoqueId: null,
-      get estoqueId() {
-        return this._estoqueId;
-      },
-      set estoqueId(value) {
-        this._estoqueId = value;
+        inputPercAcrescimo: false,
+        inputPercDesconto: false,
+        inputValorUnitariodeMsg: ''
       }
     };
   },
+  props: ['combustiveisData', 'oldData'],
   watch: {
     oldData: function oldData() {
       this.$refs.confirmDelete;
     },
-    estoqueId: function estoqueId() {
-      this.getProdutos();
-    },
-    produto_id: function produto_id() {
-      var _this = this;
-      if (!this.editing) {
-        //this.valor_unitario = this.getProdutoById(this.produto_id).valor_venda;
-        var prod = this.produtosData.find(function (p) {
-          return p.id === _this.produto_id;
-        });
-        if (prod != undefined) {
-          this.valorUnitario = prod.valor_venda;
-        }
+    valorUnitario: function valorUnitario(newVal) {
+      if (newVal > 0) {
+        this.percDesconto = 0;
+        this.percAcrescimo = 0;
       }
-      //this.calcTotalProdutoItem();
-    } /* ,
-      produto_id: function() {
-         let prod = this.produtosData.find(p => p.id === this.produto_id);
-         if (prod != undefined) {
-             this.valorUnitario = prod.valor_venda;
-         }
-      } */
+    },
+    percDesconto: function percDesconto(newVal) {
+      if (newVal > 0) {
+        this.valorUnitario = 0;
+        this.percAcrescimo = 0;
+      }
+    },
+    percAcrescimo: function percAcrescimo(newVal) {
+      if (newVal > 0) {
+        this.valorUnitario = 0;
+        this.percDesconto = 0;
+      }
+    }
   },
   computed: {
-    estoque_id: {
-      get: function get() {
-        return this.estoqueId;
-      },
-      set: function set(value) {
-        this.estoqueId = value;
-      }
-    },
-    valor_total: {
-      get: function get() {
-        var total = 0;
-        for (var i = 0; i < this.items.length; i++) {
-          total += this.items[i].quantidade * this.items[i].valor_unitario;
-        }
-        return total;
-      }
-    },
-    /* valorUnitario: {
-        get() {
-            return this.getProdutoById(this.produto_id).valor_venda;
-        }
-    }, */
-    produtosDisponiveisOrdenados: function produtosDisponiveisOrdenados() {
+    combustiveisDisponiveisOrdenados: function combustiveisDisponiveisOrdenados() {
       function compare(a, b) {
-        if (a.produto_descricao < b.produto_descricao) return -1;
-        if (a.produto_descricao > b.produto_descricao) return 1;
+        if (a.combustivel < b.combustivel) return -1;
+        if (a.combustivel > b.combustivel) return 1;
         return 0;
       }
-      return this.produtosDisponiveis.sort(compare);
+      return this.combustiveisDisponiveis.sort(compare);
     }
   },
   mounted: function mounted() {
-    if (this.oldEstoqueId !== null) {
-      this.estoqueId = this.oldEstoqueId.estoque_id;
-      this.getProdutos();
-    }
-    if (this.estoqueError !== null) {
-      this.errors.estoqueId = true;
-      this.errors.estoqueIdMsg = this.estoqueError.msg;
-    } else {
-      this.errors.estoqueId = false;
-      this.errors.estoqueIdMsg = '';
+    this.combustiveisDisponiveis = this.combustiveisData;
+    if (this.oldData !== null) {
+      for (var i = 0; i < this.oldData.length; i++) {
+        this.items.push({
+          'id': this.oldData[i].combustivel_id,
+          'combustivel': this.getCombustivelById(this.oldData[i].combustivel_id).combustivel,
+          'valor_unitario': Number(this.oldData[i].valor_unitario),
+          'perc_desconto': Number(this.oldData[i].perc_desconto),
+          'perc_acrescimo': Number(this.oldData[i].perc_acrescimo)
+        });
+        this.incluirEntrada(this.oldData[i].combustivel_id);
+      }
     }
   },
   updated: function updated() {
-    $(this.$refs.inputProdutos).selectpicker('refresh');
-    $(this.$refs.estoqueId).selectpicker('refresh');
+    $(this.$refs.inputCombustiveis).selectpicker('refresh');
   },
   methods: {
-    getProdutos: function getProdutos() {
-      var self = this;
-      if (this.estoqueId !== null && this.estoqueId !== 'false') {
-        axios.get('/produtos_estoque/' + this.estoqueId + '/json').then(function (response) {
-          self.produtosDisponiveis = response.data;
-          self.produtosData = response.data;
-          self.loadOldData();
-        });
-      }
-    },
-    loadOldData: function loadOldData() {
-      if (this.oldData !== null && this.loadOldDataFlag == true) {
-        this.loadOldDataFlag = false;
-        for (var i = 0; i < this.oldData.length; i++) {
-          this.items.push({
-            'id': this.oldData[i].produto_id,
-            'produto_descricao': this.getProdutoById(this.oldData[i].produto_id).produto_descricao,
-            'quantidade': Number(this.oldData[i].quantidade),
-            'valor_unitario': Number(this.oldData[i].valor_unitario),
-            'valor_desconto': Number(this.oldData[i].valor_desconto),
-            'valor_acrescimo': Number(this.oldData[i].valor_acrescimo)
-          });
-          this.incluirProduto(this.oldData[i].produto_id);
-        }
-      }
-    },
-    truncDecimal: function truncDecimal(value, n) {
-      x = (value.toString() + ".0").split(".");
-      return parseFloat(x[0] + "," + x[1].substr(0, n));
-    },
     validarItem: function validarItem() {
-      if (this.produto_id == '' || this.produto_id <= 0) {
-        this.errors.inputProdutos = true;
-        this.errors.inputProdutosMsg = 'Nenhum Produto selecionado.';
+      if (this.combustivel_id == '' || this.combustivel_id <= 0) {
+        this.errors.inputCombustiveis = true;
+        this.errors.inputCombustiveisMsg = 'Nenhum Combustivel selecionado.';
         return false;
       } else {
-        this.errors.inputProdutos = false;
-        this.errors.inputProdutosMsg = '';
+        this.errors.inputCombustiveis = false;
+        this.errors.inputCombustiveisMsg = '';
       }
-      if (this.quantidade == '' || this.quantidade <= 0) {
-        this.errors.inputQuantidade = true;
-        this.errors.inputQuantidadeMsg = 'Informe a quantidade do produto.';
-        return false;
-      } else {
-        if (!this.getEstoqueById(this.estoqueId).permite_estoque_negativo) {
-          var posicao_estoque_produto = this.getProdutoById(this.produto_id).posicao_estoque;
-          if (this.quantidade > posicao_estoque_produto) {
-            this.errors.inputQuantidade = true;
-            this.errors.inputQuantidadeMsg = 'Quantidade informada execede saldo em estoque (' + this.truncDecimal(posicao_estoque_produto, 3) + ').';
-            return false;
-          }
-        }
-        this.errors.inputQuantidade = false;
-        this.errors.inputQuantidadeMsg = '';
-      }
-      if (this.valorUnitario == '' || this.valorUnitario <= 0) {
+      if ((!this.valorUnitario || this.valorUnitario <= 0) && (!this.percDesconto || this.percDesconto <= 0) && (!this.percAcrescimo || this.percAcrescimo <= 0)) {
         this.errors.inputValorUnitario = true;
-        this.errors.inputValorUnitarioMsg = 'Informe o Valor Unitário do produto.';
+        this.errors.inputValorUnitarioMsg = 'Preencha pelo menos um dos campos: Valor Unitário, % Desconto ou % Acréscimo.';
+        this.errors.inputPercDesconto = true;
+        this.errors.inputPercDescontoMsg = '';
+        this.errors.inputPercAcrescimo = true;
+        this.errors.inputPercAcrescimoMsg = '';
         return false;
       } else {
         this.errors.inputValorUnitario = false;
         this.errors.inputValorUnitarioMsg = '';
+        this.errors.inputPercDesconto = false;
+        this.errors.inputPercDescontoMsg = '';
+        this.errors.inputPercAcrescimo = false;
+        this.errors.inputPercAcrescimoMsg = '';
       }
       return true;
     },
@@ -1897,143 +1813,100 @@ __webpack_require__.r(__webpack_exports__);
     cancelDelete: function cancelDelete(index) {
       this.deleteIndex = false;
     },
-    addProduto: function addProduto() {
+    addEntrada: function addEntrada() {
       if (this.validarItem()) {
         this.items.push({
-          'id': this.produto_id,
-          'produto_descricao': this.getProdutoById(this.produto_id).produto_descricao,
-          'quantidade': this.quantidade,
+          'id': this.combustivel_id,
+          'combustivel': this.getCombustivelById(this.combustivel_id).combustivel,
           'valor_unitario': this.valorUnitario,
-          'valor_desconto': this.desconto,
-          'valor_acrescimo': this.acrescimo
+          'perc_desconto': this.percDesconto,
+          'perc_acrescimo': this.percAcrescimo
         });
-        this.incluirProduto(this.produto_id);
+        this.incluirEntrada(this.combustivel_id);
         this.limparFormulario();
       }
     },
     editItem: function editItem(index) {
       var item = this.items[index];
-      this.quantidade = item.quantidade;
       this.valorUnitario = item.valor_unitario;
-      this.desconto = item.valor_desconto;
-      this.acrescimo = item.valor_acrescimo;
-      this.produto_id = item.id;
+      this.combustivel_id = item.id;
+      this.percAcrescimo = item.perc_acrescimo;
+      this.percDesconto = item.perc_desconto;
       this.editing = true;
       this.editingIndex = index;
-      this.produtosDisponiveis.push(item);
+      this.combustiveisDisponiveis.push(item);
     },
-    updateProduto: function updateProduto() {
+    updateEntrada: function updateEntrada() {
       this.items[this.editingIndex] = {
-        'id': this.produto_id,
-        'produto_descricao': this.getProdutoById(this.produto_id).produto_descricao,
-        'quantidade': this.quantidade,
+        'id': this.combustivel_id,
+        'combustivel': this.getCombustivelById(this.combustivel_id).combustivel,
         'valor_unitario': this.valorUnitario,
-        'valor_desconto': this.desconto,
-        'valor_acrescimo': this.acrescimo
+        'perc_desconto': this.percDesconto,
+        'perc_acrescimo': this.percAcrescimo
       };
       this.editing = false;
       this.editingIndex = false;
       this.limparFormulario();
-      this.$delete(this.produtosDisponiveis, this.getProdutoIndexById(this.produto_id));
+      this.$delete(this.combustiveisDisponiveis, this.getCombustivelIndexById(this.combustivel_id));
     },
     deleteItem: function deleteItem() {
-      this.removerProduto(this.items[this.deleteIndex].id);
+      this.removerEntrada(this.items[this.deleteIndex].id);
       this.$delete(this.items, this.deleteIndex);
     },
     limparFormulario: function limparFormulario() {
-      this.produto_id = false;
       this.produtoSelecionado = false;
-      this.quantidade = 1;
       this.valorUnitario = 0;
-      this.desconto = 0;
-      this.acrescimo = 0;
-      this.$refs.inputProdutos.focus();
+      this.percDesconto = 0;
+      this.percAcrescimo = 0;
+      this.$refs.inputCombustiveis.focus();
     },
-    totalQuantidade: function totalQuantidade() {
+    getCombustivelById: function getCombustivelById(id) {
       var result = 0;
-      for (var i = 0; i < this.items.length; i++) {
-        result += this.items[i].quantidade;
-      }
-      return result;
-    },
-    totalValor: function totalValor() {
-      var result = 0;
-      for (var i = 0; i < this.items.length; i++) {
-        result += this.items[i].valor_unitario;
-      }
-      return result;
-    },
-    totalDesconto: function totalDesconto() {
-      var result = 0;
-      for (var i = 0; i < this.items.length; i++) {
-        result += this.items[i].valor_desconto;
-      }
-      return result;
-    },
-    totalAcrescimo: function totalAcrescimo() {
-      var result = 0;
-      for (var i = 0; i < this.items.length; i++) {
-        result += this.items[i].valor_acrescimo;
-      }
-      return result;
-    },
-    getProdutoById: function getProdutoById(id) {
-      var result = 0;
-      for (var i = 0; i < this.produtosData.length; i++) {
-        if (this.produtosData[i].id == id) {
-          result = this.produtosData[i];
+      for (var i = 0; i < this.combustiveisData.length; i++) {
+        if (this.combustiveisData[i].id == id) {
+          result = this.combustiveisData[i];
           break;
         }
       }
       return result;
     },
-    getEstoqueById: function getEstoqueById(id) {
+    getCombustivelIndexById: function getCombustivelIndexById(id) {
       var result = 0;
-      for (var i = 0; i < this.estoques.length; i++) {
-        if (this.estoques[i].id == id) {
-          result = this.estoques[i];
-          break;
-        }
-      }
-      return result;
-    },
-    getProdutoIndexById: function getProdutoIndexById(id) {
-      var result = 0;
-      for (var i = 0; i < this.produtosData.length; i++) {
-        if (this.produtosData[i].id == id) {
+      for (var i = 0; i < this.combustiveisData.length; i++) {
+        if (this.combustiveisData[i].id == id) {
           result = i;
           break;
         }
       }
       return result;
     },
-    getProdutoSelecionadoById: function getProdutoSelecionadoById(id) {
+    getCombustivelSelecionadoById: function getCombustivelSelecionadoById(id) {
       var result = 0;
-      for (var i = 0; i < this.produtosSelecionados.length; i++) {
-        if (this.produtosSelecionados[i].id == id) {
-          result = this.produtosSelecionados[i];
+      for (var i = 0; i < this.combustiveisSelecionados.length; i++) {
+        if (this.combustiveisSelecionados[i].id == id) {
+          result = this.combustiveisSelecionados[i];
           break;
         }
       }
       return result;
     },
-    getProdutoSelecionadoIndexById: function getProdutoSelecionadoIndexById(id) {
+    getCombustivelSelecionadoIndexById: function getCombustivelSelecionadoIndexById(id) {
       var result = 0;
-      for (var i = 0; i < this.produtosSelecionados.length; i++) {
-        if (this.produtosSelecionados[i].id == id) {
+      for (var i = 0; i < this.combustiveisSelecionados.length; i++) {
+        if (this.combustiveisSelecionados[i].id == id) {
           result = i;
           break;
         }
       }
       return result;
     },
-    incluirProduto: function incluirProduto(id) {
-      this.produtosSelecionados.push(this.getProdutoById(id));
-      this.$delete(this.produtosDisponiveis, this.getProdutoIndexById(id));
+    incluirEntrada: function incluirEntrada(id) {
+      this.combustiveisSelecionados.push(this.getCombustivelById(id));
+      this.$delete(this.combustiveisDisponiveis, this.getCombustivelIndexById(id));
     },
-    removerProduto: function removerProduto(id) {
-      this.produtosDisponiveis.push(this.getProdutoSelecionadoById(id));
-      this.$delete(this.produtosSelecionados, this.getProdutoSelecionadoIndexById(id));
+    removerEntrada: function removerEntrada(id) {
+      this.combustiveisDisponiveis.push(this.getCombustivelSelecionadoById(id));
+      this.$delete(this.combustiveisSelecionados, this.getCombustivelSelecionadoIndexById(id));
     }
   }
 });
@@ -2122,10 +1995,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0":
-/*!**********************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0 ***!
-  \**********************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PrecoClienteItems.vue?vue&type=template&id=7e00f07a":
+/*!*************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PrecoClienteItems.vue?vue&type=template&id=7e00f07a ***!
+  \*************************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2137,100 +2010,6 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "form-group"
-  }, [_c("div", {
-    staticClass: "row"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.estoque_id,
-      expression: "estoque_id"
-    }],
-    attrs: {
-      type: "hidden",
-      name: "estoque_id"
-    },
-    domProps: {
-      value: _vm.estoque_id
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.estoque_id = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.valor_total,
-      expression: "valor_total"
-    }],
-    attrs: {
-      type: "hidden",
-      name: "valor_total"
-    },
-    domProps: {
-      value: _vm.valor_total
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.valor_total = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _c("div", {
-    "class": {
-      "col-md-7": true,
-      " has-error": this.errors.estoqueId
-    }
-  }, [_c("label", {
-    staticClass: "control-label",
-    attrs: {
-      "for": "estoqueId"
-    }
-  }, [_vm._v("Estoque")]), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.estoqueId,
-      expression: "estoqueId"
-    }],
-    ref: "estoqueId",
-    staticClass: "form-control selectpicker mb-3",
-    attrs: {
-      "data-live-search": "true",
-      "data-title": "Nada Selecionado",
-      "data-style": "btn-secondary",
-      name: "estoqueId",
-      id: "estoqueId",
-      disabled: _vm.produtosSelecionados.length > 0
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.estoqueId = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, _vm._l(this.estoques, function (estoque, index) {
-    return _c("option", {
-      key: index,
-      domProps: {
-        value: estoque.id
-      }
-    }, [_vm._v(_vm._s(estoque.id + " - " + estoque.estoque))]);
-  }), 0), _vm._v(" "), _c("span", {
-    staticClass: "help-block",
-    attrs: {
-      "v-if": this.errors.estoqueId
-    }
-  }, [_c("strong", [_vm._v(_vm._s(this.errors.estoqueIdMsg))])])])]), _vm._v(" "), _c("div", {
     staticClass: "card"
   }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "card-body",
@@ -2253,29 +2032,19 @@ var render = function render() {
       staticClass: "row m-0"
     }, [_c("td", {
       staticClass: "col-md-1 pool-right"
-    }, [_vm._v("\n                            " + _vm._s(item.id) + "\n                            "), _c("input", {
+    }, [_vm._v("\n                        " + _vm._s(item.id) + "\n                        "), _c("input", {
       attrs: {
         type: "hidden",
-        name: "items[" + index + "][produto_id]"
+        name: "items[" + index + "][combustivel_id]"
       },
       domProps: {
         value: item.id
       }
     })]), _vm._v(" "), _c("td", {
-      staticClass: "col-md-6"
-    }, [_vm._v("\n                            " + _vm._s(item.produto_descricao) + "\n                        ")]), _vm._v(" "), _c("td", {
-      staticClass: "col-md-1 text-right"
-    }, [_vm._v("\n                            " + _vm._s(item.quantidade) + "\n                            "), _c("input", {
-      attrs: {
-        type: "hidden",
-        name: "items[" + index + "][quantidade]"
-      },
-      domProps: {
-        value: item.quantidade
-      }
-    })]), _vm._v(" "), _c("td", {
-      staticClass: "col-md-1 text-right"
-    }, [_vm._v("\n                            " + _vm._s(item.valor_unitario) + "\n                            "), _c("input", {
+      staticClass: "col-md-2"
+    }, [_vm._v("\n                        " + _vm._s(item.combustivel) + "\n                    ")]), _vm._v(" "), _c("td", {
+      staticClass: "col-md-2 text-right"
+    }, [_vm._v("\n                        " + _vm._s(item.valor_unitario) + "\n                        "), _c("input", {
       attrs: {
         type: "hidden",
         name: "items[" + index + "][valor_unitario]"
@@ -2284,27 +2053,27 @@ var render = function render() {
         value: item.valor_unitario
       }
     })]), _vm._v(" "), _c("td", {
-      staticClass: "col-md-1 text-right"
-    }, [_vm._v("\n                            " + _vm._s(item.valor_desconto) + "\n                            "), _c("input", {
+      staticClass: "col-md-2 text-right"
+    }, [_vm._v("\n                        " + _vm._s(item.perc_desconto) + "\n                        "), _c("input", {
       attrs: {
         type: "hidden",
-        name: "items[" + index + "][valor_desconto]"
+        name: "items[" + index + "][perc_desconto]"
       },
       domProps: {
-        value: item.valor_desconto
+        value: item.perc_desconto
       }
     })]), _vm._v(" "), _c("td", {
-      staticClass: "col-md-1 text-right"
-    }, [_vm._v("\n                            " + _vm._s(item.valor_acrescimo) + "\n                            "), _c("input", {
+      staticClass: "col-md-2 text-right"
+    }, [_vm._v("\n                        " + _vm._s(item.perc_acrescimo) + "\n                        "), _c("input", {
       attrs: {
         type: "hidden",
-        name: "items[" + index + "][valor_acrescimo]"
+        name: "items[" + index + "][perc_acrescimo]"
       },
       domProps: {
-        value: item.valor_acrescimo
+        value: item.perc_acrescimo
       }
     })]), _vm._v(" "), _c("td", {
-      staticClass: "col-md-1"
+      staticClass: "col-md-2"
     }, [_c("button", {
       directives: [{
         name: "show",
@@ -2312,7 +2081,7 @@ var render = function render() {
         value: !_vm.editing,
         expression: "!editing"
       }],
-      staticClass: "btn-xs btn-warning",
+      staticClass: "btn btn-sm btn-warning",
       attrs: {
         type: "button"
       },
@@ -2330,7 +2099,7 @@ var render = function render() {
         value: !_vm.editing,
         expression: "!editing"
       }],
-      staticClass: "btn-xs btn-danger",
+      staticClass: "btn btn-sm btn-danger",
       attrs: {
         type: "button",
         "data-toggle": "modal",
@@ -2344,28 +2113,14 @@ var render = function render() {
     }, [_c("i", {
       staticClass: "fas fa-trash-alt"
     })])])]);
-  }), 0), _vm._v(" "), this.items.length > 0 ? _c("tfoot", [_c("tr", {
-    staticClass: "row m-0"
-  }, [_c("td", {
-    staticClass: "col-md-1"
-  }, [_c("strong", [_vm._v(_vm._s(this.items.length))])]), _vm._v(" "), _c("td", {
-    staticClass: "col-md-6"
-  }), _vm._v(" "), _c("td", {
-    staticClass: "col-md-1 text-right"
-  }, [_c("strong", [_vm._v(_vm._s(this.totalQuantidade()))])]), _vm._v(" "), _c("td", {
-    staticClass: "col-md-1 text-right"
-  }, [_c("strong", [_vm._v(_vm._s(this.totalValor()))])]), _vm._v(" "), _c("td", {
-    staticClass: "col-md-1 text-right"
-  }, [_c("strong", [_vm._v(_vm._s(this.totalDesconto()))])]), _vm._v(" "), _c("td", {
-    staticClass: "col-md-1 text-right"
-  }, [_c("strong", [_vm._v(_vm._s(this.totalAcrescimo()))])]), _vm._v(" "), _c("td", {
-    staticClass: "col-md-1"
-  })])]) : _vm._e()], 1)]), _vm._v(" "), _c("div", [_c("div", {
+  }), 0)], 1)]), _vm._v(" "), _c("div", {
+    staticClass: "panel-footer"
+  }, [_c("div", {
     staticClass: "row m-0"
   }, [_c("div", {
     "class": {
-      "col-md-7": true,
-      " has-error": this.errors.inputProdutos
+      "col-md-3": true,
+      " has-error": this.errors.inputCombustiveis
     },
     staticStyle: {
       "padding-right": "0 !important",
@@ -2375,17 +2130,16 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.produto_id,
-      expression: "produto_id"
+      value: _vm.combustivel_id,
+      expression: "combustivel_id"
     }],
-    ref: "inputProdutos",
+    ref: "inputCombustiveis",
     staticClass: "form-control selectpicker",
     attrs: {
-      disabled: _vm.estoqueId == "false" || _vm.estoqueId == null,
       "data-style": "btn-secondary",
       "data-live-search": "true",
-      name: "inputProdutos",
-      id: "inputProdutos"
+      name: "inputCombustiveis",
+      id: "inputCombustiveis"
     },
     on: {
       change: function change($event) {
@@ -2395,7 +2149,7 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-        _vm.produto_id = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+        _vm.combustivel_id = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
       }
     }
   }, [_c("option", {
@@ -2403,68 +2157,21 @@ var render = function render() {
       selected: "",
       value: "false"
     }
-  }, [_vm._v(" Nada Selecionado ")]), _vm._v(" "), _vm._l(_vm.produtosDisponiveisOrdenados, function (produto, index) {
+  }, [_vm._v(" Nada Selecionado ")]), _vm._v(" "), _vm._l(_vm.combustiveisDisponiveisOrdenados, function (combustivel, index) {
     return _c("option", {
       key: index,
       domProps: {
-        value: produto.id
+        value: combustivel.id
       }
-    }, [_vm._v(_vm._s(produto.id + " - " + produto.produto_descricao))]);
+    }, [_vm._v("\n                        " + _vm._s(combustivel.id + " - " + combustivel.combustivel))]);
   })], 2), _vm._v(" "), _c("span", {
     staticClass: "help-block",
     attrs: {
-      "v-if": this.errors.inputProdutos
+      "v-if": this.errors.inputCombustiveis
     }
-  }, [_c("strong", [_vm._v(_vm._s(this.errors.inputProdutosMsg))])])]), _vm._v(" "), _c("div", {
+  }, [_c("strong", [_vm._v(_vm._s(this.errors.inputCombustiveissMsg))])])]), _vm._v(" "), _c("div", {
     "class": {
-      "col-md-1": true,
-      " has-error": this.errors.inputQuantidade
-    },
-    staticStyle: {
-      "padding-right": "0 !important",
-      "padding-left": "0 !important"
-    }
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model.number",
-      value: _vm.quantidade,
-      expression: "quantidade",
-      modifiers: {
-        number: true
-      }
-    }],
-    ref: "inputQuantidade",
-    staticClass: "form-control",
-    attrs: {
-      disabled: _vm.estoqueId == "false" || _vm.estoqueId == null,
-      type: "number",
-      min: "0,000",
-      max: "9999999999,999",
-      step: "any",
-      name: "inputQuantidade",
-      id: "inputQuantidade"
-    },
-    domProps: {
-      value: _vm.quantidade
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.quantidade = _vm._n($event.target.value);
-      },
-      blur: function blur($event) {
-        return _vm.$forceUpdate();
-      }
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "help-block",
-    attrs: {
-      "v-if": this.errors.inputQuantidade
-    }
-  }, [_c("strong", [_vm._v(_vm._s(this.errors.inputQuantidadeMsg))])])]), _vm._v(" "), _c("div", {
-    "class": {
-      "col-md-1": true,
+      "col-md-2": true,
       " has-error": this.errors.inputValorUnitario
     },
     staticStyle: {
@@ -2484,7 +2191,6 @@ var render = function render() {
     ref: "inputValorUnitario",
     staticClass: "form-control",
     attrs: {
-      disabled: _vm.estoqueId == "false" || _vm.estoqueId == null,
       type: "number",
       min: "0,000",
       max: "9999999999,999",
@@ -2511,8 +2217,8 @@ var render = function render() {
     }
   }, [_c("strong", [_vm._v(_vm._s(this.errors.inputValorUnitarioMsg))])])]), _vm._v(" "), _c("div", {
     "class": {
-      "col-md-1": true,
-      " has-error": this.errors.inputDesconto
+      "col-md-2": true,
+      " has-error": this.errors.inputPercDesconto
     },
     staticStyle: {
       "padding-right": "0 !important",
@@ -2522,30 +2228,29 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model.number",
-      value: _vm.desconto,
-      expression: "desconto",
+      value: _vm.percDesconto,
+      expression: "percDesconto",
       modifiers: {
         number: true
       }
     }],
-    ref: "inputDesconto",
+    ref: "inputPercDesconto",
     staticClass: "form-control",
     attrs: {
-      disabled: _vm.estoqueId == "false" || _vm.estoqueId == null,
       type: "number",
       min: "0,000",
       max: "9999999999,999",
       step: "any",
-      name: "inputDesconto",
-      id: "inputDesconto"
+      name: "inputPercDesconto",
+      id: "inputPercDesconto"
     },
     domProps: {
-      value: _vm.desconto
+      value: _vm.percDesconto
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.desconto = _vm._n($event.target.value);
+        _vm.percDesconto = _vm._n($event.target.value);
       },
       blur: function blur($event) {
         return _vm.$forceUpdate();
@@ -2554,12 +2259,12 @@ var render = function render() {
   }), _vm._v(" "), _c("span", {
     staticClass: "help-block",
     attrs: {
-      "v-if": this.errors.inputDesconto
+      "v-if": this.errors.inputPercDesconto
     }
-  }, [_c("strong", [_vm._v(_vm._s(this.errors.inputDescontoMsg))])])]), _vm._v(" "), _c("div", {
+  }, [_c("strong", [_vm._v(_vm._s(this.errors.inputPercDescontoMsg))])])]), _vm._v(" "), _c("div", {
     "class": {
-      "col-md-1": true,
-      " has-error": this.errors.inputAcrescimo
+      "col-md-2": true,
+      " has-error": this.errors.inputPercAcrescimo
     },
     staticStyle: {
       "padding-right": "0 !important",
@@ -2569,30 +2274,29 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model.number",
-      value: _vm.acrescimo,
-      expression: "acrescimo",
+      value: _vm.percAcrescimo,
+      expression: "percAcrescimo",
       modifiers: {
         number: true
       }
     }],
-    ref: "inputAcrescimo",
+    ref: "inputPercAcrescimo",
     staticClass: "form-control",
     attrs: {
-      disabled: _vm.estoqueId == "false" || _vm.estoqueId == null,
       type: "number",
       min: "0,000",
       max: "9999999999,999",
       step: "any",
-      name: "inputAcrescimo",
-      id: "inputAcrescimo"
+      name: "inputPercAcrescimo",
+      id: "inputPercAcrescimo"
     },
     domProps: {
-      value: _vm.acrescimo
+      value: _vm.percAcrescimo
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.acrescimo = _vm._n($event.target.value);
+        _vm.percAcrescimo = _vm._n($event.target.value);
       },
       blur: function blur($event) {
         return _vm.$forceUpdate();
@@ -2601,10 +2305,10 @@ var render = function render() {
   }), _vm._v(" "), _c("span", {
     staticClass: "help-block",
     attrs: {
-      "v-if": this.errors.inputAcrescimo
+      "v-if": this.errors.inputPercAcrescimo
     }
-  }, [_c("strong", [_vm._v(_vm._s(this.errors.inputAcrescimoMsg))])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-1"
+  }, [_c("strong", [_vm._v(_vm._s(this.errors.inputPercAcrescimoMsg))])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-2"
   }, [_c("button", {
     directives: [{
       name: "show",
@@ -2614,11 +2318,10 @@ var render = function render() {
     }],
     staticClass: "btn btn-success",
     attrs: {
-      disabled: _vm.estoqueId == "false" || _vm.estoqueId == null,
       type: "button"
     },
     on: {
-      click: _vm.addProduto
+      click: _vm.addEntrada
     }
   }, [_c("i", {
     staticClass: "fas fa-plus"
@@ -2631,15 +2334,14 @@ var render = function render() {
     }],
     staticClass: "btn btn-success",
     attrs: {
-      disabled: _vm.estoqueId == "false" || _vm.estoqueId == null,
       type: "button"
     },
     on: {
-      click: _vm.updateProduto
+      click: _vm.updateEntrada
     }
   }, [_c("i", {
     staticClass: "fas fa-check"
-  })])])])]), _vm._v(" "), _c("vue-modal", {
+  })])])])]), _vm._v(" "), _c("modal", {
     attrs: {
       "modal-title": "Corfirmação",
       "modal-text": "Confirma a remoção deste Item?"
@@ -2648,14 +2350,14 @@ var render = function render() {
       cancel: _vm.cancelDelete,
       confirm: _vm.deleteItem
     }
-  })], 1)]);
+  })], 1);
 };
 var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "card-header"
-  }, [_c("strong", [_vm._v("Produtos")])]);
+  }, [_c("strong", [_vm._v("Combustíveis")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -2664,19 +2366,15 @@ var staticRenderFns = [function () {
   }, [_c("tr", {
     staticClass: "row m-0"
   }, [_c("th", {
-    staticClass: "col-md-1"
-  }, [_vm._v("Id")]), _vm._v(" "), _c("th", {
-    staticClass: "col-md-6"
-  }, [_vm._v("Produto")]), _vm._v(" "), _c("th", {
-    staticClass: "col-md-1"
-  }, [_vm._v("Quantidade")]), _vm._v(" "), _c("th", {
-    staticClass: "col-md-1"
+    staticClass: "col-md-3"
+  }, [_vm._v("Combustivel")]), _vm._v(" "), _c("th", {
+    staticClass: "col-md-2"
   }, [_vm._v("Vlr. Un.")]), _vm._v(" "), _c("th", {
-    staticClass: "col-md-1"
-  }, [_vm._v("Vlr. Desc.")]), _vm._v(" "), _c("th", {
-    staticClass: "col-md-1"
-  }, [_vm._v("Vlr. Acres.")]), _vm._v(" "), _c("th", {
-    staticClass: "col-md-1"
+    staticClass: "col-md-2"
+  }, [_vm._v("% Desc.")]), _vm._v(" "), _c("th", {
+    staticClass: "col-md-2"
+  }, [_vm._v("% Acres.")]), _vm._v(" "), _c("th", {
+    staticClass: "col-md-2"
   }, [_vm._v("Ações")])])]);
 }];
 render._withStripped = true;
@@ -3151,17 +2849,17 @@ function normalizeComponent(
 
 /***/ }),
 
-/***/ "./resources/js/components/SaidaEstoqueItemsComponent.vue":
-/*!****************************************************************!*\
-  !*** ./resources/js/components/SaidaEstoqueItemsComponent.vue ***!
-  \****************************************************************/
+/***/ "./resources/js/components/PrecoClienteItems.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/PrecoClienteItems.vue ***!
+  \*******************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _SaidaEstoqueItemsComponent_vue_vue_type_template_id_4dfbe9b0__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0 */ "./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0");
-/* harmony import */ var _SaidaEstoqueItemsComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js */ "./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js");
+/* harmony import */ var _PrecoClienteItems_vue_vue_type_template_id_7e00f07a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PrecoClienteItems.vue?vue&type=template&id=7e00f07a */ "./resources/js/components/PrecoClienteItems.vue?vue&type=template&id=7e00f07a");
+/* harmony import */ var _PrecoClienteItems_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PrecoClienteItems.vue?vue&type=script&lang=js */ "./resources/js/components/PrecoClienteItems.vue?vue&type=script&lang=js");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -3171,9 +2869,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _SaidaEstoqueItemsComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
-  _SaidaEstoqueItemsComponent_vue_vue_type_template_id_4dfbe9b0__WEBPACK_IMPORTED_MODULE_0__["render"],
-  _SaidaEstoqueItemsComponent_vue_vue_type_template_id_4dfbe9b0__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _PrecoClienteItems_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PrecoClienteItems_vue_vue_type_template_id_7e00f07a__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PrecoClienteItems_vue_vue_type_template_id_7e00f07a__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -3183,38 +2881,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/SaidaEstoqueItemsComponent.vue"
+component.options.__file = "resources/js/components/PrecoClienteItems.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js":
-/*!****************************************************************************************!*\
-  !*** ./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js ***!
-  \****************************************************************************************/
+/***/ "./resources/js/components/PrecoClienteItems.vue?vue&type=script&lang=js":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/PrecoClienteItems.vue?vue&type=script&lang=js ***!
+  \*******************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SaidaEstoqueItemsComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=script&lang=js");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SaidaEstoqueItemsComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PrecoClienteItems_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./PrecoClienteItems.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PrecoClienteItems.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PrecoClienteItems_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0":
-/*!**********************************************************************************************!*\
-  !*** ./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0 ***!
-  \**********************************************************************************************/
+/***/ "./resources/js/components/PrecoClienteItems.vue?vue&type=template&id=7e00f07a":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/PrecoClienteItems.vue?vue&type=template&id=7e00f07a ***!
+  \*************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_SaidaEstoqueItemsComponent_vue_vue_type_template_id_4dfbe9b0__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!../../../node_modules/vue-loader/lib??vue-loader-options!./SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0 */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SaidaEstoqueItemsComponent.vue?vue&type=template&id=4dfbe9b0");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_SaidaEstoqueItemsComponent_vue_vue_type_template_id_4dfbe9b0__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_PrecoClienteItems_vue_vue_type_template_id_7e00f07a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!../../../node_modules/vue-loader/lib??vue-loader-options!./PrecoClienteItems.vue?vue&type=template&id=7e00f07a */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PrecoClienteItems.vue?vue&type=template&id=7e00f07a");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_PrecoClienteItems_vue_vue_type_template_id_7e00f07a__WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_SaidaEstoqueItemsComponent_vue_vue_type_template_id_4dfbe9b0__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_PrecoClienteItems_vue_vue_type_template_id_7e00f07a__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -3358,45 +3056,28 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/saidaestoque.js":
+/***/ "./resources/js/precocliente.js":
 /*!**************************************!*\
-  !*** ./resources/js/saidaestoque.js ***!
+  !*** ./resources/js/precocliente.js ***!
   \**************************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_SaidaEstoqueItemsComponent_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/SaidaEstoqueItemsComponent.vue */ "./resources/js/components/SaidaEstoqueItemsComponent.vue");
-
-var leads = new Vue({
-  el: '#saida_estoque_produtos',
-  components: {
-    SaidaEstoqueItemsComponent: _components_SaidaEstoqueItemsComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      _estoqueId: null,
-      get estoqueId() {
-        return this._estoqueId;
-      },
-      set estoqueId(value) {
-        this._estoqueId = value;
-      }
-    };
-  }
+Vue.component('preco-cliente', __webpack_require__(/*! ./components/PrecoClienteItems.vue */ "./resources/js/components/PrecoClienteItems.vue")["default"]);
+var app = new Vue({
+  el: '#preco-cliente'
 });
 
 /***/ }),
 
-/***/ 4:
+/***/ 10:
 /*!********************************************!*\
-  !*** multi ./resources/js/saidaestoque.js ***!
+  !*** multi ./resources/js/precocliente.js ***!
   \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\goldenfrota\resources\js\saidaestoque.js */"./resources/js/saidaestoque.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\goldenfrota\resources\js\precocliente.js */"./resources/js/precocliente.js");
 
 
 /***/ })

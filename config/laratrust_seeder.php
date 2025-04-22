@@ -70,6 +70,7 @@ return [
             'veiculo-status' => 'c,r,u,d',
             'ticket_prioridade'  => 'c,r,u,d',
             'ticket_status'  => 'c,r,u,d',
+            'preco_cliente'  => 'c,r,u,d',
             
             
             

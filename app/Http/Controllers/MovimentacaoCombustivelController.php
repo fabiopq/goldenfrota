@@ -51,7 +51,53 @@ class MovimentacaoCombustivelController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            dd($e);
+           // dd($e);
+            throw new \Exception($e);
+        }
+    }
+
+    static public function saidaAbastecimentoAjuste(Abastecimento $abastecimento)
+    {
+       
+       
+        try {
+            $bico = Bico::select('tanque_id')
+                ->where('id', $abastecimento->bico_id)
+                ->first();
+
+            $abastecimento->movimentacao_combustivel()->create([
+                'tanque_id' => $bico->tanque_id,
+                'tipo_movimentacao_combustivel_id' => '6', /* Abastecimento */
+                'quantidade' => $abastecimento->volume_abastecimento,
+                'abastecimento_id' => $abastecimento->id
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+           // dd($e);
+            throw new \Exception($e);
+        }
+    }
+
+    static public function entradaAbastecimentoAuste(Abastecimento $abastecimento)
+    {
+       
+       
+        try {
+            $bico = Bico::select('tanque_id')
+                ->where('id', $abastecimento->bico_id)
+                ->first();
+
+            $abastecimento->movimentacao_combustivel()->create([
+                'tanque_id' => $bico->tanque_id,
+                'tipo_movimentacao_combustivel_id' => '5', /* Abastecimento */
+                'quantidade' => $abastecimento->volume_abastecimento,
+                'abastecimento_id' => $abastecimento->id
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+           // dd($e);
             throw new \Exception($e);
         }
     }

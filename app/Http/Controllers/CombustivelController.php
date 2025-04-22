@@ -126,7 +126,8 @@ class CombustivelController extends Controller
             $this->validate($request, [
                 'descricao' => 'required|string|min:5|unique:combustiveis,id,' . $combustivel->id,
                 'descricao_reduzida' => 'required|string|min:3|max:8|unique:combustiveis,id,' . $combustivel->id,
-                'valor' => 'required|numeric'
+                'valor' => 'required|numeric',
+                'custo' => 'required|numeric'
             ]);
 
             try {

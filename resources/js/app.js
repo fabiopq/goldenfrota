@@ -7,6 +7,7 @@
 
 import './bootstrap';
 
+
 /* datapiker options */
 $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
     icons: {
@@ -100,8 +101,10 @@ Vue.filter('toDecimal3', function (value) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-/* Vue.component('example', require('./components/Example.vue'));
-
+/*
 const app = new Vue({
     el: '#app'
-}); */
+}); 
+*/
+
+

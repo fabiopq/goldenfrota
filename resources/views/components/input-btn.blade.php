@@ -47,7 +47,7 @@
         @endif
 
         <div class="input-group">
-            <div id="{{ $field }}" class="btn-group btn-group-toggle" data-toggle="buttons">
+            <div id="{{ $field }}" class="btn-group btn-group-toggle" >
 
                 <button type="button" class="btn btn-sm {{ $btn_style }}" data-toggle="modal" title="{{ $tooltip }}"
                 data-original-title="{{ $tooltip }}" data-target="#{{ $comando }}">

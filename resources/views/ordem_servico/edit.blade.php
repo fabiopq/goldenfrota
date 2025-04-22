@@ -143,28 +143,19 @@
                         cache: false,
                         success: function(data) {
                             $("#veiculo_id")
-                                .removeAttr('disabled')
-                                .find('option')
-                                .remove();
+                        .removeAttr('disabled')
+                        .find('option')
+                        .remove();
 
-                            /*  $.each(data, function(i, item) {
-                                  $('#veiculo_id').append($('<option>', {
-                                      value: item.id,
-                                      text: item.placa
-                                  }));
-                              });
-                              */
+                    $('#veiculo_id').append($('<option>', {value: '', text: 'Nada selecionado'}));
 
-                            $.each(data, function(i, item) {
-                                $('#veiculo_id').append($('<option>', {
-                                    value: item.id,
-                                    'data-tipo-controle-veiculo': item
-                                        .modelo_veiculo.tipo_controle_veiculo.id,
-                                    text: item.placa + ' - ' + item.modelo_veiculo
-                                        .marca_veiculo.marca_veiculo + ' ' + item
-                                        .modelo_veiculo.modelo_veiculo
-                                }));
-                            });
+                    $.each(data, function (i, item) {
+                        $('#veiculo_id').append($('<option>', { 
+                            value: item.id,
+                            'data-tipo-controle-veiculo': item.modelo_veiculo.tipo_controle_veiculo.id,
+                            text : item.placa + ' - ' + item.modelo_veiculo.marca_veiculo.marca_veiculo + ' ' + item.modelo_veiculo.modelo_veiculo
+                        }));
+                    });
 
                             @if (old('veiculo_id'))
                                 $('#veiculo_id').selectpicker('val', {{ old('veiculo_id') }});

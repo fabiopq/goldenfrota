@@ -47,6 +47,15 @@
                         ],
                         [
                             'type' => 'number',
+                            'field' => 'custo',
+                            'label' => 'Custo',
+                            'required' => true,
+                            'autofocus' => true,
+                            'inputSize' => 4,
+                            'inputValue' => $combustivel->custo
+                        ],
+                        [
+                            'type' => 'number',
                             'field' => 'valor',
                             'label' => 'Valor',
                             'required' => true,

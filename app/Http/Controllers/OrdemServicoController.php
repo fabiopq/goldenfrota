@@ -205,7 +205,8 @@ class OrdemServicoController extends Controller
         if (Auth::user()->canCadastrarOrdemServico()) {
             $this->validate($request, [
                 'cliente_id' => 'required',
-                //'created_at' => 'required|date_format:d/m/Y H:i:s',
+                'veiculo_id' => 'nullable|exists:veiculos,id',
+               // 'created_at' => 'required|date_format:d/m/Y H:i:s',
                 //'veiculo_id' => 'nullable|numeric',
                 //'veiculo_id' => 'required',
                 //'km_veiculo' => 'required|numeric|min:0',
@@ -224,7 +225,7 @@ class OrdemServicoController extends Controller
                     'created_at' => \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s'),
 
                     'cliente_id' => $request->cliente_id,
-                    'veiculo_id' => $request->veiculo_id,
+                    'veiculo_id' => $request->input('veiculo_id') ?: null,
                     'ordem_servico_status_id' => $request->ordem_servico_status_id,
                     'estoque_id' => $request->estoque_id,
                     'valor_total' => $request->valor_total,
@@ -318,6 +319,7 @@ class OrdemServicoController extends Controller
      */
     public function show(OrdemServico $ordemServico)
     {
+       
         if (Auth::user()->canListarOrdemServico()) {
             return View('ordem_servico.show')
                 ->withOrdemServico($ordemServico)
@@ -335,7 +337,6 @@ class OrdemServicoController extends Controller
      */
     public function edit(OrdemServico $ordemServico)
     {
-
 
         if (Auth::user()->canAlterarOrdemServico()) {
 

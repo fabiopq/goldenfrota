@@ -9,7 +9,7 @@ class Combustivel extends Model
 {
     public $table = 'combustiveis';
 
-    public $fillable = ['descricao', 'descricao_reduzida', 'valor', 'ativo'];
+    public $fillable = ['descricao', 'descricao_reduzida', 'valor','custo', 'ativo'];
 
     public $fields = array (
         'id' => [

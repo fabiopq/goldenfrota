@@ -152,7 +152,7 @@
     import modal2 from './modal2.vue';
 
     export default {
-        name: 'ordem-servico-produto',
+        name: 'ordem-servico-produtos',
         components: {
             modal2
         },

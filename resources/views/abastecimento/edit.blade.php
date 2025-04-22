@@ -337,6 +337,60 @@ function ObterMediaKmVeiculo(kmAnterior, tipoControle) {
     $('#media_atual').val(mediaCalculada);
 }
 
+
+var buscarDadosBico = function() {  
+    var bico = {};
+
+    bico.id = $('#bico_id').val();
+    bico._token = $('input[name="_token"]').val();
+
+    $.ajax({
+        url: '{{ route("bico.json") }}',
+        type: 'POST',
+        data: bico,
+        dataType: 'JSON',
+        cache: false,
+        success: function (data) {
+            $("#encerrante_inicial").val(data.encerrante);
+            $("#combustivel_descricao").val(data.tanque.combustivel.descricao);
+            $("#valor_litro").val(data.tanque.combustivel.valor);
+            $("#volume_abastecimento").focus();
+            let cliente_id = $('#cliente_id').val();
+            let combustivel_id = data.tanque.combustivel.id;
+            if (cliente_id && combustivel_id) {
+                
+                
+                
+                $.ajax({
+                    url: '{{ route("preco-cliente-item.valor") }}', // você vai criar essa rota
+                    type: 'POST',
+                    data: {
+                        _token: $('input[name="_token"]').val(),
+                        cliente_id: cliente_id,
+                        combustivel_id: combustivel_id
+                    },
+                    dataType: 'JSON',
+                    success: function(res) {
+                        if (res.valor_unitario !== undefined) {
+                            $("#valor_litro").val(res.valor_unitario);
+                        } else {
+                            $("#valor_litro").val(data.tanque.combustivel.valor); // fallback
+                        }
+                        $('#volume_abastecimento').focus();
+                        CalcValorAbastecimento();
+                    }
+                });
+            }
+           
+
+           
+        },
+        error: function (data) {
+        }
+    });
+}
+
+
 $('#volume_abastecimento').keyup(CalcValorAbastecimento);
 
 $('#valor_litro').keyup(CalcValorAbastecimento);           
@@ -344,6 +398,10 @@ $('#valor_litro').keyup(CalcValorAbastecimento);
 $('#km_veiculo').blur(CalcularKmMedia);
 
 $('#volume_abastecimento').blur(CalcularKmMedia);
+
+$('#cliente_id').on('changed.bs.select', buscarDadosBico);
+
+
 
 $('#veiculo_id').on('changed.bs.select', (e) => {
     if ($('#'+e.target.id).find('option:selected').data('tipo-controle-veiculo') == 1) {

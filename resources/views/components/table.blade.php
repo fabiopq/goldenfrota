@@ -2,8 +2,6 @@
     $displayField = isset($displayField) ? $displayField : 'name';
     $keyField = isset($keyField) ? $keyField : 'id';
 
-   
-     
     if (isset($colorLineCondition)) {
         $lineConditionField = $colorLineCondition['field'];
         $lineConditionValue = $colorLineCondition['value'];
@@ -24,7 +22,8 @@
                 <h3>{{ __(isset($tableTitle) ? $tableTitle : 'tableTitle not informed...') }}</h3>
             </div>
         </div>
-
+    
+       
         <form id="searchForm" class="form" method="GET" action="{{ route($model . '.index') }}">
             {{ csrf_field() }}
 
@@ -57,8 +56,8 @@
 
 
                 <div class="col-auto">
-         
-                    
+
+
                     @permission('cadastrar-' . str_replace('_', '-', $model))
                         @if (Route::has($model . '.create'))
                             <a href="{{ route($model . '.create') }}" class="btn   btn-success" data-toggle="tooltip"
@@ -79,7 +78,7 @@
 
 
                 @if (isset($searchParms))
-                   
+
 
                     {{-- @component($searchParms, ['ordemServicoStatus' => $ordemServicoStatus])  --}}
                     @component($searchParms)
@@ -196,8 +195,9 @@
                             --}}
 
                     @if (isset($detailFields))
-                        <button type="button" data-id="{{ $row->id }}" tabindex="-1" class="btn btn-sm btn-observacoes-item" 
-                            data-toggle="tooltip" title="Detalhes" data-original-title="Detalhes"><i style="display:block"
+                        <button type="button" data-id="{{ $row->id }}" tabindex="-1"
+                            class="btn btn-sm btn-observacoes-item" data-toggle="tooltip" title="Detalhes"
+                            data-original-title="Detalhes"><i style="display:block"
                                 class="fa fa-angle-down submenu-icon"></i></button>
                     @endif
 
@@ -205,9 +205,14 @@
                         <a data-toggle="dropdown" aria-expanded="false" type="button">
                             <i class="fa fa-ellipsis-v"></i></a>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+
+
+
                             @if (is_array($actions))
                                 @foreach ($actions as $action)
+                                
                                     <?php
+                                    
                                     switch ($action) {
                                         case 'show':
                                             $btn_style = 'btn-success';
@@ -242,6 +247,7 @@
                                         @endif
                                     @else
                                         @permission($permission)
+                                        
                                             @if ($action == 'destroy')
                                                 <form id="deleteForm{{ $row->id }}"
                                                     action="{{ route($model . '.' . $action, ['$model' => $row->$keyField]) }}"
@@ -262,9 +268,11 @@
                                                 </form>
                                             @else
                                                 <a class="dropdown-item"
+                                             
                                                     href="{{ route($model . '.' . $action, array_add($parameters, $model, $row->$keyField)) }}">{{ $tooltip }}</a>
                                             @endif
                                         @endpermission
+                                        
                                     @endif
                                 @endforeach
                             @endif
@@ -278,10 +286,9 @@
 
 
                 </td>
-             
-                
+
+
                 @if (isset($detailFields))
-               
                     @foreach ($detailFields as $fieldDetail => $captiondetail)
                         @if (is_array($captiondetail))
                             @if ($captiondetail['type'] == 'bool')
@@ -366,12 +373,12 @@
         });
         });
         --}}
-  
+
     $('.btn-observacoes-item').click(function () {
 
-        var id = $(this).data('id');
-        
-    
-        $('#detail-' + id).toggle();
-        });
+    var id = $(this).data('id');
+
+
+    $('#detail-' + id).toggle();
+    });
 @endpush

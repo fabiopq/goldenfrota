@@ -12,6 +12,9 @@
         </tr>
         <tr>
             <td>
+                ID
+            </td>
+            <td>
                 Produto
             </td>
             <td>
@@ -42,6 +45,9 @@
 
             @endforeach
             <tr>
+                <td>
+                    {{ $produto->id }}
+                 </td>
                 <td>
                    {{ $produto->produto_descricao }}
                 </td>

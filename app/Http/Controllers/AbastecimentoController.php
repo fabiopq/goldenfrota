@@ -27,6 +27,8 @@ use App\Http\Controllers\MovimentacaoCombustivelController;
 use App\Motorista;
 use App\MovimentacaoCredito;
 use App\PostoAbastecimento;
+use App\PrecoCliente;
+use App\Tanque;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use phpDocumentor\Reflection\Types\Boolean;
 
@@ -219,7 +221,19 @@ class AbastecimentoController extends Controller
                 $abastecimento->atendente_id = $request->atendente_id;
                 $abastecimento->motorista_id = $request->motorista_id;
                 $abastecimento->posto_abastecimentos_id = $request->posto_abastecimentos_id;
-                
+
+                $preco = DB::table('combustiveis')
+                    ->select('combustiveis.valor')
+                    ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
+                    ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
+                    ->where('bicos.id', '=', trim($request->bico_id))
+                    ->first();
+
+                if (!$preco) {
+                } else {
+                    $abastecimento->custo_litro = $preco->valor;
+                }
+
 
                 /* Calcula a média do veículo, caso seja informado um veículo */
 
@@ -361,7 +375,8 @@ class AbastecimentoController extends Controller
             if ($abastecimento->eh_afericao) {
                 return redirect()->action('AbastecimentoController@index');
             }
-
+            //utiliza o volume anterior a alteração para realizar a entrar e posteriormente a saida da nova quatidade
+            $volume_old = $abastecimento->volume_abastecimento;
             $this->validate($request, [
                 'data_hora_abastecimento' => 'required|date_format:d/m/Y H:i:s',
                 'veiculo_id' => 'required|numeric|',
@@ -376,7 +391,7 @@ class AbastecimentoController extends Controller
 
                 $abastecimento->veiculo_id = $request->veiculo_id;
                 $abastecimento->km_veiculo = $request->km_veiculo;
-                //$abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
+                $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
                 $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
                 $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
 
@@ -407,8 +422,15 @@ class AbastecimentoController extends Controller
                     Session::flash('success', 'Abastecimento '.$abastecimento->id.' alterado com sucesso.');
                     //return redirect()->action('AbastecimentoController@index');
                 } else { */
+                $abastecimento->obs_abastecimento = 'Alteração de Volume de ' . $volume_old . ' para ' . $abastecimento->volume_abastecimento;
+
                 if ($abastecimento->save()) {
                     VeiculoController::atualizaKmVeiculo(Veiculo::find($request->veiculo_id), $abastecimento, true);
+                    if ($volume_old != $abastecimento->volume_abastecimento) {
+                        MovimentacaoCombustivelController::saidaAbastecimentoAjuste($abastecimento);
+                        $abastecimento->volume_abastecimento = $volume_old;
+                        MovimentacaoCombustivelController::entradaAbastecimentoAuste($abastecimento);
+                    }
 
                     Session::flash('success', __('messages.update_success', [
                         'model' => __('models.abastecimento'),
@@ -1385,19 +1407,13 @@ class AbastecimentoController extends Controller
 
     {
 
-        // Log::debug('Abastecimento recebido : ' . (isset($request->data_hora_abastecimento) . $request->data_hora_abastecimento ?? ' data_hora nao recebida'));
-        // Log::debug('Posto_abastecimento_id :'.isset($request->posto_abastecimentos_id) . $request->posto_abastecimentos_id ?? 'posto_abastecimentos_id = null' .
-        //    'quantidade: ' . isset($request->volume_abastecimento) . $request->volume_abastecimento ?? 'null');
-
 
         try {
-
+            // utiliza preco deo cadastro de combustivel como preco de venda
             $cfgPreco = DB::table('settings')
                 ->select('settings.value')
                 ->where('settings.key', 'automacao_valor_combustivel')
                 ->first();
-
-
 
             DB::beginTransaction();
 
@@ -1423,28 +1439,38 @@ class AbastecimentoController extends Controller
                 $abastecimento->veiculo_id = $request->veiculo_id;
             }
 
-            // log::debug($cfgPreco->value);
+            $preco_custo = DB::table('combustiveis')
+                ->select('combustiveis.custo')
+                ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
+                ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
+                ->where('bicos.id', '=', trim($request->bico_id))
+                ->first();
+            $preco_venda = DB::table('combustiveis')
+                ->select('combustiveis.valor')
+                ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
+                ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
+                ->where('bicos.id', '=', trim($request->bico_id))
+                ->first();
+
+
+
+            if (!$preco_custo) {
+                $abastecimento->custo_litro = 0;
+            } else {
+                $abastecimento->custo_litro = $preco_custo->custo;
+            }
 
             if (isset($cfgPreco->value) && $cfgPreco->value > 0) {
-
-                $preco = DB::table('combustiveis')
-                    ->select('combustiveis.valor')
-                    ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
-                    ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
-                    ->where('bicos.id', '=', trim($request->bico_id))
-                    ->first();
-
-                if (!$preco) {
-                } else {
-                    //$abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($request->volume_abastecimento), 3) * $preco->valor);
-                    $abastecimento->valor_abastecimento = ($request->volume_abastecimento * $preco->valor);
-                    $abastecimento->valor_litro = $preco->valor;
-                }
+                //$abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($request->volume_abastecimento), 3) * $preco->valor);
+                $abastecimento->valor_abastecimento = ($request->volume_abastecimento * $preco_venda->valor);
+                $abastecimento->valor_litro = $preco_venda->valor;
             } else {
 
                 $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
                 $abastecimento->valor_abastecimento = str_replace(',', '.', $request->valor_abastecimento);
             }
+
+            
 
             $abastecimento->km_veiculo = $request->km_veiculo;
             $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
@@ -1493,9 +1519,36 @@ class AbastecimentoController extends Controller
                 $veiculo = Veiculo::where('id', '=', $request->veiculo_id)->first();
 
                 if (isset($veiculo->id)) {
-
+                    
                     $abastecimento->veiculo_id = $veiculo->id;
+                
+                    $preco_cliente = PrecoCliente::where('cliente_id', $veiculo->cliente_id)->first();
+                
+                    if (isset($preco_cliente)) {
+                        
+                        $itens = $preco_cliente->preco_cliente_items;
+                
+                        if (isset($abastecimento->bico_id)) {
+                           
+                            $bico = Bico::where('id', $abastecimento->bico_id)->first();
+                           
+                            $tanque = Tanque::where('id', $bico->tanque_id)->first();
+                            
+                            
+                            if (isset($tanque)) {
+                               
+                                // Filtra o item de preço pelo combustivel_id do tanque
+                                $item_preco = $itens->where('combustivel_id', $tanque->combustivel_id)->first();
+                
+                                if ($item_preco) {
+                                    $abastecimento->valor_litro = $item_preco->valor_unitario;
+                                      
+                                }
+                            }
+                        }
+                    }
                 }
+                
             } else if ($request->tag_atendente) {
 
                 $veiculo = Veiculo::where('tag', '=', $request->tag_atendente)->first();
@@ -1506,8 +1559,6 @@ class AbastecimentoController extends Controller
 
 
             if (isset($veiculo->id)) {
-
-
 
                 $abastecimento->veiculo_id = $veiculo->id;
 
@@ -1521,11 +1572,13 @@ class AbastecimentoController extends Controller
                 $abastecimento->media_veiculo = 0;
             }
 
-            Log::debug('Abastecimento recebido na api: '.$abastecimento);
+            Log::debug('Abastecimento recebido na api: ' . $abastecimento);
 
-
+            
             if ($abastecimento->save()) {
+                
                 if (isset($veiculo->id)) {
+                    
                     try {
                         VeiculoController::atualizaKmVeiculo($veiculo, $abastecimento, false);
                     } catch (\Exception $e) {
@@ -1590,7 +1643,7 @@ class AbastecimentoController extends Controller
             Session::flash('error', __('messages.exception', [
                 'exception' => $e->getMessage()
             ]));
-            //Log::debug($e);
+          Log::debug($e);
 
             return response()->json(["Erro" => "Abastecimento nao iserido"], 301);
         }

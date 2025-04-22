@@ -51,7 +51,7 @@
                                 'displayField' => 'nome_razao',
                                 'keyField' => 'id',
                                 'liveSearch' => true,
-                                'defaultNone' => true,
+                                'defaultNone' => false,
                             ],
                             [
                                 'type' => 'select',
@@ -130,7 +130,7 @@
                         .find('option')
                         .remove();
 
-                    $('#veiculo_id').append($('<option>', {value: null, text: 'Nada selecionado'}));
+                    $('#veiculo_id').append($('<option>', {value: '', text: 'Nada selecionado'}));
 
                     $.each(data, function (i, item) {
                         $('#veiculo_id').append($('<option>', { 

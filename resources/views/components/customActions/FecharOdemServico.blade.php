@@ -1,7 +1,7 @@
 
 
 
-    <a class="btn btn-sm btn-info" href="/api/ordem_servico/fechar/158"  formmethod="post">
+    <a class="btn-success" href="/api/ordem_servico/fechar/158"  formmethod="post">
         <i class="fa fa-bars" data-toggle="tooltip" data-placement="top" title="{{__('Fechar OS')}}" data-original-title="{{__('Fazer Aferição')}}"></i>
     </a>
 
