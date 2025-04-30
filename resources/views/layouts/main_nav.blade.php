@@ -204,6 +204,10 @@
                     @permission('listar-abastecimento')
                     <li><a class="dropdown-item" href="{{route('abastecimento.index')}}">Abastecimentos</a></li>
                     @endpermission
+                    @permission('listar-autorizacao')
+                    <li><a class="dropdown-item" href="{{route('autorizacao.index')}}">Autorizações</a></li>
+                    @endpermission
+                 
                     {{--  @permission('listar-tanque-movimentacao')
                     <li><a class="dropdown-item" href="{{route('tanque_movimentacao.index')}}">Entrada de Combustíveis</a></li>
                     @endpermission  --}}

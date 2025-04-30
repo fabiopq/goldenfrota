@@ -104,6 +104,7 @@
 
 
     </div>
+    
     <table class="table table-sm table-bordered table-striped table-hover" style="margin: 0px">
         <thead class="thead-light">
             <tr>
@@ -349,6 +350,8 @@
 @include('layouts.modal')
 
 @push('document-ready')
+
+
     <!-- Dialog show event handler -->
     $('#confirmDelete').on('show.bs.modal', function (e) {
     $message = $(e.relatedTarget).attr('data-message');

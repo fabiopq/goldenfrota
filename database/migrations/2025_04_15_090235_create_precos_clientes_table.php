@@ -15,7 +15,7 @@ class CreatePrecosClientesTable extends Migration
     {
         Schema::create('preco_clientes', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('cliente_id')->unsigned();
+            $table->string('cliente_id')->unsigned();
             $table->string('obs_preco')->nullable();
             $table->boolean('ativo')->default(true);
             $table->timestamps();

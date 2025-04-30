@@ -10,7 +10,7 @@
 <!-- Styles -->
 <link href="{{ mix('css/app.css') }}" rel="stylesheet" media="all">
 <link href="{{ mix('css/bootstrap-toggle.css') }}" rel="stylesheet" media="all">
-@stack('header-styles')    
+
 
 <!-- Scripts -->
 <script>

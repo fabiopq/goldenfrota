@@ -98,12 +98,14 @@
                             'field' => 'valor_custo',
                             'label' => 'Preço de Custo',
                             'inputSize' => 2,
+                            'inputValue' => $produto->valor_custo,
                         ],
                         [
                             'type' => 'number',
                             'field' => 'valor_venda',
                             'label' => 'Preço de Venda',
                             'inputSize' => 2,
+                            'inputValue' => $produto->valor_venda,
                         ],
                     ],
                 ])

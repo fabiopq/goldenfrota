@@ -1,8 +1,11 @@
 <!-- Scripts --->
+
+<!-- Scripts customizados -->
 <script src="{{ mix('js/app.js') }}"></script>
 <script src="{{ mix('js/bs4navbar.js') }}"></script>
+
 <script>
-    $('document').ready(function() {
+    $(document).ready(function() { // <-- Sem aspas aqui!
         
         $('[data-toggle="tooltip"]').tooltip();
 
@@ -12,7 +15,19 @@
         $("#success-alert").fadeTo(5000, 600).slideUp(600, function(){
             $("#success-alert").slideUp(600);
         });
+
         
+
         @stack('document-ready')
     });
 </script>
+
+
+
+
+
+
+
+
+
+
