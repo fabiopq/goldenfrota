@@ -2,6 +2,7 @@
 
 
 @section('content')
+
     @component('components.table', [
         'captions' => $fields,
         'rows' => $ordem_servicos,

@@ -30,6 +30,7 @@ class OrdemServicoController extends Controller
     public $fields = [
         'id' => 'ID',
         'created_at' => ['label' => 'Data', 'type' => 'date'],
+        'data_fechamento' => ['label' => 'Data Fechamento', 'type' => 'date'],
         'nome_razao' => 'Cliente',
         'placa' => 'Veículo',
         'name' => 'Usuário',
@@ -759,11 +760,11 @@ class OrdemServicoController extends Controller
     {
 
         $ordemServico = OrdemServico::find($id); // ou qualquer ID
-        $ordemServico->fechar();
+       // $ordemServico->fechar();
        
 
         //return redirect()->back();
-        if ($ordemServico->delete()) {
+        if ($ordemServico->fechar()) {
             Session::flash('success', __('messages.fechar_success_f', [
                 'model' => __('models.ordem_servico'),
                 'name' => $ordemServico->id
