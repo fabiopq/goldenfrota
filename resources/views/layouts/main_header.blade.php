@@ -12,6 +12,8 @@
 <link href="{{ mix('css/bootstrap-toggle.css') }}" rel="stylesheet" media="all">
 
 
+
+
 <!-- Scripts -->
 <script>
     window.Laravel = {!! json_encode([

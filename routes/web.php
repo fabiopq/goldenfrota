@@ -162,6 +162,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('setting', 'SettingController@index')->name('setting.index');
     Route::put('setting', 'SettingController@update')->name('setting.update');
     Route::get('afericao/{abastecimento}', 'AfericaoController@create')->name('afericao.create');
+    Route::get('ordem_servico_fechar/{ordemservico}', 'OrdemServicoController@fechar')->name('ordem_servico.fechar');
     Route::post('afericao', 'AfericaoController@store')->name('afericao.store');
 
     /* dashboard */

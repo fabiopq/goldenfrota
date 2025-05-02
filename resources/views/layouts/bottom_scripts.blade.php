@@ -1,6 +1,4 @@
-<!-- Scripts --->
 
-<!-- Scripts customizados -->
 <script src="{{ mix('js/app.js') }}"></script>
 <script src="{{ mix('js/bs4navbar.js') }}"></script>
 

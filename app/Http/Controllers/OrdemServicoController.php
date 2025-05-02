@@ -39,7 +39,7 @@ class OrdemServicoController extends Controller
     ];
 
     public $detailFields = [
-        
+
         'obs' => 'Atividade Realizada: '
 
 
@@ -206,7 +206,7 @@ class OrdemServicoController extends Controller
             $this->validate($request, [
                 'cliente_id' => 'required',
                 'veiculo_id' => 'nullable|exists:veiculos,id',
-               // 'created_at' => 'required|date_format:d/m/Y H:i:s',
+                // 'created_at' => 'required|date_format:d/m/Y H:i:s',
                 //'veiculo_id' => 'nullable|numeric',
                 //'veiculo_id' => 'required',
                 //'km_veiculo' => 'required|numeric|min:0',
@@ -319,7 +319,7 @@ class OrdemServicoController extends Controller
      */
     public function show(OrdemServico $ordemServico)
     {
-       
+
         if (Auth::user()->canListarOrdemServico()) {
             return View('ordem_servico.show')
                 ->withOrdemServico($ordemServico)
@@ -443,7 +443,7 @@ class OrdemServicoController extends Controller
                         'model' => __('models.ordem_servico'),
                         'name' => $ordemServico->id
                     ]));
-                  //  dd($request->query->all());
+                    //  dd($request->query->all());
                     return redirect()->action('OrdemServicoController@index', $request->query->all() ?? []);
                     //return redirect()->action('OrdemServicoController@index');
                 } else {
@@ -755,12 +755,20 @@ class OrdemServicoController extends Controller
         }
     }
 
-    public function fechar(Request $request)
+    public function fechar($id)
     {
-        $ordemServico = OrdemServico::where([
-            ['id', '=', $request->id]
-        ])->get();
 
-        return response()->json($ordemServico);
+        $ordemServico = OrdemServico::find($id); // ou qualquer ID
+        $ordemServico->fechar();
+       
+
+        //return redirect()->back();
+        if ($ordemServico->delete()) {
+            Session::flash('success', __('messages.fechar_success_f', [
+                'model' => __('models.ordem_servico'),
+                'name' => $ordemServico->id
+            ]));
+            return redirect()->action('OrdemServicoController@index');
+        }
     }
 }

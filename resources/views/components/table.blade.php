@@ -22,8 +22,8 @@
                 <h3>{{ __(isset($tableTitle) ? $tableTitle : 'tableTitle not informed...') }}</h3>
             </div>
         </div>
-    
-       
+
+
         <form id="searchForm" class="form" method="GET" action="{{ route($model . '.index') }}">
             {{ csrf_field() }}
 
@@ -104,7 +104,7 @@
 
 
     </div>
-    
+
     <table class="table table-sm table-bordered table-striped table-hover" style="margin: 0px">
         <thead class="thead-light">
             <tr>
@@ -211,74 +211,72 @@
 
                             @if (is_array($actions))
                                 @foreach ($actions as $action)
-                                
-                                    <?php
-                                    
-                                    switch ($action) {
-                                        case 'show':
-                                            $btn_style = 'btn-success';
-                                            $btn_icon = 'eye';
-                                            $tooltip = 'Visualizar';
-                                            $permission = 'listar-' . str_replace('_', '-', $model);
-                                            break;
-                                        case 'edit':
-                                            $btn_style = 'btn-warning';
-                                            $btn_icon = 'edit';
-                                            $tooltip = 'Editar';
-                                            $permission = 'alterar-' . str_replace('_', '-', $model);
-                                            break;
-                                        case 'destroy':
-                                            $btn_style = 'btn-danger';
-                                            $btn_icon = 'trash-alt';
-                                            $tooltip = 'Remover';
-                                            $permission = 'excluir-' . str_replace('_', '-', $model);
-                                            break;
-                                    }
-                                    $target = isset($action['target']) ? 'target=' . $action['target'] : '';
-                                    
-                                    ?>
-                                    @if (is_array($action))
-                                        @if (isset($action['custom_action']))
-                                            @component($action['custom_action'], ['data' => $row, 'target' => $target])
-                                            @endcomponent
-                                        @else
-                                            <a class="dropdown-item"
-                                                href="{{ route($model . '.' . $action['action'], array_add($parameters, $model, $row->$keyField)) }}"
-                                                {{ $target }}>Visualizar</a>
-                                        @endif
-                                    @else
-                                        @permission($permission)
-                                        
-                                            @if ($action == 'destroy')
-                                                <form id="deleteForm{{ $row->id }}"
-                                                    action="{{ route($model . '.' . $action, ['$model' => $row->$keyField]) }}"
-                                                    method="POST" style="display: inline">
-                                                    <input type="hidden" name="backUrlParams"
-                                                        value="{{ json_encode(Request()->request->all()) }}">
-                                                    <span data-toggle="tooltip" data-placement="top"
-                                                        title="{{ $tooltip }}"
-                                                        data-original-title="{{ $tooltip }}">
+                                    {{-- Verifica se a ação é uma string padrão (show, edit, destroy) --}}
+                                    @if (is_string($action))
+                                        @php
+                                            // Define configurações básicas da ação
+                                            switch ($action) {
+                                                case 'show':
+                                                    $tooltip = 'Visualizar';
+                                                    $permission = 'listar-' . str_replace('_', '-', $model);
+                                                    break;
+                                                case 'edit':
+                                                    $tooltip = 'Editar';
+                                                    $permission = 'alterar-' . str_replace('_', '-', $model);
+                                                    break;
+                                                case 'destroy':
+                                                    $tooltip = 'Remover';
+                                                    $permission = 'excluir-' . str_replace('_', '-', $model);
+                                                    break;
+                                            }
+                                        @endphp
 
-                                                        <a class="dropdown-item" data-toggle="modal"
-                                                            data-target="#confirmDelete"
-                                                            data-title="{{ __('Remover ') . __('models.' . $model) }}"
-                                                            data-message="Remover {{ __('models.' . $model) . ': ' . $row->$displayField }}?">{{ $tooltip }}</a>
-                                                    </span>
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        @permission($permission)
+                                            {{-- Ação de deletar com modal de confirmação --}}
+                                            @if ($action === 'destroy')
+                                                <form id="deleteForm{{ $row->id }}"
+                                                    action="{{ route($model . '.' . $action, [$model => $row->$keyField]) }}"
+                                                    method="POST" style="display:inline">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <a class="dropdown-item" data-toggle="modal"
+                                                        data-target="#confirmDelete"
+                                                        data-title="Remover {{ __('models.' . $model) }}"
+                                                        data-message="Remover {{ __('models.' . $model) }}: {{ $row->$displayField }}?">
+                                                        {{ $tooltip }}
+                                                    </a>
                                                 </form>
                                             @else
+                                                {{-- Ações normais (show, edit) --}}
                                                 <a class="dropdown-item"
-                                             
-                                                    href="{{ route($model . '.' . $action, array_add($parameters, $model, $row->$keyField)) }}">{{ $tooltip }}</a>
+                                                    href="{{ route($model . '.' . $action, [$model => $row->$keyField]) }}">
+                                                    {{ $tooltip }}
+                                                </a>
                                             @endif
                                         @endpermission
-                                        
+
+                                        {{-- Caso a ação seja um array (ação customizada) --}}
+                                    @elseif (is_array($action))
+                                        @php
+                                            $targetAttr = isset($action['target']) ? 'target=' . $action['target'] : '';
+                                        @endphp
+
+                                        @if (isset($action['custom_action']))
+                                            {{-- Componente Blade customizado --}}
+                                            @component($action['custom_action'], ['data' => $row, 'target' => $targetAttr])
+                                            @endcomponent
+                                        @else
+                                            {{-- Link padrão com target --}}
+                                            <a class="dropdown-item"
+                                                href="{{ route($model . '.' . $action['action'], [$model => $row->$keyField]) }}"
+                                                {!! $targetAttr !!}>
+                                                Visualizar
+                                            </a>
+                                        @endif
                                     @endif
                                 @endforeach
                             @endif
-
-
                         </div>
                     </div>
 
@@ -350,8 +348,6 @@
 @include('layouts.modal')
 
 @push('document-ready')
-
-
     <!-- Dialog show event handler -->
     $('#confirmDelete').on('show.bs.modal', function (e) {
     $message = $(e.relatedTarget).attr('data-message');

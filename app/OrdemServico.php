@@ -58,4 +58,23 @@ class OrdemServico extends Model
     public function ordem_servico_status() {
         return $this->belongsTo(OrdemServicoStatus::class);
     }
+
+    public function fechar()
+    {
+        $statusFechado = OrdemServicoStatus::where('em_aberto', 0)->first();
+
+        if ($statusFechado) {
+            $this->ordem_servico_status_id = $statusFechado->id;
+            $this->save();
+            return true;
+        } else {
+            throw new \Exception('Nenhum status com em_aberto = 0 foi encontrado.');
+            return false;
+        }
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(OrdemServicoStatus::class, 'ordem_servico_status_id');
+    }
 }
