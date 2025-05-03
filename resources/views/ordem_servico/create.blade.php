@@ -40,7 +40,6 @@
                     @endcomponent
                     @component('components.form-group', [
                         'inputs' => [
-                           
                             [
                                 'type' => 'select',
                                 'field' => 'cliente_id',
@@ -52,6 +51,17 @@
                                 'keyField' => 'id',
                                 'liveSearch' => true,
                                 'defaultNone' => false,
+                            ],
+                            [
+                                'type' => 'input-btn',
+                                'field' => 'grupo_id',
+                                'label' => 'Novo',
+                                'required' => true,
+                                'inputSize' => 1,
+                                'displayField' => 'grupo',
+                                'keyField' => 'id',
+                                'comando' => 'clienteModal',
+                                'action' => 'create',
                             ],
                             [
                                 'type' => 'select',
@@ -102,61 +112,67 @@
                         ],
                     ])
                     @endcomponent
+                    @include('cliente.create_modal')
                 @endsection
             @endcomponent
         </div>
     </div>
 
-@push('bottom-scripts')
-    <script src="{{ mix('js/os.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            var buscarVeiculos = function() {
-                var cliente = {};
+    @push('bottom-scripts')
+        <script src="{{ mix('js/os.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                var buscarVeiculos = function() {
+                    var cliente = {};
 
-                cliente.id = $('#cliente_id').val();
-                cliente._token = $('input[name="_token"]').val();
+                    cliente.id = $('#cliente_id').val();
+                    cliente._token = $('input[name="_token"]').val();
 
-                $.ajax({
-                url: '{{ route("veiculos.json") }}',
-                type: 'POST',
-                data: cliente,
-                dataType: 'JSON',
-                cache: false,
-                success: function (data) {
-                    //console.log(data);
-                    $("#veiculo_id")
-                        .removeAttr('disabled')
-                        .find('option')
-                        .remove();
+                    $.ajax({
+                        url: '{{ route('veiculos.json') }}',
+                        type: 'POST',
+                        data: cliente,
+                        dataType: 'JSON',
+                        cache: false,
+                        success: function(data) {
+                            //console.log(data);
+                            $("#veiculo_id")
+                                .removeAttr('disabled')
+                                .find('option')
+                                .remove();
 
-                    $('#veiculo_id').append($('<option>', {value: '', text: 'Nada selecionado'}));
+                            $('#veiculo_id').append($('<option>', {
+                                value: '',
+                                text: 'Nada selecionado'
+                            }));
 
-                    $.each(data, function (i, item) {
-                        $('#veiculo_id').append($('<option>', { 
-                            value: item.id,
-                            'data-tipo-controle-veiculo': item.modelo_veiculo.tipo_controle_veiculo.id,
-                            text : item.placa + ' - ' + item.modelo_veiculo.marca_veiculo.marca_veiculo + ' ' + item.modelo_veiculo.modelo_veiculo
-                        }));
+                            $.each(data, function(i, item) {
+                                $('#veiculo_id').append($('<option>', {
+                                    value: item.id,
+                                    'data-tipo-controle-veiculo': item
+                                        .modelo_veiculo.tipo_controle_veiculo.id,
+                                    text: item.placa + ' - ' + item.modelo_veiculo
+                                        .marca_veiculo.marca_veiculo + ' ' + item
+                                        .modelo_veiculo.modelo_veiculo
+                                }));
+                            });
+
+                            @if (old('modelo_veiculo_id'))
+                                $('#modelo_veiculo_id').selectpicker('val',
+                                    {{ old('modelo_veiculo_id') }});
+                            @endif
+
+                            $('.selectpicker').selectpicker('refresh');
+                        },
+                        error: function(data) {}
                     });
-                    
-                    @if(old('modelo_veiculo_id'))
-                    $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
-                    @endif
+                }
+                $('#cliente_id').on('changed.bs.select', buscarVeiculos);
 
-                    $('.selectpicker').selectpicker('refresh');
-                },
-                error: function (data) {
+                if ($('#cliente_id').val()) {
+                    buscarVeiculos();
                 }
             });
-            }
-            $('#cliente_id').on('changed.bs.select', buscarVeiculos);
-
-            if ($('#cliente_id').val()) {
-                buscarVeiculos();
-            }
-        });
-    </script>
-
-@endpush
+        </script>
+    @endpush
 @endsection
