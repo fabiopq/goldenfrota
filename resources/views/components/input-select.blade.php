@@ -1,4 +1,5 @@
 @php
+
     $inputSize = isset($inputSize) ? '-'.$inputSize : '-12';
     $disabled = isset($disabled) ? $disabled : false;
     $autofocus = isset($autofocus) ? $autofocus : false;
@@ -10,6 +11,9 @@
     $vModel = isset($vModel) ? $vModel : false;
     $div_css = isset($div_css) ? $div_css : '';
     $searchById = isset($searchById) ? $searchById : true;
+    
+                
+            
 @endphp
 <div class="col col-sm col-md{{$inputSize}} col-lg{{$inputSize}} {{ $errors->has($field) ? ' has-error' : '' }} {{$div_css}}">
     @if(isset($label))
@@ -21,6 +25,8 @@
             @if($defaultNone)
                 <option {{--  disabled  --}} selected value="" {{--  style="display:none"  --}}> {{__('strings.NothingSelected')}} </option>
             @endif
+           
+            
             @if(is_array($items))
                 @foreach($items as $key => $value) 
                     <option value="{{ $key }}" {{($key==$indexSelected) ? 'selected=selected' : ''}}>{{ (($searchById) ? $key . ' - ' : '') . $value }}</option>

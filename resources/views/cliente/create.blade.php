@@ -64,7 +64,6 @@
                             'displayField' => 'busca_cnpj',
                             'keyField' => 'id',
                             'action' => 'search',
-                            
                         ],
                         [
                             'type' => 'text',
@@ -232,8 +231,7 @@
                                     'required' => true,
                                     'items' => $ufs,
                                     'inputSize' => 2,
-                                    '
-                                    ' => 'uf',
+                                    'displayField' => 'uf',
                                     'liveSearch' => true,
                                     'keyField' => 'id',
                                     'searchById' => false,
@@ -280,37 +278,37 @@
 
 
     $('#busca_cnpj').on('click', function() {
-        var cnpj = $('#cpf_cnpj').val().replace(/\D/g, '');
+    var cnpj = $('#cpf_cnpj').val().replace(/\D/g, '');
 
-        if (cnpj.length !== 14) {
-            alert('CNPJ inválido!');
-            return;
-        }
+    if (cnpj.length !== 14) {
+    alert('CNPJ inválido!');
+    return;
+    }
 
-        $.ajax({
-            url: 'https://www.receitaws.com.br/v1/cnpj/' + cnpj,
-            method: 'GET',
-            dataType: 'jsonp',
-            success: function(response) {
-                if (response.status === "OK") {
-                    $('#nome_razao').val(response.nome);
-                    $('#fantasia').val(response.fantasia);
-                    
-                    $('#email1').val(response.email);
-                    $('#endereco').val(response.logradouro);
-                    $('#numero').val(response.numero);
-                    $('#bairro').val(response.bairro);
-                    $('#cidade').val(response.municipio);
-                    $('#uf_id').val(response.uf);
-                    $('#cep').val(response.cep);
-                    $('#fone1').val(response.telefone);
-                } else {
-                    alert('CNPJ não encontrado!');
-                }
-            },
-            error: function() {
-                alert('Erro ao buscar CNPJ!');
-            }
-        });
+    $.ajax({
+    url: 'https://www.receitaws.com.br/v1/cnpj/' + cnpj,
+    method: 'GET',
+    dataType: 'jsonp',
+    success: function(response) {
+    if (response.status === "OK") {
+    $('#nome_razao').val(response.nome);
+    $('#fantasia').val(response.fantasia);
+
+    $('#email1').val(response.email);
+    $('#endereco').val(response.logradouro);
+    $('#numero').val(response.numero);
+    $('#bairro').val(response.bairro);
+    $('#cidade').val(response.municipio);
+    $('#uf_id').val(response.uf);
+    $('#cep').val(response.cep);
+    $('#fone1').val(response.telefone);
+    } else {
+    alert('CNPJ não encontrado!');
+    }
+    },
+    error: function() {
+    alert('Erro ao buscar CNPJ!');
+    }
+    });
     });
 @endpush
