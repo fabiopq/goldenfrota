@@ -1930,7 +1930,8 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
           'produto_vencimento_id': this.produto_vencimento_id,
           'produto_descricao': this.getProdutoById(this.produto_id).produto_descricao + this.getProdutoVencimentoDesc(this.produto_vencimento_id),
           'quantidade': Number(this.quantidade),
-          'valor_produto': Number(this.getProdutoById(this.produto_id).valor_venda),
+          'valor_produto': Number(this.valor_unitario),
+          // 'valor_produto': Number(this.getProdutoById(this.produto_id).valor_venda),
           'valor_desconto': Number(this.valor_desconto),
           'valor_acrescimo': Number(this.valor_acrescimo),
           'valor_cobrado': Number(this.valor_cobrado)
@@ -2843,8 +2844,7 @@ var render = function render() {
       max: "9999999999,999",
       step: "any",
       name: "inputValorUnitario",
-      id: "inputValorUnitario",
-      readonly: ""
+      id: "inputValorUnitario"
     },
     domProps: {
       value: _vm.valor_unitario

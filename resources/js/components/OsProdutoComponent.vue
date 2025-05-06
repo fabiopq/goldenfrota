@@ -110,7 +110,7 @@
                         </span>
                     </div>
                     <div v-bind:class="{'col-md-1': true, ' has-error': this.errors.inputValorUnitario}" style="padding-right: 0 !important; padding-left: 0 !important;">
-                        <input :disabled="((estoqueId == 'false') || (estoqueId == null))" type="number" min="0,000" max="9999999999,999" step="any" ref="inputValorUnitario" v-model.number="valor_unitario" class="form-control" name="inputValorUnitario" id="inputValorUnitario" readonly>
+                        <input :disabled="((estoqueId == 'false') || (estoqueId == null))" type="number" min="0,000" max="9999999999,999" step="any" ref="inputValorUnitario" v-model.number="valor_unitario" class="form-control" name="inputValorUnitario" id="inputValorUnitario">
                         <span class="help-block" :v-if="this.errors.inputValorUnitario">
                             <strong>{{ this.errors.inputValorUnitarioMsg }}</strong>
                         </span>
@@ -386,7 +386,8 @@
                         'produto_vencimento_id': this.produto_vencimento_id,
                         'produto_descricao': this.getProdutoById(this.produto_id).produto_descricao+this.getProdutoVencimentoDesc(this.produto_vencimento_id),
                         'quantidade': Number(this.quantidade),
-                        'valor_produto': Number(this.getProdutoById(this.produto_id).valor_venda),
+                        'valor_produto': Number(this.valor_unitario),
+                       // 'valor_produto': Number(this.getProdutoById(this.produto_id).valor_venda),
                         'valor_desconto': Number(this.valor_desconto),
                         'valor_acrescimo': Number(this.valor_acrescimo),
                         'valor_cobrado': Number(this.valor_cobrado)
