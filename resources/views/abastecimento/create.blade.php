@@ -4,14 +4,14 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Novo Abastecimento', 
-            'routeUrl' => route('abastecimento.store'), 
+            'title' => 'Novo Abastecimento',
+            'routeUrl' => route('abastecimento.store'),
             'method' => 'POST',
             'formButtons' => [
                 ['type' => 'submit', 'label' => 'Salvar', 'icon' => 'check'],
-                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
-                ]
-            ])
+                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times'],
+            ],
+        ])
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
@@ -20,12 +20,10 @@
                             'field' => 'data_hora_abastecimento',
                             'label' => 'Data/Hora',
                             'required' => true,
-                            'inputSize' => 4,
+                            'inputSize' => 3,
                             'dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss',
                             'sideBySide' => true,
                             'inputValue' => date('d/m/Y H:i'),
-                            
-                            
                         ],
                         [
                             'type' => 'select',
@@ -38,7 +36,18 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 7 
+                            'inputSize' => 6,
+                        ],
+                        [
+                            'type' => 'checkbox',
+                            'field' => 'abastecimento_local',
+                            'label' => 'Local',
+                            'dataWidth' => 65,
+                            'inputSize' => 1,
+                            'dataSize' => 'default',
+                            'disabled' => false,
+                            'inputValue' => 1,
+                            //'permission' => 'cadastrar-afericao'
                         ],
                         [
                             'type' => 'checkbox',
@@ -48,12 +57,12 @@
                             'inputSize' => 1,
                             'dataSize' => 'default',
                             'disabled' => false,
-                            'permission' => 'cadastrar-afericao'
-                        ]
-                    ]
+                            'permission' => 'cadastrar-afericao',
+                        ],
+                    ],
                 ])
                 @endcomponent
-               
+
                 @component('components.form-group', [
                     'inputs' => [
                         [
@@ -76,8 +85,8 @@
                             'required' => true,
                             'inputSize' => 4,
                             'inputValue' => 0,
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
                 @endcomponent
                 @component('components.form-group', [
@@ -92,7 +101,6 @@
                             'displayField' => 'nome_atendente',
                             'liveSearch' => true,
                             'keyField' => 'id',
-                           
                         ],
                         [
                             'type' => 'select',
@@ -105,9 +113,7 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                           
-                        ]
-                        ,
+                        ],
                         [
                             'type' => 'select',
                             'field' => 'posto_abastecimentos_id',
@@ -119,12 +125,11 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             //'defaultNone' => true,
-                           
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
                 @endcomponent
-          
+
                 <div class="card">
                     <div class="card-header">
                         <strong>AUTOMAÇÃO</strong>
@@ -149,18 +154,18 @@
                                     'field' => 'encerrante_inicial',
                                     'label' => 'Encerrante Inicial',
                                     'required' => true,
-                                    'inputSize' => 4,   
-                                    'readOnly' => true                       
+                                    'inputSize' => 4,
+                                    'readOnly' => true,
                                 ],
                                 [
                                     'type' => 'number',
                                     'field' => 'encerrante_final',
                                     'label' => 'Encerrante Final',
                                     'required' => true,
-                                    'inputSize' => 4, 
-                                    'readOnly' => true            
-                                ]
-                            ]
+                                    'inputSize' => 4,
+                                    'readOnly' => true,
+                                ],
+                            ],
                         ])
                         @endcomponent
                     </div>
@@ -172,21 +177,21 @@
                             'field' => 'combustivel_descricao',
                             'label' => 'Combustível',
                             'inputSize' => 6,
-                            'readOnly' => true
+                            'readOnly' => true,
                         ],
                         [
                             'type' => 'number',
                             'field' => 'volume_abastecimento',
                             'label' => 'Quantidade',
                             'required' => true,
-                            'inputSize' => 2                            
+                            'inputSize' => 2,
                         ],
                         [
                             'type' => 'number',
                             'field' => 'valor_litro',
                             'label' => 'Valor Unitário',
                             'required' => true,
-                            'inputSize' => 2                            
+                            'inputSize' => 2,
                         ],
                         [
                             'type' => 'number',
@@ -195,8 +200,8 @@
                             'required' => true,
                             'inputSize' => 2,
                             'readOnly' => true,
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
                 @endcomponent
                 <div class="card">
@@ -210,8 +215,8 @@
                                     'type' => 'textarea',
                                     'field' => 'obs_abastecimento',
                                     'label' => false,
-                                ]
-                            ]
+                                ],
+                            ],
                         ])
                         @endcomponent
                     </div>

@@ -134,12 +134,35 @@
                             <td scope="row"><span
                                     class="badge badge-pill badge-primary">{{ __($row->$field) }}</span></td>
                         @endif
+                        {{--  
                         @if ($caption['type'] == 'datetime')
                             <td scope="row">{{ date_format(date_create($row->$field), 'd/m/Y H:i:s') }}</td>
                         @endif
+                        --}}
+                        @if ($caption['type'] == 'datetime')
+                            <td scope="row">
+                                @if (!empty($row->$field))
+                                    {{ date_format(date_create($row->$field), 'd/m/Y H:i:s') }}
+                                @else
+                                    {{-- Campo vazio --}}
+                                @endif
+                            </td>
+                        @endif
+
+                        @if ($caption['type'] == 'date')
+                            <td scope="row">
+                                @if (!empty($row->$field))
+                                    {{ date_format(date_create($row->$field), 'd/m/Y') }}
+                                @else
+                                    {{-- Campo vazio --}}
+                                @endif
+                            </td>
+                        @endif
+                        {{--  
                         @if ($caption['type'] == 'date')
                             <td scope="row">{{ date_format(date_create($row->$field), 'd/m/Y') }}</td>
                         @endif
+                        --}}
                         @if ($caption['type'] == 'decimal')
                             <td scope="row">
                                 <div align="right">{{ number_format($row->$field, $caption['decimais'], ',', '.') }}
