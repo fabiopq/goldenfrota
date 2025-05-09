@@ -230,7 +230,7 @@ Route::post('grupo_veiculos/json', 'GrupoVeiculoController@getGrupoVeiculosJson'
 Route::post('marca_veiculos/json', 'MarcaVeiculoController@getMarcaVeiculosJson')->name('marca_veiculos.json'); 
 Route::post('/preco-cliente-item/valor', 'PrecoClienteController@getValorUnitario')->name('preco-cliente-item.valor');
 
-
+Route::post('/enviar-email', 'EmailController@enviar')->name('enviar.email');
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
 

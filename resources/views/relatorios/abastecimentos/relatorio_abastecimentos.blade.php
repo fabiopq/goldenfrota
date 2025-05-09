@@ -35,6 +35,7 @@ $clienteDistancia = 0;
                 <div class="card-body">
                     <table class="table table-sm report-table">
                         <thead>
+                            <td>Placa</td>
                             <td>Veículo</td>
                             <td align="right">KM Inicial</td>
                             <td align="right">KM Final</td>
@@ -58,6 +59,7 @@ $clienteDistancia = 0;
                             @endphp
                             <tr>
                                 <td> {{$abastecimento->placa}} </td>
+                                <td> {{$abastecimento->modelo_veiculo}} </td>
                                 <td align="right"> {{number_format($abastecimento->km_inicial, 1, ',', '.')}} </td>
                                 <td align="right"> {{number_format($abastecimento->km_final, 1, ',', '.')}} </td>
                                 <td align="right"> {{number_format($abastecimento->km_final - $abastecimento->km_inicial, 1, ',', '.')}} </td>

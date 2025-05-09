@@ -74,6 +74,7 @@
                             'comando' => 'grupoVeiculoModal',
                             'action' => 'create',
                         ],
+                       
                         [
                             'type' => 'text',
                             'field' => 'placa',
@@ -208,6 +209,10 @@
         @include('grupo_veiculo.modal')
         @include('modelo_veiculo.modal')
         @include('marca_veiculo.modal')    
+        @include('components.email-modal', [
+  'referenciaId' => 1,
+  'destinatario' => '$ordemServico->cliente->email'
+])
     
 <meta name="csrf-token" content="{{ Session::token() }}">
 <!-- Modal -->

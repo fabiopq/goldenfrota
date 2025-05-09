@@ -368,7 +368,12 @@
 
 
 <!-- Modal Dialog -->
+@include('grupo_veiculo.modal')
 @include('layouts.modal')
+@include('components.email-modal', [
+    'referenciaId' => 1,
+    'destinatario' => ''
+  ])
 
 @push('document-ready')
     <!-- Dialog show event handler -->

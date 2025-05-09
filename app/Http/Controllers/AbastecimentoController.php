@@ -834,8 +834,8 @@ class AbastecimentoController extends Controller
         if ($request->tipo_relatorio == 1) {
             /* relatório Sintético */
 
-
-
+            /*
+            
             foreach ($clientes as $cliente) {
 
 
@@ -864,12 +864,85 @@ class AbastecimentoController extends Controller
                     ->groupBy('veiculos.placa')
                     ->get();
                 //->toSql();
+//dd($abastecimentos);
+                if ($abastecimentos) {
+                    $cliente->abastecimentos = $abastecimentos;
+                }
+            }
+*/
+            //  $data_inicial_formatada = date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s');
+
+            $data_inicial_formatada = date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s');
+            $data_final_formatada = date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s');
+
+            foreach ($clientes as $cliente) {
+                $abastecimentos = DB::table('abastecimentos')
+                    ->select(
+                        'veiculos.placa',
+                        'modelo_veiculos.modelo_veiculo',
+                        DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                        DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                        DB::raw('AVG(abastecimentos.media_veiculo) AS media'),
+                        DB::raw('COUNT(abastecimentos.id) AS total_abastecimentos'),
+                        DB::raw('(SELECT a2.km_veiculo
+                                  FROM abastecimentos AS a2
+                                  WHERE a2.veiculo_id = abastecimentos.veiculo_id
+                                    AND a2.data_hora_abastecimento BETWEEN "' . $data_inicial_formatada . '" AND "' . $data_final_formatada . '"
+                                  ORDER BY a2.data_hora_abastecimento DESC
+                                  LIMIT 1) AS km_final')
+                    )
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    ->leftJoin('modelo_veiculos', 'veiculos.modelo_veiculo_id', 'modelo_veiculos.id')
+                    ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoAbastecimento)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id','modelo_veiculos.modelo_veiculo')
+                    ->get();
+
+                foreach ($abastecimentos as $abastecimento) {
+                    if ($abastecimento->total_abastecimentos > 1) {
+                        $km_inicial = DB::table('abastecimentos')
+                            ->join('veiculos', 'veiculos.id', '=', 'abastecimentos.veiculo_id')
+                            ->where('veiculos.placa', $abastecimento->placa)
+                            ->whereBetween('abastecimentos.data_hora_abastecimento', [$data_inicial_formatada, $data_final_formatada])
+                            ->orderBy('abastecimentos.data_hora_abastecimento', 'asc')
+                            ->limit(1)
+                            ->value('km_veiculo');
+                        $abastecimento->km_inicial = $km_inicial;
+                    } else {
+                        $km_anterior = DB::table('abastecimentos')
+                            ->join('veiculos', 'veiculos.id', '=', 'abastecimentos.veiculo_id')
+                            ->where('veiculos.placa', $abastecimento->placa)
+                            ->where('abastecimentos.data_hora_abastecimento', '<', $data_inicial_formatada)
+                            ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+                            ->limit(1)
+                            ->value('km_veiculo');
+                        $abastecimento->km_inicial = $km_anterior ?? $abastecimento->km_final;
+                    }
+
+                    // Cálculo da média com base nos km
+                    if (
+                        isset($abastecimento->km_inicial) &&
+                        isset($abastecimento->km_final) &&
+                        $abastecimento->km_final > $abastecimento->km_inicial
+                    ) {
+                        $abastecimento->media = $abastecimento->consumo / ($abastecimento->km_final - $abastecimento->km_inicial);
+                    } else {
+                        $abastecimento->media = null; // ou 0, ou 'Indefinida'
+                    }
+                }
 
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
             }
-
             return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else if ($request->tipo_relatorio == 2) {
             /* relatório Analítico */
@@ -1465,25 +1538,27 @@ class AbastecimentoController extends Controller
                 ->select('combustiveis.custo')
                 ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
                 ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
-                ->where('bicos.id', '=', trim($request->bico_id))
+                ->where('bicos.num_bico', '=', trim($request->bico_id))
                 ->first();
             $preco_venda = DB::table('combustiveis')
                 ->select('combustiveis.valor')
                 ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
                 ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
-                ->where('bicos.id', '=', trim($request->bico_id))
+                ->where('bicos.num_bico', '=', trim($request->bico_id))
                 ->first();
+
 
 
 
             if (!$preco_custo) {
                 $abastecimento->custo_litro = 0;
             } else {
-                $abastecimento->custo_litro = $preco_custo->custo;
+                $abastecimento->custo_litro = $preco_custo;
             }
 
             if (isset($cfgPreco->value) && $cfgPreco->value > 0) {
                 //$abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($request->volume_abastecimento), 3) * $preco->valor);
+
                 $abastecimento->valor_abastecimento = ($request->volume_abastecimento * $preco_venda->valor);
                 $abastecimento->valor_litro = $preco_venda->valor;
             } else {
@@ -1493,8 +1568,8 @@ class AbastecimentoController extends Controller
             }
 
 
-            
-            
+
+
             $abastecimento->km_veiculo = $request->km_veiculo;
             $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
             $abastecimento->abastecimento_local = true;
@@ -1537,7 +1612,7 @@ class AbastecimentoController extends Controller
             }
 
 
-            if ($request->veiculo_id) {
+            if (!is_null($request->veiculo_id)) {
 
                 $veiculo = Veiculo::where('id', '=', $request->veiculo_id)->first();
 
@@ -1595,6 +1670,7 @@ class AbastecimentoController extends Controller
 
             Log::debug('Abastecimento recebido na api: ' . $abastecimento);
             log::debug($abastecimento);
+
 
             if ($abastecimento->save()) {
 

@@ -16,6 +16,10 @@
             [
                 'custom_action' => 'components.customActions.FecharOdemServico'
             ],
+            [
+                'custom_action' => 'components.customActions.EnviarEmail',
+                'destinatario' => '{{ $row->nome_razao }}',  
+            ],
             
            // [
            //     'custom_action' => 'components.customActions.FecharOdemServico',
