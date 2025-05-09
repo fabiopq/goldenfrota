@@ -904,6 +904,7 @@ class AbastecimentoController extends Controller
                     ->whereRaw($whereTipoAbastecimento)
                     ->where('veiculos.cliente_id', $cliente->id)
                     ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id','modelo_veiculos.modelo_veiculo')
+                    ->orderBy('veiculos.placa')
                     ->get();
 
                 foreach ($abastecimentos as $abastecimento) {
