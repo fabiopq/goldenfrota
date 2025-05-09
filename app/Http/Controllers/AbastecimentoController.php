@@ -1554,7 +1554,7 @@ class AbastecimentoController extends Controller
             if (!$preco_custo) {
                 $abastecimento->custo_litro = 0;
             } else {
-                $abastecimento->custo_litro = $preco_custo;
+                $abastecimento->custo_litro = $preco_custo->custo ?? 0;
             }
 
             if (isset($cfgPreco->value) && $cfgPreco->value > 0) {
@@ -1668,9 +1668,8 @@ class AbastecimentoController extends Controller
                 $abastecimento->veiculo_id = null;
                 $abastecimento->media_veiculo = 0;
             }
-
-            Log::debug('Abastecimento recebido na api: ' . $abastecimento);
-            log::debug($abastecimento);
+            Log::debug('Abastecimento recebido na api: ' . json_encode($abastecimento));
+           
 
 
             if ($abastecimento->save()) {

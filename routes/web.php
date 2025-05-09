@@ -231,6 +231,7 @@ Route::post('marca_veiculos/json', 'MarcaVeiculoController@getMarcaVeiculosJson'
 Route::post('/preco-cliente-item/valor', 'PrecoClienteController@getValorUnitario')->name('preco-cliente-item.valor');
 
 Route::post('/enviar-email', 'EmailController@enviar')->name('enviar.email');
+Route::get('/comunicar-hardware', [App\Http\Controllers\HardwareController::class, 'communicate']);
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
 
