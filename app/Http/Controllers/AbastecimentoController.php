@@ -934,7 +934,7 @@ class AbastecimentoController extends Controller
                         isset($abastecimento->km_final) &&
                         $abastecimento->km_final > $abastecimento->km_inicial
                     ) {
-                        $abastecimento->media = $abastecimento->consumo / ($abastecimento->km_final - $abastecimento->km_inicial);
+                        $abastecimento->media = ($abastecimento->km_final - $abastecimento->km_inicial) /$abastecimento->consumo  ;
                     } else {
                         $abastecimento->media = null; // ou 0, ou 'Indefinida'
                     }
