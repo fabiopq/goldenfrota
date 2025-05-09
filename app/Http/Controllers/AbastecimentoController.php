@@ -1582,8 +1582,14 @@ class AbastecimentoController extends Controller
             }
 
             if ($request->bico_id) {
+                $bico = Bico::where('num_bico', '=', $request->bico_id)->first();
+                if ($bico) {
 
-                $abastecimento->bico_id = $request->bico_id;
+                    $abastecimento->bico_id = $bico->id;
+                }
+              //  $abastecimento->bico_id = $request->bico_id;
+              //  $abastecimento->bico_id = Bico::where('num_bico', '=', $request->bico_id)->first();
+                
             } else {
                 $bico = Bico::where('endereco', '=', $request->bico_endereco)->first();
 
