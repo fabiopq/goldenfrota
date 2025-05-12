@@ -903,7 +903,7 @@ class AbastecimentoController extends Controller
                     ->whereRaw($whereParam)
                     ->whereRaw($whereTipoAbastecimento)
                     ->where('veiculos.cliente_id', $cliente->id)
-                    ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id','modelo_veiculos.modelo_veiculo')
+                    ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id', 'modelo_veiculos.modelo_veiculo')
                     ->orderBy('veiculos.placa')
                     ->get();
 
@@ -934,7 +934,7 @@ class AbastecimentoController extends Controller
                         isset($abastecimento->km_final) &&
                         $abastecimento->km_final > $abastecimento->km_inicial
                     ) {
-                        $abastecimento->media = ($abastecimento->km_final - $abastecimento->km_inicial) /$abastecimento->consumo  ;
+                        $abastecimento->media = ($abastecimento->km_final - $abastecimento->km_inicial) / $abastecimento->consumo;
                     } else {
                         $abastecimento->media = null; // ou 0, ou 'Indefinida'
                     }
@@ -1535,17 +1535,35 @@ class AbastecimentoController extends Controller
                 $abastecimento->veiculo_id = $request->veiculo_id;
             }
 
+            if ($request->bico_id) {
+                $bico = Bico::where('num_bico', '=', $request->bico_id)->first();
+                if ($bico) {
+
+                    $abastecimento->bico_id = $bico->id;
+                }
+                //  $abastecimento->bico_id = $request->bico_id;
+                //  $abastecimento->bico_id = Bico::where('num_bico', '=', $request->bico_id)->first();
+
+            } else {
+                $bico = Bico::where('endereco', '=', $request->bico_endereco)->first();
+
+                if ($bico) {
+
+                    $abastecimento->bico_id = $bico->id;
+                }
+            }
+
             $preco_custo = DB::table('combustiveis')
                 ->select('combustiveis.custo')
                 ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
                 ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
-                ->where('bicos.num_bico', '=', trim($request->bico_id))
+                ->where('bicos.id', '=', trim($bico->id))
                 ->first();
             $preco_venda = DB::table('combustiveis')
                 ->select('combustiveis.valor')
                 ->leftJoin('tanques', 'tanques.combustivel_id', 'combustiveis.id')
                 ->leftJoin('bicos', 'bicos.tanque_id', 'tanques.id')
-                ->where('bicos.num_bico', '=', trim($request->bico_id))
+                ->where('bicos.id', '=', trim($bico->id))
                 ->first();
 
 
@@ -1558,10 +1576,15 @@ class AbastecimentoController extends Controller
             }
 
             if (isset($cfgPreco->value) && $cfgPreco->value > 0) {
-                //$abastecimento->valor_abastecimento = ($this->formataValorDecimal(trim($request->volume_abastecimento), 3) * $preco->valor);
-
-                $abastecimento->valor_abastecimento = ($request->volume_abastecimento * $preco_venda->valor);
-                $abastecimento->valor_litro = $preco_venda->valor;
+                if ($preco_venda && isset($preco_venda->valor)) {
+                    $abastecimento->valor_abastecimento = ($request->volume_abastecimento * $preco_venda->valor);
+                    $abastecimento->valor_litro = $preco_venda->valor;
+                } else {
+                    // Tratamento alternativo se o valor não estiver disponível
+                    $abastecimento->valor_abastecimento = 0;
+                    $abastecimento->valor_litro = 0;
+                    Log::debug("Erro: Preço de venda não encontrado para o bico " . $request->bico_id);
+                }
             } else {
 
                 $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
@@ -1581,23 +1604,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->posto_abastecimentos_id =   $request->posto_abastecimentos_id;
             }
 
-            if ($request->bico_id) {
-                $bico = Bico::where('num_bico', '=', $request->bico_id)->first();
-                if ($bico) {
-
-                    $abastecimento->bico_id = $bico->id;
-                }
-              //  $abastecimento->bico_id = $request->bico_id;
-              //  $abastecimento->bico_id = Bico::where('num_bico', '=', $request->bico_id)->first();
-                
-            } else {
-                $bico = Bico::where('endereco', '=', $request->bico_endereco)->first();
-
-                if ($bico) {
-
-                    $abastecimento->bico_id = $bico->id;
-                }
-            }
+           
 
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
@@ -1675,7 +1682,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->media_veiculo = 0;
             }
             Log::debug('Abastecimento recebido na api: ' . json_encode($abastecimento));
-           
+
 
 
             if ($abastecimento->save()) {
@@ -1693,7 +1700,7 @@ class AbastecimentoController extends Controller
                 Log::debug('abastecimento salvo  : ' . $abastecimento . 'tag_atendente' . $request->tag_atendente);
 
                 MovimentacaoCreditoController::saidaCredito2($abastecimento);
-
+                
                 if ($abastecimento->bico_id) {
 
 
@@ -1708,8 +1715,9 @@ class AbastecimentoController extends Controller
                         MovimentacaoCombustivelController::cadastroAfericao($afericao);
                     } else {
                         /* Se informado o bico, movimenta o estoque do tanque */
-
+                        
                         MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
+                        
                     }
 
                     if (!BicoController::atualizarEncerranteBico($abastecimento->bico_id, $request->encerrante_final)) {
@@ -1722,9 +1730,9 @@ class AbastecimentoController extends Controller
                 //Log::debug('Abastecimento Inserido: '.$abastecimento);
 
                 DB::commit();
-
+                
                 event(new NovoAbastecimento($abastecimento));
-
+               // dd($abastecimento);
                 //Ajusta médias futuras
                 if (!$this->ajustarMediaAbastecimentosFuturos($abastecimento)) {
                     throw new \Exception(__('messages.exception', [
