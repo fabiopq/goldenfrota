@@ -876,12 +876,12 @@ class AbastecimentoController extends Controller
 
             $data_inicial_formatada = date_format(date_create_from_format('d/m/Y H:i:s', $data_inicial . '00:00:00'), 'Y-m-d H:i:s');
             $data_final_formatada = date_format(date_create_from_format('d/m/Y H:i:s', $data_final . '23:59:59'), 'Y-m-d H:i:s');
+
             foreach ($clientes as $cliente) {
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
                         'veiculos.placa',
                         'modelo_veiculos.modelo_veiculo',
-                        'modelo_veiculos.tipo_controle_veiculo_id',
                         DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
                         DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
                         DB::raw('AVG(abastecimentos.media_veiculo) AS media'),
@@ -905,60 +905,47 @@ class AbastecimentoController extends Controller
                     ->whereRaw($whereParam)
                     ->whereRaw($whereTipoAbastecimento)
                     ->where('veiculos.cliente_id', $cliente->id)
-                    ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id', 'modelo_veiculos.modelo_veiculo', 'modelo_veiculos.tipo_controle_veiculo_id')
+                    ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id', 'modelo_veiculos.modelo_veiculo')
                     ->orderBy('veiculos.placa')
                     ->get();
-            
+
                 foreach ($abastecimentos as $abastecimento) {
-                    // Buscar valor inicial (km_veiculo) ANTES do período
-                    $valor_inicial = DB::table('abastecimentos')
-                        ->join('veiculos', 'veiculos.id', '=', 'abastecimentos.veiculo_id')
-                        ->where('veiculos.placa', $abastecimento->placa)
-                        ->where('abastecimentos.data_hora_abastecimento', '<', $data_inicial_formatada)
-                        ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
-                        ->value('km_veiculo');
-            
-                    // Se não houver antes, buscar o primeiro DENTRO do período
-                    if (is_null($valor_inicial)) {
-                        $valor_inicial = DB::table('abastecimentos')
+                    if ($abastecimento->total_abastecimentos > 1) {
+                        $km_inicial = DB::table('abastecimentos')
                             ->join('veiculos', 'veiculos.id', '=', 'abastecimentos.veiculo_id')
                             ->where('veiculos.placa', $abastecimento->placa)
                             ->whereBetween('abastecimentos.data_hora_abastecimento', [$data_inicial_formatada, $data_final_formatada])
                             ->orderBy('abastecimentos.data_hora_abastecimento', 'asc')
+                            ->limit(1)
                             ->value('km_veiculo');
+                        $abastecimento->km_inicial = $km_inicial;
+                    } else {
+                        $km_anterior = DB::table('abastecimentos')
+                            ->join('veiculos', 'veiculos.id', '=', 'abastecimentos.veiculo_id')
+                            ->where('veiculos.placa', $abastecimento->placa)
+                            ->where('abastecimentos.data_hora_abastecimento', '<', $data_inicial_formatada)
+                            ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+                            ->limit(1)
+                            ->value('km_veiculo');
+                        $abastecimento->km_inicial = $km_anterior ?? $abastecimento->km_final;
                     }
-            
-                    $abastecimento->km_inicial = $valor_inicial ?? $abastecimento->km_final;
-            
-                    // Cálculo da média considerando tipo de controle
-                    $diferenca = $abastecimento->km_final - $abastecimento->km_inicial;
-            
+
+                    // Cálculo da média com base nos km
                     if (
                         isset($abastecimento->km_inicial) &&
                         isset($abastecimento->km_final) &&
-                        $diferenca > 0 &&
-                        $abastecimento->consumo > 0
+                        $abastecimento->km_final > $abastecimento->km_inicial
                     ) {
-                        if ($abastecimento->tipo_controle_veiculo_id == 1) {
-                            // Controle por KM - média em KM/L
-                            $abastecimento->media = $diferenca / $abastecimento->consumo;
-                        } elseif ($abastecimento->tipo_controle_veiculo_id == 2) {
-                            // Controle por Horímetro - média em L/hora
-                            $abastecimento->media = $abastecimento->consumo / $diferenca;
-                        } else {
-                            $abastecimento->media = null;
-                        }
+                        $abastecimento->media = ($abastecimento->km_final - $abastecimento->km_inicial) / $abastecimento->consumo;
                     } else {
-                        $abastecimento->media = null;
+                        $abastecimento->media = null; // ou 0, ou 'Indefinida'
                     }
                 }
-            
+
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
             }
-            
-            
             return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else if ($request->tipo_relatorio == 2) {
             /* relatório Analítico */
