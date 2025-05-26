@@ -404,6 +404,8 @@ class AbastecimentoController extends Controller
             try {
 
                 $abastecimento->veiculo_id = $request->veiculo_id;
+                $abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
+           
                 $abastecimento->km_veiculo = $request->km_veiculo;
                 $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
                 $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
