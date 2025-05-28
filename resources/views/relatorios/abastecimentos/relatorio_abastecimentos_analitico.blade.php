@@ -78,7 +78,8 @@ $clienteValor = 0;
                                                 {{ number_format($abastecimento->km_veiculo, 1, ',', '.') }}
                                             </td>
                                             <td align="right">
-                                                {{ number_format($abastecimento->media_veiculo, 2, ',', '.') }}
+                                                {{ isset($abastecimento->media_calculada) ? number_format($abastecimento->media_calculada, 2, ',', '.') : '-' }}
+                                               {{--  {{ number_format($abastecimento->media_calculada, 2, ',', '.') }} --}} 
                                             </td>
                                         </tr>
                                         @endforeach
@@ -182,7 +183,8 @@ $clienteValor = 0;
                                                 {{ number_format($clienteItem->km_veiculo, 1, ',', '.') }}
                                             </td>
                                             <td align="right">
-                                                {{ number_format($clienteItem->media_veiculo, 2, ',', '.') }}
+                                                {{ isset($abastecimento->media_calculada) ? number_format($abastecimento->media_calculada, 2, ',', '.') : '-' }}
+                                                {{--  {{ number_format($clienteItem->media_calculada, 2, ',', '.') }}--}}
                                             </td>
                                         </tr>
                                         @endforeach

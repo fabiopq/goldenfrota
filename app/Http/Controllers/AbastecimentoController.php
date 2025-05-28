@@ -405,7 +405,7 @@ class AbastecimentoController extends Controller
 
                 $abastecimento->veiculo_id = $request->veiculo_id;
                 $abastecimento->data_hora_abastecimento = \DateTime::createFromFormat('d/m/Y H:i:s', $request->data_hora_abastecimento)->format('Y-m-d H:i:s');
-           
+
                 $abastecimento->km_veiculo = $request->km_veiculo;
                 $abastecimento->volume_abastecimento = str_replace(',', '.', $request->volume_abastecimento);
                 $abastecimento->valor_litro = str_replace(',', '.', $request->valor_litro);
@@ -592,7 +592,7 @@ class AbastecimentoController extends Controller
                 return 0;
             } else {
                 //veiculo já abasteceu antes
-                
+
                 if ($veiculo->modelo_veiculo->tipo_controle_veiculo_id == 1) {
                     if (App::environment('local')) {
                         Log::debug('obterMediaVeiculo - Controle por KM');
@@ -618,7 +618,7 @@ class AbastecimentoController extends Controller
                         return 0;
                     }
                 } else {
-                    
+
                     /* controle de horas trabalhadas */
                     if ($abastecimentoAtual->km_veiculo > 0) {
                         //horas trabalhadas informada
@@ -910,7 +910,7 @@ class AbastecimentoController extends Controller
                     ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id', 'modelo_veiculos.modelo_veiculo', 'modelo_veiculos.tipo_controle_veiculo_id')
                     ->orderBy('veiculos.placa')
                     ->get();
-            
+
                 foreach ($abastecimentos as $abastecimento) {
                     // Buscar valor inicial (km_veiculo) ANTES do período
                     $valor_inicial = DB::table('abastecimentos')
@@ -919,7 +919,7 @@ class AbastecimentoController extends Controller
                         ->where('abastecimentos.data_hora_abastecimento', '<', $data_inicial_formatada)
                         ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
                         ->value('km_veiculo');
-            
+
                     // Se não houver antes, buscar o primeiro DENTRO do período
                     if (is_null($valor_inicial)) {
                         $valor_inicial = DB::table('abastecimentos')
@@ -929,12 +929,12 @@ class AbastecimentoController extends Controller
                             ->orderBy('abastecimentos.data_hora_abastecimento', 'asc')
                             ->value('km_veiculo');
                     }
-            
+
                     $abastecimento->km_inicial = $valor_inicial ?? $abastecimento->km_final;
-            
+
                     // Cálculo da média considerando tipo de controle
                     $diferenca = $abastecimento->km_final - $abastecimento->km_inicial;
-            
+
                     if (
                         isset($abastecimento->km_inicial) &&
                         isset($abastecimento->km_final) &&
@@ -954,17 +954,18 @@ class AbastecimentoController extends Controller
                         $abastecimento->media = null;
                     }
                 }
-            
+
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
             }
-            
-            
+
+
             return View('relatorios.abastecimentos.relatorio_abastecimentos')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
         } else if ($request->tipo_relatorio == 2) {
             /* relatório Analítico */
-            foreach ($clientes as $cliente) {
+
+            /*  foreach ($clientes as $cliente) {
 
 
 
@@ -985,9 +986,77 @@ class AbastecimentoController extends Controller
                     ->where('veiculos.cliente_id', $cliente->id)
                     ->orderBy('veiculos.placa', 'asc')
                     ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
-                    /* ->orderBy('abastecimentos.id', 'desc') */
+                    // ->orderBy('abastecimentos.id', 'desc') 
                     ->distinct()
                     ->get();
+                $cliente->abastecimentos = $abastecimentos;
+            }
+            */
+            foreach ($clientes as $cliente) {
+                $abastecimentos = DB::table('abastecimentos')
+                    ->select(
+                        'abastecimentos.*',
+                        'veiculos.placa',
+                        'veiculos.modelo_veiculo_id',
+                        'modelo_veiculos.tipo_controle_veiculo_id',
+                        'posto_abastecimentos.nome'
+                    )
+                    ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('modelo_veiculos', 'veiculos.modelo_veiculo_id', 'modelo_veiculos.id')
+                    ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
+                    ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                    ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoAbastecimento)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->orderBy('veiculos.placa', 'asc')
+                    ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+                    ->distinct()
+                    ->get();
+
+                foreach ($abastecimentos as $abastecimento) {
+                    // Inicializa a propriedade para evitar erro na view
+                    $abastecimento->media_calculada = null;
+
+                    // Buscar o km anterior
+                    $km_inicial = DB::table('abastecimentos')
+                        ->join('veiculos', 'veiculos.id', '=', 'abastecimentos.veiculo_id')
+                        ->where('veiculos.placa', $abastecimento->placa)
+                        ->where('abastecimentos.data_hora_abastecimento', '<', $abastecimento->data_hora_abastecimento)
+                        ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
+                        ->value('km_veiculo');
+
+                    // Se não houver valor anterior, usar o próprio km atual
+                    if (is_null($km_inicial)) {
+                        $km_inicial = $abastecimento->km_veiculo;
+                    }
+
+                    // Define o km_inicial para uso em exibição, se necessário
+                    $abastecimento->km_inicial = $km_inicial;
+
+                    // Cálculo da média
+                    $diferenca = $abastecimento->km_veiculo - $km_inicial;
+
+                    if (
+                        isset($km_inicial) &&
+                        isset($abastecimento->km_veiculo) &&
+                        $diferenca > 0 &&
+                        $abastecimento->volume_abastecimento > 0
+                    ) {
+                        if ($abastecimento->tipo_controle_veiculo_id == 1) {
+                            // Controle por KM
+                            $abastecimento->media_calculada = $diferenca / $abastecimento->volume_abastecimento;
+                        } elseif ($abastecimento->tipo_controle_veiculo_id == 2) {
+                            // Controle por Horímetro
+                            $abastecimento->media_calculada = $abastecimento->volume_abastecimento / $diferenca;
+                        }
+                    }
+                }
+
                 $cliente->abastecimentos = $abastecimentos;
             }
 
@@ -1621,7 +1690,7 @@ class AbastecimentoController extends Controller
                 $abastecimento->posto_abastecimentos_id =   $request->posto_abastecimentos_id;
             }
 
-           
+
 
             $abastecimento->encerrante_inicial = $request->encerrante_inicial;
             $abastecimento->encerrante_final = $request->encerrante_final;
@@ -1688,7 +1757,7 @@ class AbastecimentoController extends Controller
             if (isset($veiculo->id)) {
 
                 $abastecimento->veiculo_id = $veiculo->id;
-               
+
 
                 $abastecimento->media_veiculo = $this->obterMediaVeiculo($veiculo, $abastecimento) ?? 0;
                 // $abastecimento->media_veiculo = $this->obterMediaVeiculo(Veiculo::find($abastecimento->veiculo_id), $abastecimento, false);
@@ -1718,7 +1787,7 @@ class AbastecimentoController extends Controller
                 Log::debug('abastecimento salvo  : ' . $abastecimento . 'tag_atendente' . $request->tag_atendente);
 
                 MovimentacaoCreditoController::saidaCredito2($abastecimento);
-                
+
                 if ($abastecimento->bico_id) {
 
 
@@ -1733,9 +1802,8 @@ class AbastecimentoController extends Controller
                         MovimentacaoCombustivelController::cadastroAfericao($afericao);
                     } else {
                         /* Se informado o bico, movimenta o estoque do tanque */
-                        
+
                         MovimentacaoCombustivelController::saidaAbastecimento($abastecimento);
-                        
                     }
 
                     if (!BicoController::atualizarEncerranteBico($abastecimento->bico_id, $request->encerrante_final)) {
@@ -1748,9 +1816,9 @@ class AbastecimentoController extends Controller
                 //Log::debug('Abastecimento Inserido: '.$abastecimento);
 
                 DB::commit();
-                
+
                 event(new NovoAbastecimento($abastecimento));
-               // dd($abastecimento);
+                // dd($abastecimento);
                 //Ajusta médias futuras
                 if (!$this->ajustarMediaAbastecimentosFuturos($abastecimento)) {
                     throw new \Exception(__('messages.exception', [
