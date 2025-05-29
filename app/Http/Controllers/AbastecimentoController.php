@@ -164,7 +164,9 @@ class AbastecimentoController extends Controller
             $postos = PostoAbastecimento::where('ativo', true)
                 ->get();
 
-            $clientes = Cliente::where('ativo', true)->get();
+            //$clientes = Cliente::where('ativo', true)->get();
+            $clientes = Cliente::get();
+
             // $bicos = Bico::where('permite_insercao', true)->where('ativo', true)->get();
             // return View('abastecimento.create')->withClientes($clientes)->withBicos($bicos);
             return View('abastecimento.create', [
@@ -783,8 +785,11 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
             //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->where('abastecimentos.eh_afericao', false) 
+            //->whereRaw('clientes.ativo = true')
             ->whereRaw('clientes.id is not null')
             ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+            
             ->whereRaw($whereData)
             ->whereRaw($whereParam)
             ->whereRaw($whereTipoAbastecimento)
@@ -808,6 +813,8 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->where('abastecimentos.eh_afericao', false) 
+            //->whereRaw('clientes.ativo = true')
             ->whereRaw('clientes.id is null')
             ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
             ->whereRaw($whereData)
@@ -825,6 +832,8 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+            ->where('abastecimentos.eh_afericao', false) 
+           // ->whereRaw('clientes.ativo = true')
             ->whereRaw('clientes.id is null')
             ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
             ->whereRaw($whereData)
@@ -901,6 +910,7 @@ class AbastecimentoController extends Controller
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('modelo_veiculos', 'veiculos.modelo_veiculo_id', 'modelo_veiculos.id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+                    /*
                     ->whereRaw('clientes.id is not null')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
@@ -910,6 +920,20 @@ class AbastecimentoController extends Controller
                     ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id', 'modelo_veiculos.modelo_veiculo', 'modelo_veiculos.tipo_controle_veiculo_id')
                     ->orderBy('veiculos.placa')
                     ->get();
+                    */
+                    
+                    ->where('abastecimentos.eh_afericao', false) 
+                   // ->whereRaw('clientes.ativo = true')
+                    ->whereRaw('clientes.id is not null')
+                    ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
+                    ->whereRaw($whereData)
+                    ->whereRaw($whereParam)
+                    ->whereRaw($whereTipoAbastecimento)
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id', 'modelo_veiculos.modelo_veiculo', 'modelo_veiculos.tipo_controle_veiculo_id')
+                    ->orderBy('veiculos.placa')
+                    ->get();
+                    
 
                 foreach ($abastecimentos as $abastecimento) {
                     // Buscar valor inicial (km_veiculo) ANTES do período
@@ -1007,6 +1031,8 @@ class AbastecimentoController extends Controller
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
+                    ->where('abastecimentos.eh_afericao', false) 
+                    //->whereRaw('clientes.ativo = true')
                     ->whereRaw('clientes.id is not null')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
@@ -1017,7 +1043,7 @@ class AbastecimentoController extends Controller
                     ->orderBy('abastecimentos.data_hora_abastecimento', 'desc')
                     ->distinct()
                     ->get();
-
+                //dd($abastecimentos);
                 foreach ($abastecimentos as $abastecimento) {
                     // Inicializa a propriedade para evitar erro na view
                     $abastecimento->media_calculada = null;
