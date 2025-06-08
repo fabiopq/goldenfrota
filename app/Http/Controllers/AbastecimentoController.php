@@ -785,11 +785,11 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
             //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-            ->where('abastecimentos.eh_afericao', false) 
+            ->where('abastecimentos.eh_afericao', false)
             //->whereRaw('clientes.ativo = true')
             ->whereRaw('clientes.id is not null')
             ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
-            
+
             ->whereRaw($whereData)
             ->whereRaw($whereParam)
             ->whereRaw($whereTipoAbastecimento)
@@ -813,7 +813,7 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-            ->where('abastecimentos.eh_afericao', false) 
+            ->where('abastecimentos.eh_afericao', false)
             //->whereRaw('clientes.ativo = true')
             ->whereRaw('clientes.id is null')
             ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
@@ -832,8 +832,8 @@ class AbastecimentoController extends Controller
             ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
             ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
             ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
-            ->where('abastecimentos.eh_afericao', false) 
-           // ->whereRaw('clientes.ativo = true')
+            ->where('abastecimentos.eh_afericao', false)
+            // ->whereRaw('clientes.ativo = true')
             ->whereRaw('clientes.id is null')
             ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
             ->whereRaw($whereData)
@@ -921,9 +921,9 @@ class AbastecimentoController extends Controller
                     ->orderBy('veiculos.placa')
                     ->get();
                     */
-                    
-                    ->where('abastecimentos.eh_afericao', false) 
-                   // ->whereRaw('clientes.ativo = true')
+
+                    ->where('abastecimentos.eh_afericao', false)
+                    // ->whereRaw('clientes.ativo = true')
                     ->whereRaw('clientes.id is not null')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
@@ -933,7 +933,7 @@ class AbastecimentoController extends Controller
                     ->groupBy('veiculos.placa', 'veiculos.id', 'abastecimentos.veiculo_id', 'modelo_veiculos.modelo_veiculo', 'modelo_veiculos.tipo_controle_veiculo_id')
                     ->orderBy('veiculos.placa')
                     ->get();
-                    
+
 
                 foreach ($abastecimentos as $abastecimento) {
                     // Buscar valor inicial (km_veiculo) ANTES do período
@@ -1031,7 +1031,7 @@ class AbastecimentoController extends Controller
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
                     ->leftJoin('posto_abastecimentos', 'posto_abastecimentos.id', 'abastecimentos.posto_abastecimentos_id')
-                    ->where('abastecimentos.eh_afericao', false) 
+                    ->where('abastecimentos.eh_afericao', false)
                     //->whereRaw('clientes.ativo = true')
                     ->whereRaw('clientes.id is not null')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')

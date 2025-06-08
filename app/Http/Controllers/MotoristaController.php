@@ -306,21 +306,25 @@ class MotoristaController extends Controller
         return View('relatorios.motoristas.listagem_motoristas')->withMotoristas(Motorista::all())->withTitulo('Listagem de Motoristas')->withParametro(Parametro::first());
     }
 
-    public function destroy(Motorista $motorista)
+    /*public function destroy(Motorista $motorista)
     {
         if (Auth::user()->canExcluirMotorista()) {
+            
             try {
+                
                 if ($motorista->delete()) {
-
+                   
                     event(new NovoRegistroAtualizacaoApp($motorista, true));
 
                     Session::flash('success', __('messages.delete_success', [
                         'model' => __('models.motorista'),
                         'name' => $motorista->nome
                     ]));
-                    return redirect()->action('MotiristaController@index');
+                    return redirect()->action('MotoristaController@index');
                 }
+                
             } catch (\Exception $e) {
+                
                 switch ($e->getCode()) {
                     case 23000:
                         Session::flash('error', __('messages.fk_exception'));
@@ -338,6 +342,42 @@ class MotoristaController extends Controller
             return redirect()->back();
         }
     }
+    */
+
+    public function destroy(Motorista $motorista)
+{
+    if (Auth::check() && Auth::user()->canExcluirMotorista()) {
+        try {
+            if ($motorista->delete()) {
+                event(new NovoRegistroAtualizacaoApp($motorista, true));
+                Session::flash('success', __('messages.delete_success', [
+                    'model' => __('models.motorista'),
+                    'name' => $motorista->nome
+                ]));
+                return redirect()->action('MotoristaController@index');
+            } else {
+                Session::flash('error', 'Erro ao tentar deletar o motorista.');
+                return redirect()->action('MotoristaController@index');
+            }
+        } catch (\Exception $e) {
+            switch ($e->getCode()) {
+                case 23000:
+                    Session::flash('error', __('messages.fk_exception'));
+                    break;
+                default:
+                    Session::flash('error', __('messages.exception', [
+                        'exception' => $e->getMessage()
+                    ]));
+                    break;
+            }
+            return redirect()->action('MotoristaController@index');
+        }
+    } else {
+        Session::flash('error', __('messages.access_denied'));
+        return redirect()->back();
+    }
+}
+
 
     public function apiMotoristas()
     {

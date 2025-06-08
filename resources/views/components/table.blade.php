@@ -371,7 +371,7 @@
 @include('grupo_veiculo.modal')
 @include('layouts.modal')
 @include('components.email-modal', [
-    'referenciaId' => 1,
+    'referenciaId' =>  null,
     'destinatario' => ''
   ])
 
@@ -408,4 +408,51 @@
 
     $('#detail-' + id).toggle();
     });
+
+    $(document).on('click', '.btn-enviar-email', function(e) {
+        e.preventDefault();
+    
+        let ordemServicoId = $(this).data('id');
+    
+        // Limpa campo e mostra "carregando..."
+        $('#emailModalReferenciaId').val(ordemServicoId);
+        $('#emailModalDestinatario').val('Carregando...');
+        
+        // Requisição para buscar o e-mail do cliente
+        $.ajax({
+            url: `/ordem-servico/${ordemServicoId}/email`, // Ajuste a rota conforme seu backend
+            method: 'GET',
+            success: function(response) {
+                
+                $('#emailModalDestinatario').val(response);
+                
+            },
+            error: function() {
+                $('#emailModalDestinatario').val('');
+                alert('Erro ao carregar e-mail do cliente');
+            }
+        });
+    
+        // Gera PDF via AJAX 
+        $.ajax({
+            url: `/ordem-servico/${ordemServicoId}/pdf`,
+            method: 'GET',
+            success: function(response) {
+                
+                $('#emailModalAnexoLink').val(response.path);
+                $('#emailModalAnexoServidor').val(response.filename);
+                $('#emailMensagem').val('Ordem de Serviços');
+                $('#emailAssunto').val('Ordem de Serviços');
+                
+               
+            },
+            error: function() {
+                alert('Erro ao gerar PDF');
+            }
+        });
+    
+        // Abre o modal
+        $('#emailModal').modal('show');
+    });
+    
 @endpush

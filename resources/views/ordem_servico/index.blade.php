@@ -18,7 +18,8 @@
             ],
             [
                 'custom_action' => 'components.customActions.EnviarEmail',
-                'destinatario' => '{{ $row->nome_razao }}',  
+                'destinatario' => '{{ $row->nome_razao }}', 
+                'referenciaId' => '{{ $row->id }}',
             ],
             
            // [

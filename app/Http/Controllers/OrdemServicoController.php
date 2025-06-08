@@ -24,6 +24,7 @@ use App\Http\Controllers\MovimentacaoProdutoController;
 use Illuminate\Support\Facades\Input;
 use SebastianBergmann\CodeCoverage\Report\PHP;
 use Illuminate\Support\Facades\Log;
+use PDF;
 
 class OrdemServicoController extends Controller
 {
@@ -760,8 +761,8 @@ class OrdemServicoController extends Controller
     {
 
         $ordemServico = OrdemServico::find($id); // ou qualquer ID
-       // $ordemServico->fechar();
-       
+        // $ordemServico->fechar();
+
 
         //return redirect()->back();
         if ($ordemServico->fechar()) {
@@ -771,5 +772,64 @@ class OrdemServicoController extends Controller
             ]));
             return redirect()->action('OrdemServicoController@index');
         }
+    }
+
+    public function gerarPdf2($id)
+    {
+
+        $ordemServico = OrdemServico::findOrFail($id);
+        $parametro = Parametro::first();
+
+        $pdf = PDF::loadView('ordem_servico.pdf', ['parametro' => $parametro,], compact('ordemServico'));
+
+        // Salvar o arquivo temporariamente
+        $fileName = 'OS_' . $id . '.pdf';
+        $path = storage_path('app/public/' . $fileName);
+        $pdf->save($path);
+
+        return response()->json([
+            'success' => true,
+            'path' => asset('storage/' . $fileName),
+            'filename' => $fileName
+        ]);
+    }
+
+    public function carregarEmail($id)
+    {
+        $ordemServico = OrdemServico::findOrFail($id);
+
+        $cliente = $ordemServico->cliente;
+
+        // Verifica se encontrou o cliente e retorna o e-mail
+        if ($cliente && isset($cliente->email1)) {
+            return $cliente->email1;
+        }
+
+        return null; // Ou lançar uma exceção, se preferir
+
+    }
+
+    public function gerarPdf($id)
+    {
+        $ordemServico = OrdemServico::findOrFail($id);
+        $parametro = Parametro::first();
+
+        // Geração do PDF
+        $pdf = PDF::loadView('ordem_servico.pdf', ['parametro' => $parametro], compact('ordemServico'));
+
+        $fileName = 'OS_' . $id . '.pdf';
+        $path = storage_path('app/public/' . $fileName);
+        $pdf->save($path);
+
+        // Recuperar e-mail do cliente
+        $cliente = $ordemServico->cliente;
+        $email = ($cliente && isset($cliente->email1)) ? $cliente->email1 : null;
+
+        return response()->json([
+            'success' => true,
+            'email' => $email,
+            'path' => asset('storage/' . $fileName),
+            'filename' => $fileName
+        ]);
     }
 }

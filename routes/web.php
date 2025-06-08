@@ -153,6 +153,8 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('relatorios/saida_estoque', 'SaidaEstoqueController@RelatorioSaidaEstoque')->name('relatorio_saida_estoque');
     Route::get('relatorios/entrada_tanque', 'EntradaTanqueController@paramRelatorioEntradaTanque')->name('entrada_tanque_param');
     Route::post('relatorios/entrada_tanque', 'EntradaTanqueController@RelatorioEntradaTanque')->name('relatorio_entrada_tanque');
+    Route::get('relatorios/movimentacao_combustivel', 'MovimentacaoCombustivelController@paramRelatorioMovimentacaoCombustivel')->name('movimentacao_combustivel_param');
+    Route::post('relatorios/movimentacao_combustivel', 'MovimentacaoCombustivelController@RelatorioMovimentacaoCombustivel')->name('relatorio_movimentacao_combustivel');
 
 
 
@@ -232,6 +234,14 @@ Route::post('/preco-cliente-item/valor', 'PrecoClienteController@getValorUnitari
 
 Route::post('/enviar-email', 'EmailController@enviar')->name('enviar.email');
 Route::get('/comunicar-hardware', [App\Http\Controllers\HardwareController::class, 'communicate']);
+Route::get('/ordem-servico/{id}/pdf', 'OrdemServicoController@gerarPdf')->name('ordem-servico.pdf');
+Route::get('/ordem-servico/{id}/email', 'OrdemServicoController@carregarEmail')->name('carregarEmail.pdf');
+
+Route::get('/teste-pdf', function () {
+    $pdf = App::make('dompdf.wrapper');
+    $pdf->loadHTML('<h1>Teste direto no HTML</h1>');
+    return $pdf->stream();
+});
 //************ */
 //Route::get('/teste', 'GrupoProdutoController@teste');
 
