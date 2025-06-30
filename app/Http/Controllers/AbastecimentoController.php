@@ -1648,7 +1648,7 @@ class AbastecimentoController extends Controller
             }
 
             if ($request->bico_id > 0) {
-                $bico = Bico::where('num_bico', '=', $request->bico_id)->first();
+                $bico = Bico::where('id', '=', $request->bico_id)->first();
                 if ($bico) {
 
                     $abastecimento->bico_id = $bico->id;

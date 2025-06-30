@@ -240,17 +240,14 @@
                                             // Define configurações básicas da ação
                                             switch ($action) {
                                                 case 'show':
-                                                    $icon = 'fas fa-eye';
                                                     $tooltip = 'Visualizar';
                                                     $permission = 'listar-' . str_replace('_', '-', $model);
                                                     break;
                                                 case 'edit':
-                                                    $icon = 'fas fa-edit';
                                                     $tooltip = 'Editar';
                                                     $permission = 'alterar-' . str_replace('_', '-', $model);
                                                     break;
                                                 case 'destroy':
-                                                    $icon = 'fas fa-bomb';
                                                     $tooltip = 'Remover';
                                                     $permission = 'excluir-' . str_replace('_', '-', $model);
                                                     break;
@@ -267,24 +264,17 @@
                                                     @method('DELETE')
 
                                                     <a class="dropdown-item" data-toggle="modal"
-                                                    
                                                         data-target="#confirmDelete"
                                                         data-title="Remover {{ __('models.' . $model) }}"
                                                         data-message="Remover {{ __('models.' . $model) }}: {{ $row->$displayField }}?">
-                                                        <i class="fas fa-eye"></i>
                                                         {{ $tooltip }}
-                                                        
                                                     </a>
                                                 </form>
                                             @else
                                                 {{-- Ações normais (show, edit) --}}
                                                 <a class="dropdown-item"
-                                                
                                                     href="{{ route($model . '.' . $action, [$model => $row->$keyField]) }}">
-                                                    <i class={{ $icon }}></i>
                                                     {{ $tooltip }}
-                                                    
-                                                    
                                                 </a>
                                             @endif
                                         @endpermission
@@ -304,7 +294,6 @@
                                             <a class="dropdown-item"
                                                 href="{{ route($model . '.' . $action['action'], [$model => $row->$keyField]) }}"
                                                 {!! $targetAttr !!}>
-                                                <i class="fas fa-eye"></i>
                                                 Visualizar
                                             </a>
                                         @endif

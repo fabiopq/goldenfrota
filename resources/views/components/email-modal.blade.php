@@ -27,7 +27,7 @@
           </div>
 
           <div class="mb-3">
-            <label>Anexo automático gerado:</label><br>
+            <label>Anexo automático:</label><br>
             <a href="#" id="emailModalAnexoLink" target="_blank">Visualizar PDF</a>
           </div>
 

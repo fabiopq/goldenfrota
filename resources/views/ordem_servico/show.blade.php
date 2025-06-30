@@ -77,73 +77,88 @@
 
 
         </div>
+
         <!-- Serviços -->
-        <div class="card mb-4">
-            <div class="card-header bg-secondary text-white">
-                <strong>SERVIÇOS</strong>
+        @if ($ordemServico->servicos->isNotEmpty())
+            <div class="row g-0">
+                <div class="col-12 p-0">
+                    <div class="card m-0 border-0">
+                        <div class="card-header bg-secondary text-white p-2">
+                            <strong>SERVIÇOS</strong>
+                        </div>
+                        <div class="card-body p-1">
+                            <table class="table table-bordered table-sm mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Serviço</th>
+                                        <th>Valor</th>
+                                        <th>Acréscimo</th>
+                                        <th>Desconto</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($ordemServico->servicos as $servico)
+                                        <tr>
+                                            <td>{{ $servico->servico_id }}</td>
+                                            <td>{{ $servico->servico->servico }}</td>
+                                            <td>{{ number_format($servico->valor_servico, 2, ',', '.') }}</td>
+                                            <td>{{ number_format($servico->valor_acrescimo, 2, ',', '.') }}</td>
+                                            <td>{{ number_format($servico->valor_desconto, 2, ',', '.') }}</td>
+                                            <td>{{ number_format($servico->valor_cobrado, 2, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body p-0">
-                <table class="table table-bordered table-sm mb-0">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Serviço</th>
-                            <th>Valor</th>
-                            <th>Acréscimo</th>
-                            <th>Desconto</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($ordemServico->servicos as $servico)
-                            <tr>
-                                <td>{{ $servico->servico_id }}</td>
-                                <td>{{ $servico->servico->servico }}</td>
-                                <td>{{ $servico->valor_servico }}</td>
-                                <td>{{ $servico->valor_acrescimo }}</td>
-                                <td>{{ $servico->valor_desconto }}</td>
-                                <td>{{ $servico->valor_cobrado }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        @endif
 
         <!-- Produtos -->
-        <div class="card mb-4">
-            <div class="card-header bg-secondary text-white">
-                <strong>PRODUTOS</strong>
+        @if ($ordemServico->produtos->isNotEmpty())
+            <div class="row g-0 mt-2">
+                <div class="col-12 p-0">
+                    <div class="card m-0 border-0">
+                        <div class="card-header bg-secondary text-white p-2">
+                            <strong>PRODUTOS</strong>
+                        </div>
+                        <div class="card-body p-1">
+                            <table class="table table-bordered table-sm mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Produto</th>
+                                        <th>Qtd</th>
+                                        <th>Vlr. Un.</th>
+                                        <th>Acréscimo</th>
+                                        <th>Desconto</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($ordemServico->produtos as $item)
+                                        <tr>
+                                            <td>{{ $item->produto_id }}</td>
+                                            <td>{{ $item->produto->produto_descricao }}</td>
+                                            <td>{{ $item->quantidade }}</td>
+                                            <td>{{ number_format($item->valor_produto, 2, ',', '.') }}</td>
+                                            <td>{{ number_format($item->valor_acrescimo, 2, ',', '.') }}</td>
+                                            <td>{{ number_format($item->valor_desconto, 2, ',', '.') }}</td>
+                                            <td>{{ number_format($item->valor_cobrado, 2, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body p-0">
-                <table class="table table-bordered table-sm mb-0">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Produto</th>
-                            <th>Qtd</th>
-                            <th>Vlr. Un.</th>
-                            <th>Acréscimo</th>
-                            <th>Desconto</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($ordemServico->produtos as $item)
-                            <tr>
-                                <td>{{ $item->produto_id }}</td>
-                                <td>{{ $item->produto->produto_descricao }}</td>
-                                <td>{{ $item->quantidade }}</td>
-                                <td>{{ $item->valor_produto }}</td>
-                                <td>{{ $item->valor_acrescimo }}</td>
-                                <td>{{ $item->valor_desconto }}</td>
-                                <td>{{ $item->valor_cobrado }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        @endif
+
+        {{--  
         @foreach ($ordemServico->produtos as $item)
             <div class="row">
                 <div class="col col-sm-1 col-md-1 col-lg-1">
@@ -183,7 +198,9 @@
                 </div>
             </div>
         @endforeach
-        <div class="row">
+        --}}
+
+        {{--  <div class="row">
             <div class="col col-sm-10 col-md-10 col-lg-10">
 
             </div>
@@ -196,6 +213,25 @@
                 </div>
             </div>
         </div>
+        --}}
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="d-flex justify-content-end">
+                    <div class="card nf-panel border border-dark bg-light" style="min-width: 300px;">
+                        <div class="card-body text-end p-3">
+                            <div class="text-end">
+                                <label class="nf-label d-block mb-1"><strong>Valor Total:</strong></label>
+                                <div class="fs-3 fw-bold">
+                                    R$ {{ number_format($ordemServico->valor_total, 2, ',', '.') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
         <div class="row">
             <div class="col col-sm-12 col-md-12 col-lg-12">
                 <div class="card nf-panel">

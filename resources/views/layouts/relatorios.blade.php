@@ -1,5 +1,6 @@
 @extends('layouts.base')
 
+
 @push('header-styles')
     <link href="{{ mix('css/report.css') }}" rel="stylesheet" media="all">
 @endpush
@@ -22,9 +23,9 @@
                 @if (isset($parametro))
                     <div class="col-sm-2 col-md-10 col-lg-10">
                         <div class="row">
-                            {{ $parametro->cliente->nome_razao }} 
+                            {{ $parametro->cliente->nome_razao }}
 
-                            
+
                         </div>
                         <div class="row">
                             CNPJ: {{ $parametro->cliente->cpf_cnpj }}
@@ -57,6 +58,12 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
         <div class="ml-auto">
+            <span data-toggle="tooltip" data-placement="top" title="Exportar para Excel">
+                <button class="btn btn-primary ml-auto" style="margin-right: 10px" id="btn-exportar-excel">
+                    <i class="fas fa-file-excel"></i>
+                </button>
+            </span>
+
             <span data-toggle="tooltip" data-placement="top" title="Imprimir" data-original-title="Imprimir">
                 <a href="javascript:window.print()" class="btn btn-success ml-auto" style="margin-right: 10px"
                     id="btn-report-print">
@@ -71,4 +78,16 @@
             </span>
         </div>
     </nav>
+
 @endsection
+@push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        document.getElementById("btn-exportar-excel").addEventListener("click", function() {
+            var wb = XLSX.utils.table_to_book(document.getElementById('relatorio-tabela'), {
+                sheet: "Relatório"
+            });
+            XLSX.writeFile(wb, "relatorio.xlsx");
+        });
+    </script>
+@endpush

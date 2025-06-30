@@ -33,7 +33,7 @@
                     <div class="panel-sm">
 
                         <div class="card-body">
-                            <table class="table table-sm report-table">
+                            <table class="table table-sm report-table" id="relatorio-tabela">
                                 <thead>
                                     <td>Placa</td>
                                     <td>Veículo</td>
