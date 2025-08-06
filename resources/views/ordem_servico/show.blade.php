@@ -230,8 +230,8 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div class="row">
             <div class="col col-sm-12 col-md-12 col-lg-12">
                 <div class="card nf-panel">
@@ -252,6 +252,7 @@
         <br />
         <br />
         <br />
+
         <div class="container-fluid m-b-10">
             <div class="row" align="center">
                 <div class="col col-sm-1 col-md-1 col-lg-1">
@@ -269,14 +270,33 @@
                 <div class="col col-sm-1 col-md-1 col-lg-1">
                 </div>
                 <div class="col col-sm-4 col-md-4 col-lg-4" align="center">
-                    <strong>{{ $ordemServico->user->name ?? 'Usuário não informado' }}</strong>
+                    <strong>{{ 'Atendente: ' }}</strong>
+                    <strong>{{ $ordemServico->atendente->nome_atendente ?? 'Não informado' }}</strong>
                 </div>
                 <div class="col col-sm-2 col-md-2 col-lg-2">
                 </div>
                 <div class="col col-sm-4 col-md-4 col-lg-4" align="center">
-                    <strong>{{ isset($ordemServico->cliente->nome_razao) ? $ordemServico->cliente->nome_razao : '' }}</strong>
+                    <strong>{{ 'Motorista: ' }}</strong>
+                    <strong>{{ $ordemServico->motorista->nome ?? 'Não informado' }}</strong>
                 </div>
+
             </div>
         </div>
+        <br />
+        <br />
+        <br />
+        <div class="container-fluid m-b-10">
+            <div class="row" align="center">
+                <div class="col col-sm-1 col-md-1 col-lg-1">
+                </div>
+                <div class="col col-sm-4 col-md-4 col-lg-4">
+                    <div style="border-bottom: 1px solid"> </div>
+                    <strong>{{ 'Cliente: ' }}</strong>
+                    <strong>{{ $ordemServico->cliente->nome_razao ?? '' }}</strong>
+                </div>
+            </div>
+
+        </div>
+    </div>
     </div>
 @endsection

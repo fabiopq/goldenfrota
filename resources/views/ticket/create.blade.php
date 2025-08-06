@@ -26,24 +26,6 @@
                         ],
                         [
                             'type' => 'select',
-                            'field' => 'ticket_status_id',
-                            'label' => 'Status',
-                            'required' => true,
-                            'items' => $ticketStatus,
-                            'autofocus' => true,
-                            'displayField' => 'descricao',
-                            'liveSearch' => true,
-                            'keyField' => 'id',
-                            'defaultNone' => false,
-                            'inputSize' => 3,
-                        ],
-                    ],
-                ])
-                @endcomponent
-                @component('components.form-group', [
-                    'inputs' => [
-                        [
-                            'type' => 'select',
                             'field' => 'cliente_id',
                             'label' => 'Cliente',
                             'required' => false,
@@ -53,15 +35,15 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 4,
+                            'inputSize' => 6,
                         ],
-                        [
-                            'type' => 'text',
-                            'field' => 'cliente',
-                            'label' => 'Cliente',
-                            'required' => true,
-                            'inputSize' => 4,
-                        ],
+                        
+                    ],
+                ])
+                @endcomponent
+                @component('components.form-group', [
+                    'inputs' => [
+                        
                 
                         [
                             'type' => 'select',
@@ -69,6 +51,19 @@
                             'label' => 'Prioridade',
                             'required' => true,
                             'items' => $ticketPrioridade,
+                            'autofocus' => true,
+                            'displayField' => 'descricao',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => false,
+                            'inputSize' => 3,
+                        ],
+                        [
+                            'type' => 'select',
+                            'field' => 'ticket_status_id',
+                            'label' => 'Status',
+                            'required' => true,
+                            'items' => $ticketStatus,
                             'autofocus' => true,
                             'displayField' => 'descricao',
                             'liveSearch' => true,

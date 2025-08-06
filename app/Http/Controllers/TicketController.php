@@ -21,10 +21,11 @@ class TicketController extends Controller
 {
     public $fields = [
         'id' => 'ID',
+        'data_abertura' => ['label' => 'Data', 'type' => 'datetime'],
         'nome_razao' => 'Cliente',
         'titulo' => 'Título',
         'name' => 'Usuário',
-        'data_abertura' => ['label' => 'Data', 'type' => 'datetime'],
+       
 
     ];
     /**
@@ -38,7 +39,8 @@ class TicketController extends Controller
         $teste = 'a';
         //if (Auth::user()->canListarticket()) {
         if ($teste) {
-
+            $ticket_status_id = isset($request->ticket_status_id) ? $request->ticket_status_id : -1;
+       
             $data_inicial = $request->data_inicial;
             $data_final = $request->data_final;
 
@@ -66,6 +68,8 @@ class TicketController extends Controller
                     //->orWhere('clientes.nome_razao', 'like', '%' . $request->searchField . '%')
                     // ->whereRaw('((tickets.tickets_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = 1))')
                     ->whereRaw($whereData)
+                    ->whereRaw('((tickets.ticket_status_id = ' . $ticket_status_id . ') or (' .  $ticket_status_id . ' = -1))')
+
                     ->where('tickets.titulo', 'like', '%' . $request->searchField . '%')
                     ->orderBy('id', 'desc')
                     ->paginate();
@@ -82,6 +86,8 @@ class TicketController extends Controller
                     ->leftJoin('ticket_status', 'ticket_status.id', 'tickets.ticket_status_id')
                     //->whereRaw('((ordem_servicos.ordem_servico_status_id = ' . (isset($request->abast_local) ? $request->abast_local : 1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : 1) . ' = -1))')
                     ->whereRaw($whereData)
+                    ->whereRaw('((tickets.ticket_status_id = ' . $ticket_status_id . ') or (' .  $ticket_status_id . ' = -1))')
+
                     ->orderBy('id', 'desc')
                     ->paginate();
                     
@@ -91,8 +97,9 @@ class TicketController extends Controller
 
             return View('ticket.index', [
                 'tickets' => $tickets,
+                'ticketStatus' => $ticketStatus,
                 'fields' => $this->fields
-            ])->withticketsStatus($ticketStatus);
+            ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
             return redirect()->back();

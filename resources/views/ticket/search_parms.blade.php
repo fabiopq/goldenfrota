@@ -2,6 +2,7 @@
     $abast_local = isset($_GET['abast_local']) ? $_GET['abast_local'] : 1;
     $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : null;
     $data_final = isset($_GET['data_final']) ? $_GET['data_final'] : null;
+
 @endphp
 @component('components.input-datetime', [
     'id' => 'data_inicial',
@@ -27,6 +28,7 @@
     'inputValue' => $data_final
 ])
 @endcomponent
+
 
 <div class="col-sm-12 col-md-3 col-lg-3">  
                

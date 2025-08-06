@@ -75,9 +75,37 @@
                             'inputSize' => 2,
                             'inputValue' => $ordemServico->km_veiculo,
                         ],
+                        [
+                            'type' => 'select',
+                            'field' => 'motorista_id',
+                            'label' => 'Motorista',
+                            'required' => false,
+                            'items' => $ordemServico->motorista->get(),
+                            'displayField' => 'nome',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'inputSize' => 3,
+                            'indexSelected' => isset($ordemServico->motorista_id) ? $ordemServico->motorista_id : 0,
+                        ],
+                
+                        [
+                            'type' => 'select',
+                            'field' => 'atendente_id',
+                            'label' => 'Atendente',
+                            'required' => false,
+                            'items' => $ordemServico->atendente->get(),
+                            'displayField' => 'nome_atendente',
+                            'liveSearch' => true,
+                            'keyField' => 'id',
+                            'defaultNone' => true,
+                            'inputSize' => 3,
+                            'indexSelected' => isset($ordemServico->atendente_id) ? $ordemServico->atendente_id : 0,
+                        ],
                     ],
                 ])
                 @endcomponent
+
                 <div id="ordem_servico">
                     @if ($ordemServico->estoque_id)
                         <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
@@ -104,7 +132,7 @@
                             'type' => 'textarea',
                             'field' => 'defeito',
                             'label' => 'Problema Relatado',
-                            'inputValue' => $ordemServico->defeito,
+                            'inputValue' => str_replace('<br />', '', $ordemServico->defeito ?? ''),
                         ],
                     ],
                 ])
@@ -115,7 +143,7 @@
                             'type' => 'textarea',
                             'field' => 'obs',
                             'label' => 'Atividade Realizada',
-                            'inputValue' => $ordemServico->obs,
+                            'inputValue' => str_replace('<br />', '', $ordemServico->obs ?? ''),
                         ],
                     ],
                 ])
@@ -143,19 +171,25 @@
                         cache: false,
                         success: function(data) {
                             $("#veiculo_id")
-                        .removeAttr('disabled')
-                        .find('option')
-                        .remove();
+                                .removeAttr('disabled')
+                                .find('option')
+                                .remove();
 
-                    $('#veiculo_id').append($('<option>', {value: '', text: 'Nada selecionado'}));
+                            $('#veiculo_id').append($('<option>', {
+                                value: '',
+                                text: 'Nada selecionado'
+                            }));
 
-                    $.each(data, function (i, item) {
-                        $('#veiculo_id').append($('<option>', { 
-                            value: item.id,
-                            'data-tipo-controle-veiculo': item.modelo_veiculo.tipo_controle_veiculo.id,
-                            text : item.placa + ' - ' + item.modelo_veiculo.marca_veiculo.marca_veiculo + ' ' + item.modelo_veiculo.modelo_veiculo
-                        }));
-                    });
+                            $.each(data, function(i, item) {
+                                $('#veiculo_id').append($('<option>', {
+                                    value: item.id,
+                                    'data-tipo-controle-veiculo': item
+                                        .modelo_veiculo.tipo_controle_veiculo.id,
+                                    text: item.placa + ' - ' + item.modelo_veiculo
+                                        .marca_veiculo.marca_veiculo + ' ' + item
+                                        .modelo_veiculo.modelo_veiculo
+                                }));
+                            });
 
                             @if (old('veiculo_id'))
                                 $('#veiculo_id').selectpicker('val', {{ old('veiculo_id') }});

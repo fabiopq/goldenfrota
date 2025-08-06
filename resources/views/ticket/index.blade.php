@@ -9,7 +9,7 @@
         'displayField' => 'id',
         'actions' => ['edit', 'destroy'],
         'searchParms' => 'ticket.search_parms', 
-       
+        'ticketStatus' => $ticketStatus,
     ]);
     @endcomponent
 @endsection

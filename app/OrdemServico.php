@@ -20,6 +20,8 @@ class OrdemServico extends Model
         'cliente_id',
         'veiculo_id',
         'km_veiculo',
+        'motorista_id',
+        'atendente_id',
         'obs', 
         'defeito', 
         'user_id',
@@ -33,6 +35,12 @@ class OrdemServico extends Model
 
     public function cliente() {
         return $this->belongsTo(Cliente::class);
+    }
+    public function atendente() {
+        return $this->belongsTo(Atendente::class);
+    }
+    public function motorista() {
+        return $this->belongsTo(Motorista::class);
     }
 
     public function user() {

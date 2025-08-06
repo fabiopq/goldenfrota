@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Atendente;
 use App\User;
 use App\Cliente;
 use App\Estoque;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Events\UtilizadoProdutoControleVencimento;
 use App\Http\Controllers\MovimentacaoProdutoController;
+use App\Motorista;
 use Illuminate\Support\Facades\Input;
 use SebastianBergmann\CodeCoverage\Report\PHP;
 use Illuminate\Support\Facades\Log;
@@ -179,13 +181,17 @@ class OrdemServicoController extends Controller
             $servicos = Servico::where('ativo', true)->orderBy('servico', 'asc')->get();
             $produtos = Produto::where('ativo', true)->orderBy('produto_descricao', 'asc')->get();
             $ordemServicoStatus = OrdemServicoStatus::orderBy('os_status', 'asc')->get();
+            $motoristas = Motorista::where('ativo', true)->orderBy('nome', 'asc')->get();
+            $atendentes = Atendente::where('ativo', true)->orderBy('nome_atendente', 'asc')->get();
 
             return View('ordem_servico.create', [
                 'clientes' => $clientes,
                 'estoques' => $estoques,
                 'servicos' => $servicos,
                 'produtos' => $produtos,
-                'ordemServicoStatus' => $ordemServicoStatus
+                'ordemServicoStatus' => $ordemServicoStatus,
+                'motoristas' =>$motoristas,
+                'atendentes' =>$atendentes
             ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
@@ -227,6 +233,8 @@ class OrdemServicoController extends Controller
                     'created_at' => \DateTime::createFromFormat('d/m/Y H:i', $request->created_at)->format('Y-m-d H:i:s'),
 
                     'cliente_id' => $request->cliente_id,
+                    'motorista_id' => $request->motorista_id,
+                    'atendente_id' => $request->atendente_id,
                     'veiculo_id' => $request->input('veiculo_id') ?: null,
                     'ordem_servico_status_id' => $request->ordem_servico_status_id,
                     'estoque_id' => $request->estoque_id,
@@ -361,6 +369,9 @@ class OrdemServicoController extends Controller
             $clientes = Cliente::where('ativo', true)->orderBy('nome_razao', 'asc')->get();
             $veiculos = Veiculo::where('ativo', true)->orderBy('placa', 'asc')->get();
             $ordemServicoStatus = OrdemServicoStatus::orderBy('os_status', 'asc')->get();
+            $motoristas = Motorista::where('ativo', true)->orderBy('nome', 'asc')->get();
+            $atendentes = Atendente::where('ativo', true)->orderBy('nome_atendente', 'asc')->get();
+
 
             return View('ordem_servico.edit', [
                 'veiculos' => $veiculos,
@@ -369,7 +380,9 @@ class OrdemServicoController extends Controller
                 'estoques' => $estoques,
                 'servicos' => $servicos,
                 'produtos' => $produtos,
-                'ordemServicoStatus' => $ordemServicoStatus
+                'ordemServicoStatus' => $ordemServicoStatus,
+                'motoristas' => $motoristas,
+                'atendentes' => $atendentes
             ]);
         } else {
             Session::flash('error', __('messages.access_denied'));
@@ -409,6 +422,8 @@ class OrdemServicoController extends Controller
                 $ordemServico->valor_total = $request->valor_total;
                 $ordemServico->obs = $request->obs;
                 $ordemServico->defeito = $request->defeito;
+                $ordemServico->motorista_id = $request->motorista_id;
+                $ordemServico->atendente_id = $request->atendente_id;
                 // $ordemServico->user_id = $request->user_id;
 
 

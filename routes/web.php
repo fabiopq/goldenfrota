@@ -107,6 +107,8 @@ Route::middleware(['auth:web'])->group(function () {
     
     //Route::post('unidade/json', 'UnidadeController@getUnidadesJson')->name('unidades.json');
     Route::post('veiculo/json', 'VeiculoController@getVeiculosJson')->name('veiculos.json');
+    //Route::post('motorista/json', 'MotoristaController@getVeiculosJson')->name('motoristas.json');
+    //Route::post('atendente/json', 'AtendenteController@getVeiculosJson')->name('atendentes.json');
     //Route::post('unidade', [UnidadeController::class, 'add'])->name('unidade.add');
 
     Route::post('veiculo/jsonComponent', 'VeiculoController@getVeiculosComponentJson')->name('veiculosComponent.json');

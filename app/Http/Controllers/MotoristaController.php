@@ -390,4 +390,6 @@ class MotoristaController extends Controller
     {
         return response()->json(Motorista::ativo()->where('id', $id)->get());
     }
+
+    
 }

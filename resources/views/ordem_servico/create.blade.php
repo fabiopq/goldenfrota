@@ -35,12 +35,6 @@
                                 'displayField' => 'os_status',
                                 'keyField' => 'id',
                             ],
-                        ],
-                    ])
-                    @endcomponent
-                    @component('components.form-group', [
-                        'inputs' => [
-                           
                             [
                                 'type' => 'select',
                                 'field' => 'cliente_id',
@@ -53,6 +47,11 @@
                                 'liveSearch' => true,
                                 'defaultNone' => false,
                             ],
+                        ],
+                    ])
+                    @endcomponent
+                    @component('components.form-group', [
+                        'inputs' => [
                             [
                                 'type' => 'select',
                                 'field' => 'veiculo_id',
@@ -73,9 +72,35 @@
                                 'inputSize' => 2,
                                 'inputValue' => 0,
                             ],
+                            [
+                                'type' => 'select',
+                                'field' => 'motorista_id',
+                                'label' => 'Motorista',
+                                'required' => false,
+                                'items' => $motoristas,
+                                'inputSize' => 3,
+                                'displayField' => 'nome',
+                                'keyField' => 'id',
+                                'liveSearch' => true,
+                                'defaultNone' => true,
+                            ],
+                            [
+                                'type' => 'select',
+                                'field' => 'atendente_id',
+                                'label' => 'Atendente',
+                                'required' => false,
+                                'items' => $atendentes,
+                                'inputSize' => 3,
+                                'displayField' => 'nome_atendente',
+                                'keyField' => 'id',
+                                'liveSearch' => true,
+                                'defaultNone' => true,
+                            ],
                         ],
                     ])
                     @endcomponent
+
+
 
                     <ordem-servico :servicos-data="{{ json_encode($servicos) }}"
                         :old-servicos-data="{{ json_encode(old('servicos')) }}" v-bind:estoques="{{ json_encode($estoques) }}"
@@ -102,62 +127,66 @@
                         ],
                     ])
                     @endcomponent
-                    
                 @endsection
             @endcomponent
         </div>
     </div>
 
-@push('bottom-scripts')
-    <script src="{{ mix('js/os.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            var buscarVeiculos = function() {
-                var cliente = {};
+    @push('bottom-scripts')
+        <script src="{{ mix('js/os.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                var buscarVeiculos = function() {
+                    var cliente = {};
 
-                cliente.id = $('#cliente_id').val();
-                cliente._token = $('input[name="_token"]').val();
+                    cliente.id = $('#cliente_id').val();
+                    cliente._token = $('input[name="_token"]').val();
 
-                $.ajax({
-                url: '{{ route("veiculos.json") }}',
-                type: 'POST',
-                data: cliente,
-                dataType: 'JSON',
-                cache: false,
-                success: function (data) {
-                    //console.log(data);
-                    $("#veiculo_id")
-                        .removeAttr('disabled')
-                        .find('option')
-                        .remove();
+                    $.ajax({
+                        url: '{{ route('veiculos.json') }}',
+                        type: 'POST',
+                        data: cliente,
+                        dataType: 'JSON',
+                        cache: false,
+                        success: function(data) {
+                            //console.log(data);
+                            $("#veiculo_id")
+                                .removeAttr('disabled')
+                                .find('option')
+                                .remove();
 
-                    $('#veiculo_id').append($('<option>', {value: '', text: 'Nada selecionado'}));
+                            $('#veiculo_id').append($('<option>', {
+                                value: '',
+                                text: 'Nada selecionado'
+                            }));
 
-                    $.each(data, function (i, item) {
-                        $('#veiculo_id').append($('<option>', { 
-                            value: item.id,
-                            'data-tipo-controle-veiculo': item.modelo_veiculo.tipo_controle_veiculo.id,
-                            text : item.placa + ' - ' + item.modelo_veiculo.marca_veiculo.marca_veiculo + ' ' + item.modelo_veiculo.modelo_veiculo
-                        }));
+                            $.each(data, function(i, item) {
+                                $('#veiculo_id').append($('<option>', {
+                                    value: item.id,
+                                    'data-tipo-controle-veiculo': item
+                                        .modelo_veiculo.tipo_controle_veiculo.id,
+                                    text: item.placa + ' - ' + item.modelo_veiculo
+                                        .marca_veiculo.marca_veiculo + ' ' + item
+                                        .modelo_veiculo.modelo_veiculo
+                                }));
+                            });
+
+                            @if (old('modelo_veiculo_id'))
+                                $('#modelo_veiculo_id').selectpicker('val',
+                                    {{ old('modelo_veiculo_id') }});
+                            @endif
+
+                            $('.selectpicker').selectpicker('refresh');
+                        },
+                        error: function(data) {}
                     });
-                    
-                    @if(old('modelo_veiculo_id'))
-                    $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
-                    @endif
+                }
+                $('#cliente_id').on('changed.bs.select', buscarVeiculos);
 
-                    $('.selectpicker').selectpicker('refresh');
-                },
-                error: function (data) {
+                if ($('#cliente_id').val()) {
+                    buscarVeiculos();
                 }
             });
-            }
-            $('#cliente_id').on('changed.bs.select', buscarVeiculos);
-
-            if ($('#cliente_id').val()) {
-                buscarVeiculos();
-            }
-        });
-    </script>
-
-@endpush
+        </script>
+    @endpush
 @endsection
