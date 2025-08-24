@@ -285,11 +285,24 @@ class ProdutoController extends Controller
 
     public function obterProdutosPeloGrupo(Request $request)
     {
-        //$grupoProduto = GrupoProduto::find($request->id);
+        // Pega os IDs dos grupos de produtos da requisição
+        $grupoProdutoIds = $request->input('grupo_produto_ids');
 
-        //return response()->json($grupoProduto->produtos()->get());
-        //dd($request);
-        return response()->json(Produto::ativo()->where('grupo_produto_id', $request->id)->get());
+        // Inicia a query do modelo Produto
+        $query = Produto::query()
+            ->select('id', 'produto_descricao'); // Seleciona apenas os campos necessários
+
+        // Aplica o filtro 'whereIn' apenas se houver grupos de produtos selecionados
+        if (is_array($grupoProdutoIds) && !empty($grupoProdutoIds)) {
+            $query->whereIn('grupo_produto_id', $grupoProdutoIds);
+        }
+        // Se o array estiver vazio, a query prossegue sem o filtro de grupo.
+
+        // Executa a query e busca os produtos
+        $produtos = $query->get();
+
+        // Retorna os produtos em formato JSON
+        return response()->json($produtos);
     }
 
     public function apiProdutos()
@@ -382,7 +395,7 @@ class ProdutoController extends Controller
 
             $grupoproduto->produtos = $produto;
         }
-        
+
 
         return View('relatorios.produtos.relatorio_listagem_produtos')
             ->withgrupoprodutos($grupos)

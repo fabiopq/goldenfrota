@@ -1141,7 +1141,7 @@ class AbastecimentoController extends Controller
                         'posto_abastecimentos.nome',
                         'departamentos.departamento as departamento_nome'
                     )
-                    ->distinct()
+                    ->distinct() 
                     ->leftJoin('bicos', 'bicos.id', 'abastecimentos.bico_id')
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('modelo_veiculos', 'veiculos.modelo_veiculo_id', 'modelo_veiculos.id')
@@ -1166,8 +1166,7 @@ class AbastecimentoController extends Controller
     }
 
 
-
-
+    
     public function relatorioAbastecimentosDepartamento(Request $request)
     {
 

@@ -2,26 +2,27 @@
     $abast_local = isset($_GET['abast_local']) ? $_GET['abast_local'] : -1;
     $data_inicial = isset($_GET['data_inicial']) ? $_GET['data_inicial'] : null;
     $data_final = isset($_GET['data_final']) ? $_GET['data_final'] : null;
-    $data_incio = mktime(0, 0, 0, date('m') , 1 , date('Y'));
-    $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
+    $data_incio = mktime(0, 0, 0, date('m'), 1, date('Y'));
+    $data_fim = mktime(23, 59, 59, date('m'), date('t'), date('Y'));
 @endphp
 @extends('layouts.app')
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Relatório de Abastecimentos', 
-            'routeUrl' => route('param_relatorio_abastecimentos'), 
+            'title' => 'Relatório de Abastecimentos',
+            'routeUrl' => route('param_relatorio_abastecimentos'),
             'formTarget' => '_blank',
             'method' => 'POST',
             'cancelRoute' => 'home',
             'formButtons' => [
                 ['type' => 'submit', 'label' => 'Gerar Relatório', 'icon' => 'chart-line'],
-                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
-                ]
-            ])
+                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times'],
+            ],
+        ])
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
+                        
                         [
                             'type' => 'datetime',
                             'field' => 'data_inicial',
@@ -49,19 +50,19 @@
                             'radioButtons' => [
                                 [
                                     'label' => 'Local',
-                                    'value' => 1
+                                    'value' => 1,
                                 ],
                                 [
                                     'label' => 'Externo',
-                                    'value' => 0
+                                    'value' => 0,
                                 ],
                                 [
                                     'label' => 'Todos',
-                                    'value' => -1
+                                    'value' => -1,
                                 ],
                             ],
                             'inputSize' => 3,
-                            'defaultValue' => -1
+                            'defaultValue' => -1,
                         ],
                         [
                             'type' => 'btn-group',
@@ -70,23 +71,38 @@
                             'radioButtons' => [
                                 [
                                     'label' => 'Sintético',
-                                    'value' => 1
+                                    'value' => 1,
                                 ],
                                 [
                                     'label' => 'Analítico',
-                                    'value' => 2
+                                    'value' => 2,
                                 ],
                                 [
                                     'label' => 'Resumido',
-                                    'value' => 3
+                                    'value' => 3,
+                                ],
+                                [
+                                    'label' => 'Lista',
+                                    'value' => 4,
                                 ],
                             ],
                             'inputSize' => 3,
-                            'defaultValue' => 1
-                        ]
-                    ]
-                ])  
-                @endcomponent 
+                            'defaultValue' => 1,
+                        ],
+                       /*
+                        [
+                            'type' => 'radio',
+                            'field' => 'data_inicial',
+                            'label' => 'Tipo de Relatorio',
+                            'inputSize' => 6,
+                            'inputValue' => 'opcao1', 
+                            'options' => [['value' => 'opcao1', 'label' => 'Opção 1'], ['value' => 'opcao2', 'label' => 'Opção 2'],['value' => 'opcao1', 'label' => 'Opção 1'], ['value' => 'opcao2', 'label' => 'Opção 2']],
+                            'visible' => true,
+                        ],
+                        */
+                    ],
+                ])
+                @endcomponent
                 @component('components.form-group', [
                     'inputs' => [
                         [
@@ -100,7 +116,7 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 6
+                            'inputSize' => 6,
                         ],
                         [
                             'type' => 'select',
@@ -126,8 +142,7 @@
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'inputSize' => 3,
-                        ]
-                        ,
+                        ],
                         [
                             'type' => 'select',
                             'field' => 'posto_abastecimento_id',
@@ -139,11 +154,10 @@
                             'keyField' => 'id',
                             'defaultNone' => true,
                             'inputSize' => 4,
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
-                @endcomponent 
-                
+                @endcomponent
             @endsection
         @endcomponent
     </div>
@@ -157,12 +171,12 @@
 
                 console.log(departamento);
                 $.ajax({
-                    url: '{{ route("departamentos.json") }}',
+                    url: '{{ route('departamentos.json') }}',
                     type: 'POST',
                     data: departamento,
                     dataType: 'JSON',
                     cache: false,
-                    success: function (data) {
+                    success: function(data) {
                         console.log(data);
                         if (data.length > 0) {
                             $("#departamento_id")
@@ -175,24 +189,24 @@
                             }
                         }
 
-                        $('#departamento_id').append($('<option>', { 
-                                value: -1,
-                                text : 'NADA SELECIONADO'
+                        $('#departamento_id').append($('<option>', {
+                            value: -1,
+                            text: 'NADA SELECIONADO'
                         }));
-                        $.each(data, function (i, item) {
-                            $('#departamento_id').append($('<option>', { 
+                        $.each(data, function(i, item) {
+                            $('#departamento_id').append($('<option>', {
                                 value: item.id,
-                                text : item.departamento 
+                                text: item.departamento
                             }));
                         });
-                        
-                        @if(old('departamento_id'))
-                        $('#departamento_id').selectpicker('val', {{old('departamento_id')}});
+
+                        @if (old('departamento_id'))
+                            $('#departamento_id').selectpicker('val', {{ old('departamento_id') }});
                         @endif
 
                         $('.selectpicker').selectpicker('refresh');
                     }
-                });                
+                });
             }
 
             var buscarVeiculos = function() {
@@ -203,36 +217,38 @@
 
                 //console.log(cliente);
                 $.ajax({
-                    url: '{{ route("veiculos.json") }}',
+                    url: '{{ route('veiculos.json') }}',
                     type: 'POST',
                     data: cliente,
                     dataType: 'JSON',
                     cache: false,
-                    success: function (data) {
+                    success: function(data) {
                         //console.log(data);
                         $("#veiculo_id")
                             .removeAttr('disabled')
                             .find('option')
                             .remove();
 
-                        $('#veiculo_id').append($('<option>', { 
-                                value: -1,
-                                text : 'NADA SELECIONADO'
+                        $('#veiculo_id').append($('<option>', {
+                            value: -1,
+                            text: 'NADA SELECIONADO'
                         }));
-                        $.each(data, function (i, item) {
-                            $('#veiculo_id').append($('<option>', { 
+                        $.each(data, function(i, item) {
+                            $('#veiculo_id').append($('<option>', {
                                 value: item.id,
-                                text : item.placa + ' - ' + item.marca_veiculo + ' ' + item.modelo_veiculo
+                                text: item.placa + ' - ' + item.marca_veiculo +
+                                    ' ' + item.modelo_veiculo
                             }));
                         });
-                        
-                        @if(old('modelo_veiculo_id'))
-                        $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
+
+                        @if (old('modelo_veiculo_id'))
+                            $('#modelo_veiculo_id').selectpicker('val',
+                                {{ old('modelo_veiculo_id') }});
                         @endif
 
                         $('.selectpicker').selectpicker('refresh');
                     },
-                    error: function (data) {
+                    error: function(data) {
                         console.log(data);
                     }
                 });
@@ -247,36 +263,38 @@
 
                 console.log(departamento);
                 $.ajax({
-                    url: '{{ route("veiculos_departamento.json") }}',
+                    url: '{{ route('veiculos_departamento.json') }}',
                     type: 'POST',
                     data: departamento,
                     dataType: 'JSON',
                     cache: false,
-                    success: function (data) {
+                    success: function(data) {
                         console.log(data);
                         $("#veiculo_id")
                             .removeAttr('disabled')
                             .find('option')
                             .remove();
 
-                        $('#veiculo_id').append($('<option>', { 
-                                value: -1,
-                                text : 'NADA SELECIONADO'
+                        $('#veiculo_id').append($('<option>', {
+                            value: -1,
+                            text: 'NADA SELECIONADO'
                         }));
-                        $.each(data, function (i, item) {
-                            $('#veiculo_id').append($('<option>', { 
+                        $.each(data, function(i, item) {
+                            $('#veiculo_id').append($('<option>', {
                                 value: item.id,
-                                text : item.placa + ' - ' + item.marca_veiculo + ' ' + item.modelo_veiculo
+                                text: item.placa + ' - ' + item.marca_veiculo +
+                                    ' ' + item.modelo_veiculo
                             }));
                         });
-                        
-                        @if(old('modelo_veiculo_id'))
-                        $('#modelo_veiculo_id').selectpicker('val', {{old('modelo_veiculo_id')}});
+
+                        @if (old('modelo_veiculo_id'))
+                            $('#modelo_veiculo_id').selectpicker('val',
+                                {{ old('modelo_veiculo_id') }});
                         @endif
 
                         $('.selectpicker').selectpicker('refresh');
                     },
-                    error: function (data) {
+                    error: function(data) {
                         console.log(data);
                     }
                 });

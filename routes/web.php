@@ -126,6 +126,7 @@ Route::middleware(['auth:web'])->group(function () {
 
 
     //relatorios
+    Route::get('tanques/saldo', 'TanqueController@saldoTanques')->name('saldo_tanque');
     Route::get('relatorios/posicao_tanques', 'TanqueController@relPosicaoTanque')->name('relatorio_posicao_tanques');
     Route::get('relatorios/media_consumo', 'VeiculoController@relMediaConsumo')->name('relatorio_media_consumo');
     Route::get('relatorios/listagem_tanques', 'TanqueController@listagemTanques')->name('relatorio_listagem_tanques');

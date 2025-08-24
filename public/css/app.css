@@ -18061,3 +18061,9 @@ body.tempusdominus-bootstrap-datetimepicker-widget-day-click {
   text-transform: uppercase;
 }
 
+.custom-select-btn .bs-actionsbox .btn {
+  background-color: #bdbdbd; /* Cor de fundo mais escura para os botões de ação */
+  border-color: #4a4a4a;     /* Borda para combinar */
+  color: #4a4a4a;           /* Cor do texto para garantir contraste */
+}
+

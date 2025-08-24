@@ -360,6 +360,30 @@ class TanqueController extends Controller
         return View('relatorios.tanques.listagem_tanques')->withTanques($tanques)->withTitulo('Listagem de Tanques')->withParametro(Parametro::first());
     }
 
+    public function saldoTanques()
+    {
+        $tanques = Tanque::select(
+            'tanques.*','posto_abastecimentos.nome as posto_abastecimento'
+        )
+            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+            ->join('posto_abastecimentos', 'posto_abastecimentos.id', 'tanques.posto_abastecimento_id')
+            ->where('tanques.ativo', true)
+            ->get();
+
+           
+
+
+        foreach ($tanques as $tanque) {
+            $tanque->posicao = $this->getPosicaoEstoque($tanque);
+        }
+        //dd($tanques);
+        return View('tanque.saldo')->withTanques($tanques)->withTitulo('Listagem de Tanques')->withParametro(Parametro::first());
+
+
+        
+        
+    }
+
     public function apiTanques()
     {
         $tanques = Tanque::all();

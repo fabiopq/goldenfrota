@@ -166,6 +166,29 @@
                 ])
                 @endcomponent
             @endif
+            @if ($input['type'] == 'select-mult')
+                @component('components.input-select-mult', [
+                    'field' => $input['field'],
+                    'label' => $input['label'],
+                    'inputSize' => $input['inputSize'],
+                    'items' => $input['items'],
+                    'displayField' => $input['displayField'],
+                    'keyField' => $input['keyField'],
+                    'disabled' => $input['disabled'],
+                    'name' => $input['name'],
+                    'id' => $input['id'],
+                    'css' => $input['css'],
+                    'inputValue' => $input['inputValue'],
+                    'indexSelected' => $input['indexSelected'],
+                    'liveSearch' => $input['liveSearch'],
+                    'defaultNone' => $input['defaultNone'],
+                    'div_css' => $input['div_css'],
+                    'vModel' => $input['vModel'],
+                    'visible' => $input['visible'],
+                    'searchById' => $input['searchById'],
+                ])
+                @endcomponent
+            @endif
             @if ($input['type'] == 'select-tree')
                 @component('components.input-select-tree', [
                     'field' => $input['field'],
@@ -299,6 +322,22 @@
                     'vModel' => $input['vModel'],
                     'readOnly' => $input['readOnly'],
                     'permission' => $input['permission'],
+                    'visible' => $input['visible'],
+                ])
+                @endcomponent
+            @endif
+            @if ($input['type'] == 'radio')
+                @component('components.input-radio', [
+                    'field' => $input['field'],
+                    'label' => $input['label'],
+                    'inputSize' => $input['inputSize'],
+                    'options' => $input['options'],
+                    'inputValue' => $input['inputValue'],
+                    'disabled' => $input['disabled'],
+                    'name' => $input['name'],
+                    'id' => $input['id'],
+                    'css' => $input['css'],
+                    'vModel' => $input['vModel'],
                     'visible' => $input['visible'],
                 ])
                 @endcomponent

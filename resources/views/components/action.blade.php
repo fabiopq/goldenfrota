@@ -14,7 +14,7 @@ switch ($action) {
         break;
     case 'destroy':
         $btn_style = 'btn-danger';
-        $btn_icon = 'trash-alt';
+        $btn_icon = 'edit';
         $tooltip = 'Remover';
         $permission = 'excluir-' . str_replace('_', '-', $model);
         break;

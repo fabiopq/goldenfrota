@@ -236,7 +236,8 @@
             <div class="col col-sm-12 col-md-12 col-lg-12">
                 <div class="card nf-panel">
                     <label for="#obs" class="nf-label"><strong>Problema Relatado:</strong> </label>
-                    <div id="obs">{!! $ordemServico->obs ? $ordemServico->defeito : '&nbsp;' !!}</div>
+                    <div id="defeito">{!! $ordemServico->obs ? $ordemServico->defeito : '&nbsp;' !!}</div>
+                    
                 </div>
 
                 <div class="card nf-panel">

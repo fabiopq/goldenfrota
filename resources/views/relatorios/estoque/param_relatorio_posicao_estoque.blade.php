@@ -3,19 +3,17 @@
 @section('content')
     <div class="card m-0 border-0">
         @component('components.form', [
-            'title' => 'Posição de Estoque', 
-            'routeUrl' => route('relatorio_posicao_estoque'), 
+            'title' => 'Posição de Estoque',
+            'routeUrl' => route('relatorio_posicao_estoque'),
             'formTarget' => '_blank',
             'method' => 'POST',
-            'formButtons' => [
-                ['type' => 'submit', 'label' => 'Gerar Relatório', 'icon' => 'chart-line'],
-                ]
-            ])
+            'formButtons' => [['type' => 'submit', 'label' => 'Gerar Relatório', 'icon' => 'chart-line']],
+        ])
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
                         [
-                            'type' => 'select',
+                            'type' => 'select-mult',
                             'field' => 'estoque_id',
                             'label' => 'Estoque',
                             'required' => true,
@@ -25,10 +23,10 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 4
+                            'inputSize' => 4,
                         ],
                         [
-                            'type' => 'select',
+                            'type' => 'select-mult',
                             'field' => 'grupo_produto_id',
                             'label' => 'Grupo de Produto',
                             'items' => $grupo_produtos,
@@ -36,10 +34,10 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 4
+                            'inputSize' => 4,
                         ],
                         [
-                            'type' => 'select',
+                            'type' => 'select-mult',
                             'field' => 'produto_id',
                             'label' => 'Produto',
                             'items' => $produtos,
@@ -48,62 +46,61 @@
                             'liveSearch' => true,
                             'keyField' => 'id',
                             'defaultNone' => true,
-                            'inputSize' => 4
-                        ]
-                    ]
+                            'inputSize' => 4,
+                        ],
+                    ],
                 ])
                 @endcomponent
             @endsection
         @endcomponent
     </div>
+
+
+    @push('bottom-scripts')
     <script>
         $(document).ready(function() {
-            var buscarDepartamentos = function() {
-                var departamento = {};
-
-                departamento.id = $('#cliente_id').val();
-                departamento._token = $('input[name="_token"]').val();
-
-                console.log(departamento);
+            var buscarProdutosPorGrupo = function() {
+                var grupoProdutoIds = $('#grupo_produto_id').val();
+                
+                var dados = {
+                    grupo_produto_ids: grupoProdutoIds,
+                    _token: $('input[name="_token"]').val()
+                };
+    
                 $.ajax({
-                    url: '{{ route("departamentos.json") }}',
+                    url: '{{ route('produtos_pelo_grupo.json') }}',
                     type: 'POST',
-                    data: departamento,
+                    data: dados,
                     dataType: 'JSON',
                     cache: false,
-                    success: function (data) {
-                        console.log(data);
-                        $("#departamento_id")
-                            .removeAttr('disabled')
+                    success: function(data) {
+                        $("#produto_id")
                             .find('option')
                             .remove();
-
-                        $('#departamento_id').append($('<option>', { 
-                                value: -1,
-                                text : 'NADA SELECIONADO'
+    
+                        $('#produto_id').append($('<option>', {
+                            value: '',
+                            text: 'NADA SELECIONADO'
                         }));
-                        $.each(data, function (i, item) {
-                            $('#departamento_id').append($('<option>', { 
+    
+                        $.each(data, function(i, item) {
+                            $('#produto_id').append($('<option>', {
                                 value: item.id,
-                                text : item.departamento 
+                                text: item.produto_descricao
                             }));
                         });
-                        
-                        @if(old('departamento_id'))
-                        $('#departamento_id').selectpicker('val', {{old('departamento_id')}});
-                        @endif
-
+    
                         $('.selectpicker').selectpicker('refresh');
+                    },
+                    error: function(xhr) {
+                        console.error('Erro ao buscar produtos:', xhr.responseText);
                     }
                 });
-            }
-
-
-            {{--  var buscarPorCliente = function() {
-                buscarDepartamentos();
-            }
-  --}}
-            $('#cliente_id').on('changed.bs.select', buscarDepartamentos);
+            };
+    
+            $('#grupo_produto_id').on('changed.bs.select', buscarProdutosPorGrupo);
         });
     </script>
+    @endpush
+
 @endsection
