@@ -1092,14 +1092,14 @@ class AbastecimentoController extends Controller
 
             foreach ($clientes as $cliente) {
                 /* relatório Resumido */
-
+                /*
                 $abastecimentos = DB::table('abastecimentos')
                     ->select(
                         'clientes.id',
                         'clientes.nome_razao',
                         'clientes.limite',
-                        DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
-                        DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
+                        //DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                        //DB::raw('MAX(abastecimentos.km_veiculo) AS km_final'),
                         DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
                         DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
                         DB::raw('AVG(abastecimentos.media_veiculo) AS media')
@@ -1108,7 +1108,7 @@ class AbastecimentoController extends Controller
                     ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
                     ->leftJoin('atendentes', 'atendentes.id', 'abastecimentos.atendente_id')
                     ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
-                    //->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
                     ->whereRaw('clientes.id is not null')
                     ->whereRaw('((abastecimentos.abastecimento_local = ' . (isset($request->abast_local) ? $request->abast_local : -1) . ') or (' . (isset($request->abast_local) ? $request->abast_local : -1) . ' = -1))')
                     ->whereRaw($whereData)
@@ -1124,10 +1124,102 @@ class AbastecimentoController extends Controller
                 if ($abastecimentos) {
                     $cliente->abastecimentos = $abastecimentos;
                 }
+               // dd($abastecimentos);
+               */
+
+                // Usamos a consulta que criamos anteriormente, filtrando por este cliente específico
+                /*
+                $abastecimentosPorDepartamento = DB::table('abastecimentos')
+                    ->select(
+                        'departamentos.id',
+                        'departamentos.departamento',
+                        DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                        DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                        DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                        DB::raw('MAX(abastecimentos.km_veiculo) AS km_final')
+                    )
+                    ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                    ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                    ->where('veiculos.cliente_id', $cliente->id)
+                    ->whereNotNull('departamentos.id')
+                    ->whereRaw($whereData) // Aplica os mesmos filtros de data/etc.
+                    ->whereRaw($whereParam)
+                    ->groupBy('departamentos.id', 'departamentos.departamento')
+                    ->get();
+
+                // Anexa a coleção de departamentos totalizados ao objeto do cliente
+                $cliente->departamentos = $abastecimentosPorDepartamento;
+                */
+            }
+           
+            // Esta consulta busca todos os totais, agrupando por cliente E por departamento de uma só vez.
+            $resultados = DB::table('abastecimentos')
+                ->select(
+                    // Dados do Cliente
+                    'clientes.id as cliente_id',
+                    'clientes.nome_razao',
+                    // Dados do Departamento
+                    'departamentos.id as departamento_id',
+                    'departamentos.departamento as departamento_nome',
+                    // Campos Agregados (Totais)
+                    DB::raw('SUM(abastecimentos.volume_abastecimento) AS consumo'),
+                    DB::raw('SUM(abastecimentos.valor_abastecimento) AS valor'),
+                    DB::raw('MIN(abastecimentos.km_veiculo) AS km_inicial'),
+                    DB::raw('MAX(abastecimentos.km_veiculo) AS km_final')
+                )
+                ->leftJoin('veiculos', 'veiculos.id', 'abastecimentos.veiculo_id')
+                ->leftJoin('clientes', 'clientes.id', 'veiculos.cliente_id')
+                ->leftJoin('departamentos', 'departamentos.id', 'veiculos.departamento_id')
+                // Adicione outros joins se necessário
+
+                ->whereNotNull('clientes.id')
+                ->whereNotNull('departamentos.id')
+
+                // APLICA SEUS FILTROS EXISTENTES SEM MODIFICAÇÃO
+                ->whereRaw($whereData)
+                ->whereRaw($whereParam) // Respeita seu filtro de cliente/departamento
+                // ->whereRaw($whereTipoAbastecimento) // Adicione outros filtros se tiver
+
+                // Agrupa pelos dois níveis: cliente e departamento
+                ->groupBy('clientes.id', 'clientes.nome_razao', 'departamentos.id', 'departamentos.departamento')
+
+                // Ordena para facilitar a transformação no PHP
+                ->orderBy('clientes.nome_razao')
+                ->orderBy('departamentos.departamento')
+
+                ->get();
+
+            // 2. TRANSFORMAÇÃO DOS DADOS
+            // O resultado da consulta é "plano". Agora vamos transformá-lo na estrutura aninhada que a view precisa.
+            $clientesEstruturados = [];
+
+            foreach ($resultados as $resultado) {
+                // Se o cliente ainda não foi adicionado ao nosso array, crie a estrutura base para ele.
+                if (!isset($clientesEstruturados[$resultado->cliente_id])) {
+                    $clientesEstruturados[$resultado->cliente_id] = (object) [
+                        'id' => $resultado->cliente_id,
+                        'nome_razao' => $resultado->nome_razao,
+                        'departamentos' => collect() // Usamos uma Collection para os departamentos
+                    ];
+                }
+
+                // Adiciona o departamento atual (com seus totais) à collection de departamentos do cliente.
+                $clientesEstruturados[$resultado->cliente_id]->departamentos->push((object) [
+                    'id' => $resultado->departamento_id,
+                    'departamento' => $resultado->departamento_nome,
+                    'consumo' => $resultado->consumo,
+                    'valor' => $resultado->valor,
+                    'km_inicial' => $resultado->km_inicial,
+                    'km_final' => $resultado->km_final,
+                ]);
             }
 
+            // A variável final que será enviada para a view.
+            // `array_values` reindexa o array para que a view possa fazer um loop simples.
+            $clientes = array_values($clientesEstruturados);
 
-            return View('relatorios.abastecimentos.relatorio_abastecimentos_resumido')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Sintético')->withParametros($parametros)->withParametro(Parametro::first());
+
+            return View('relatorios.abastecimentos.relatorio_abastecimentos_resumido')->withClientes($clientes)->withClientesNullo($clientesNullo)->withTitulo('Relatório de Abastecimentos - Resumido')->withParametros($parametros)->withParametro(Parametro::first());
         } else if ($request->tipo_relatorio == 4) {
             /* relatório lista */
 
