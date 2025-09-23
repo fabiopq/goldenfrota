@@ -377,62 +377,103 @@ class VeiculoController extends Controller
         return View('relatorios.veiculos.media_consumo')->withTitulo('Média Consumo')->withGraficos($graficos)->withParametro(Parametro::first());
     }
 
-    public function listagemVeiculosnew(Request $request)
+
+
+    public function listagemVeiculos(Request $request)
     {
+        // Validação básica dos dados de entrada
+        $request->validate([
+            'cliente_id' => 'nullable|integer',
+            'departamento_id' => 'nullable|integer',
+            'grupo_id' => 'nullable|integer', // Corrigido de grupo_veiculo_id para grupo_id, conforme a view
+            'ativo' => 'nullable|integer',
+        ]);
+
         $parametros = [];
 
+        // --- Construção da Query Principal com Eloquent ---
+
+        // Começamos a query pelos Clientes
+        $clientesQuery = Cliente::query();
+
+        // Filtra pelo cliente, se um foi selecionado
         if ($request->filled('cliente_id') && $request->cliente_id > 0) {
+            $clientesQuery->where('id', $request->cliente_id);
+            // Adiciona o nome do cliente aos parâmetros para exibição no relatório
             $parametros[] = 'Cliente: ' . Cliente::find($request->cliente_id)->nome_razao;
         }
 
+        // Eager Loading (Carregamento Ansioso) para evitar o problema de N+1 queries.
+        // Vamos carregar os clientes junto com seus departamentos e veículos.
+        $clientes = $clientesQuery->with([
+            // Carrega os departamentos que correspondem ao filtro
+            'departamentos' => function ($query) use ($request) {
+                if ($request->filled('departamento_id') && $request->departamento_id > 0) {
+                    $query->where('id', $request->departamento_id);
+                }
+            },
+            // E para cada departamento, carrega os veículos que correspondem aos filtros
+            'departamentos.veiculos' => function ($query) use ($request) {
+                // Filtro por Grupo
+                if ($request->filled('grupo_id') && $request->grupo_id > 0) {
+                    $query->where('grupo_veiculo_id', $request->grupo_id);
+                }
+                // Filtro por Status (Ativo/Inativo)
+                if ($request->ativo != -1 && $request->filled('ativo')) {
+                    $query->where('ativo', $request->ativo);
+                }
+            },
+            // *** A CORREÇÃO PRINCIPAL ESTÁ AQUI ***
+            // Carrega também os veículos que NÃO têm departamento (departamento_id é NULL)
+            'veiculos' => function ($query) use ($request) {
+                $query->whereNull('departamento_id'); // Apenas veículos sem departamento
+
+                // Aplicamos os mesmos filtros de grupo e status a eles
+                if ($request->filled('grupo_id') && $request->grupo_id > 0) {
+                    $query->where('grupo_veiculo_id', $request->grupo_id);
+                }
+                if ($request->ativo != -1 && $request->filled('ativo')) {
+                    $query->where('ativo', $request->ativo);
+                }
+            }
+        ])->orderBy('nome_razao')->get();
+
+        // Constrói o restante do array de parâmetros para o cabeçalho do relatório
         if ($request->filled('departamento_id') && $request->departamento_id > 0) {
             $parametros[] = 'Departamento: ' . Departamento::find($request->departamento_id)->departamento;
         }
-
-        if ($request->filled('grupo_veiculo_id') && $request->grupo_veiculo_id > 0) {
-            $parametros[] = 'Grupo: ' . GrupoVeiculo::find($request->grupo_veiculo_id)->grupo_veiculo;
+        if ($request->filled('grupo_id') && $request->grupo_id > 0) {
+            $parametros[] = 'Grupo: ' . GrupoVeiculo::find($request->grupo_id)->grupo_veiculo;
+        }
+        if ($request->filled('ativo')) {
+            switch ($request->ativo) {
+                case 1:
+                    $parametros[] = 'Status: Ativo';
+                    break;
+                case 0:
+                    $parametros[] = 'Status: Desativado';
+                    break;
+            }
         }
 
-        if ($request->has('ativo')) {
-            $status = $request->ativo == 1 ? 'Ativo' : 'Desativado';
-            $parametros[] = "Status: {$status}";
+        // Se um departamento específico foi selecionado, removemos os clientes que não têm esse departamento
+        if ($request->filled('departamento_id') && $request->departamento_id > 0) {
+            $clientes = $clientes->filter(function ($cliente) {
+                return $cliente->departamentos->isNotEmpty();
+            });
         }
-    
-        $clientes = Cliente::with([
-            'departamentos.veiculos.modeloVeiculo.marcaVeiculo'
-        ])
-            ->when($request->cliente_id > 0, function ($q) use ($request) {
-                return $q->where('clientes.id', $request->cliente_id);
-            })
-            ->when($request->departamento_id > 0, function ($q) use ($request) {
-                return $q->whereHas('departamentos', function ($sub) use ($request) {
-                    $sub->where('departamentos.id', $request->departamento_id);
-                });
-            })
-            ->when($request->grupo_veiculo_id > 0, function ($q) use ($request) {
-                return $q->whereHas('departamentos.veiculos', function ($sub) use ($request) {
-                    $sub->where('grupo_veiculo_id', $request->grupo_veiculo_id);
-                });
-            })
-            ->when(!is_null($request->ativo), function ($q) use ($request) {
-                return $q->whereHas('departamentos.veiculos', function ($sub) use ($request) {
-                    $sub->where('veiculos.ativo', $request->ativo);
-                });
-            })
-            ->orderBy('clientes.id')
-            ->get();
 
         return view('relatorios.veiculos.listagem_veiculos', [
-            'clientes'   => $clientes,
+            'clientes' => $clientes,
             'parametros' => $parametros,
-            'titulo'     => 'Listagem de Veículos',
-            'parametro'  => Parametro::first(),
+            'titulo' => 'Listagem de Veículos',
+            'parametro' => Parametro::first(),
         ]);
     }
 
 
 
-    public function listagemVeiculos(Request $request)
+    public function listagemVeiculosold(Request $request)
     {
 
 
@@ -508,7 +549,7 @@ class VeiculoController extends Controller
                     ->Join('clientes', 'clientes.id', 'departamentos.cliente_id')
                     ->Join('veiculos', 'veiculos.departamento_id', 'departamentos.id')
                     ->where('departamentos.cliente_id', $cliente->id)
-                    ->groupBy('departamentos.id','departamentos.departamento')
+                    ->groupBy('departamentos.id', 'departamentos.departamento')
                     //->whereRaw($whereProduto)
                     ->orderBy('departamentos.departamento')
                     ->get();
@@ -533,7 +574,7 @@ class VeiculoController extends Controller
                     ->where('veiculos.departamento_id', $departamento->id)
                     ->get();
                 //->toSql();
-                
+
                 if ($veiculos) {
                     $departamento->veiculos = $veiculos;
                 }
