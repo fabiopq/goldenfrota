@@ -282,7 +282,7 @@ class VeiculoController extends Controller
             ->whereRaw($whereCliente)
             ->orderBy('veiculos.placa', 'asc')
             ->get();
-            /*
+        /*
 
             $veiculos = Veiculo::select(DB::raw("concat(veiculos.placa, ' - ', marca_veiculos.marca_veiculo, ' ', modelo_veiculos.modelo_veiculo) as placa"), 'veiculos.id')
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
@@ -299,8 +299,8 @@ class VeiculoController extends Controller
                     ->where('veiculos.ativo', true)
                     ->whereRaw($whereCliente)
                     ->get(); */
-                    Log::debug(response()->json($veiculos));
-                
+        Log::debug(response()->json($veiculos));
+
         return response()->json($veiculos);
     }
 
@@ -377,6 +377,61 @@ class VeiculoController extends Controller
         return View('relatorios.veiculos.media_consumo')->withTitulo('Média Consumo')->withGraficos($graficos)->withParametro(Parametro::first());
     }
 
+    public function listagemVeiculosnew(Request $request)
+    {
+        $parametros = [];
+
+        if ($request->filled('cliente_id') && $request->cliente_id > 0) {
+            $parametros[] = 'Cliente: ' . Cliente::find($request->cliente_id)->nome_razao;
+        }
+
+        if ($request->filled('departamento_id') && $request->departamento_id > 0) {
+            $parametros[] = 'Departamento: ' . Departamento::find($request->departamento_id)->departamento;
+        }
+
+        if ($request->filled('grupo_veiculo_id') && $request->grupo_veiculo_id > 0) {
+            $parametros[] = 'Grupo: ' . GrupoVeiculo::find($request->grupo_veiculo_id)->grupo_veiculo;
+        }
+
+        if ($request->has('ativo')) {
+            $status = $request->ativo == 1 ? 'Ativo' : 'Desativado';
+            $parametros[] = "Status: {$status}";
+        }
+    
+        $clientes = Cliente::with([
+            'departamentos.veiculos.modeloVeiculo.marcaVeiculo'
+        ])
+            ->when($request->cliente_id > 0, function ($q) use ($request) {
+                return $q->where('clientes.id', $request->cliente_id);
+            })
+            ->when($request->departamento_id > 0, function ($q) use ($request) {
+                return $q->whereHas('departamentos', function ($sub) use ($request) {
+                    $sub->where('departamentos.id', $request->departamento_id);
+                });
+            })
+            ->when($request->grupo_veiculo_id > 0, function ($q) use ($request) {
+                return $q->whereHas('departamentos.veiculos', function ($sub) use ($request) {
+                    $sub->where('grupo_veiculo_id', $request->grupo_veiculo_id);
+                });
+            })
+            ->when(!is_null($request->ativo), function ($q) use ($request) {
+                return $q->whereHas('departamentos.veiculos', function ($sub) use ($request) {
+                    $sub->where('veiculos.ativo', $request->ativo);
+                });
+            })
+            ->orderBy('clientes.id')
+            ->get();
+
+        return view('relatorios.veiculos.listagem_veiculos', [
+            'clientes'   => $clientes,
+            'parametros' => $parametros,
+            'titulo'     => 'Listagem de Veículos',
+            'parametro'  => Parametro::first(),
+        ]);
+    }
+
+
+
     public function listagemVeiculos(Request $request)
     {
 
@@ -411,7 +466,7 @@ class VeiculoController extends Controller
                 break;
             case 0:
                 $whereStatus = 'veiculos.ativo = 0';
-                array_push($parametros, 'Status: Desativado');
+                array_push($parametros, 'Status: Inativo');
                 break;
             default:
                 $whereStatus = '1 = 1';
@@ -422,7 +477,7 @@ class VeiculoController extends Controller
             ->leftJoin('departamentos', 'departamentos.cliente_id', 'clientes.id')
             ->leftJoin('veiculos', 'veiculos.departamento_id', 'departamentos.id')
             ->whereRaw($whereCliente)
-            ->groupBy('clientes.id')
+            ->groupBy('clientes.id', 'clientes.nome_razao')
             ->orderBy('clientes.id')
             ->get();
 
@@ -453,7 +508,7 @@ class VeiculoController extends Controller
                     ->Join('clientes', 'clientes.id', 'departamentos.cliente_id')
                     ->Join('veiculos', 'veiculos.departamento_id', 'departamentos.id')
                     ->where('departamentos.cliente_id', $cliente->id)
-                    ->groupBy('departamentos.id')
+                    ->groupBy('departamentos.id','departamentos.departamento')
                     //->whereRaw($whereProduto)
                     ->orderBy('departamentos.departamento')
                     ->get();
@@ -478,11 +533,12 @@ class VeiculoController extends Controller
                     ->where('veiculos.departamento_id', $departamento->id)
                     ->get();
                 //->toSql();
-                //dd($veiculos);
+                
                 if ($veiculos) {
                     $departamento->veiculos = $veiculos;
                 }
             }
+            //dd($cliente->departamentos);
         }
 
 
@@ -631,8 +687,8 @@ class VeiculoController extends Controller
 
         try {
 
-           // Log::debug('AbastecimentoController::obterMediaVeiculo');
-           // Log::debug('obterMediaVeiculo - ehUpdate  ' . ($ehUpdate) ? 'Sim' : 'Não');
+            // Log::debug('AbastecimentoController::obterMediaVeiculo');
+            // Log::debug('obterMediaVeiculo - ehUpdate  ' . ($ehUpdate) ? 'Sim' : 'Não');
 
             if ($ehUpdate) {
                 $ultimoAbastecimento = AbastecimentoController::ObterUltimoAbastecimentoVeiculo($veiculo);
@@ -641,7 +697,7 @@ class VeiculoController extends Controller
             }
 
 
-           
+
             Log::debug('obterMediaVeiculo - ultimoAbastecimento => ' . $ultimoAbastecimento);
 
 
@@ -655,7 +711,7 @@ class VeiculoController extends Controller
                 //veiculo já abasteceu antes
 
                 /* controle de horas trabalhadas */
-               // dd($ultimoAbastecimento);
+                // dd($ultimoAbastecimento);
                 if ($abastecimentoAtual->id == $ultimoAbastecimento->id) {
                     //horas trabalhadas informada
 
@@ -668,7 +724,7 @@ class VeiculoController extends Controller
                 }
             }
         } catch (\Exception $e) {
-             Log::debug($e);
+            Log::debug($e);
             throw new \Exception($e->getMessage());
         }
     }
@@ -697,7 +753,7 @@ class VeiculoController extends Controller
             )
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
-           // ->where('veiculos.id', '>' ,' 62')
+            // ->where('veiculos.id', '>' ,' 62')
             ->orderBy('veiculos.placa', 'desc')
             //->orderBy('marca_veiculo', 'asc')
             //->orderBy('modelo_veiculo', 'asc')
