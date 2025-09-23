@@ -40,10 +40,10 @@
                                                 <tr>
                                                     <td>{{ $veiculo->id }}</td>
                                                     <td class="text-left">{{ $veiculo->placa }}</td>
-                                                    <td class="text-left">{{ $veiculo->modelo->modelo_veiculo ?? 'N/A' }}
+                                                    <td class="text-left">{{ $veiculo->modelo_veiculo->modelo_veiculo ?? 'N/A' }}
                                                     </td>
                                                     <td class="text-left">
-                                                        {{ $veiculo->modelo->marca->marca_veiculo ?? 'N/A' }}</td>
+                                                        {{ $veiculo->modelo_veiculo->marca_veiculo->marca_veiculo ?? 'N/A' }}</td>
                                                     <td class="text-left">{{ $veiculo->ano }}</td>
                                                     <td class="text-left">
                                                         {{ number_format($veiculo->media_minima, 2, ',', '.') }}</td>
@@ -81,8 +81,8 @@
                                             <tr>
                                                 <td>{{ $veiculo->id }}</td>
                                                 <td class="text-left">{{ $veiculo->placa }}</td>
-                                                <td class="text-left">{{ $veiculo->modelo->modelo_veiculo ?? 'N/A' }}</td>
-                                                <td class="text-left">{{ $veiculo->modelo->marca->marca_veiculo ?? 'N/A' }}
+                                                <td class="text-left">{{ $veiculo->modelo_veiculo->modelo_veiculo ?? 'N/A' }}</td>
+                                                <td class="text-left">{{ $veiculo->modelo_veiculo->marca_veiculo->marca_veiculo ?? 'N/A' }}
                                                 </td>
                                                 <td class="text-left">{{ $veiculo->ano }}</td>
                                                 <td class="text-left">
