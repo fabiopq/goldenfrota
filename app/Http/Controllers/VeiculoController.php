@@ -379,7 +379,7 @@ class VeiculoController extends Controller
 
 
 
-    public function listagemVeiculos(Request $request)
+    public function listagemVeiculosNew(Request $request)
     {
         // Validação básica dos dados de entrada
         $request->validate([
@@ -393,7 +393,6 @@ class VeiculoController extends Controller
 
         // --- Construção da Query Principal com Eloquent ---
 
-        // Começamos a query pelos Clientes
         $clientesQuery = Cliente::query();
 
         // Filtra pelo cliente, se um foi selecionado
@@ -403,8 +402,7 @@ class VeiculoController extends Controller
             $parametros[] = 'Cliente: ' . Cliente::find($request->cliente_id)->nome_razao;
         }
 
-        // Eager Loading (Carregamento Ansioso) para evitar o problema de N+1 queries.
-        // Vamos carregar os clientes junto com seus departamentos e veículos.
+        //  carregar os clientes junto com seus departamentos e veículos.
         $clientes = $clientesQuery->with([
             // Carrega os departamentos que correspondem ao filtro
             'departamentos' => function ($query) use ($request) {
@@ -462,7 +460,7 @@ class VeiculoController extends Controller
                 return $cliente->departamentos->isNotEmpty();
             });
         }
-
+        dd($clientes);
         return view('relatorios.veiculos.listagem_veiculos', [
             'clientes' => $clientes,
             'parametros' => $parametros,
@@ -470,6 +468,104 @@ class VeiculoController extends Controller
             'parametro' => Parametro::first(),
         ]);
     }
+
+    private function buildParametros(Request $request): array
+    {
+        $parametros = [];
+
+        if ($request->filled('cliente_id') && $request->cliente_id > 0) {
+            $parametros[] = 'Cliente: ' . Cliente::find($request->cliente_id)->nome_razao;
+        }
+        if ($request->filled('departamento_id') && $request->departamento_id > 0) {
+            $parametros[] = 'Departamento: ' . Departamento::find($request->departamento_id)->departamento;
+        }
+        if ($request->filled('grupo_id') && $request->grupo_id > 0) {
+            $parametros[] = 'Grupo: ' . GrupoVeiculo::find($request->grupo_id)->grupo_veiculo;
+        }
+        if ($request->filled('ativo')) {
+            switch ($request->ativo) {
+                case 1: $parametros[] = 'Status: Ativo'; break;
+                case 0: $parametros[] = 'Status: Inativo'; break;
+            }
+        }
+        return $parametros;
+    }
+    public function listagemVeiculos(Request $request)
+    {
+        
+       
+        // 1. Validação dos dados de entrada
+        $request->validate([
+            'cliente_id' => 'nullable|integer|exists:clientes,id',
+            'departamento_id' => 'nullable|integer|exists:departamentos,id',
+            'grupo_id' => 'nullable|integer|exists:grupo_veiculos,id',
+            'ativo' => 'nullable|integer|in:0,1,-1',
+        ]);
+
+        // 2. Lógica de Filtros para Veículos (para não repetir o código)
+        $vehicleFilters = function ($query) use ($request) {
+            // Filtro por Grupo
+            $query->when($request->filled('grupo_id') && $request->grupo_id > 0, function ($q) use ($request) {
+                $q->where('grupo_veiculo_id', $request->grupo_id);
+            });
+
+            // Filtro por Status (Ativo/Inativo)
+            $query->when($request->ativo != -1 && $request->filled('ativo'), function ($q) use ($request) {
+                $q->where('ativo', $request->ativo);
+            });
+        };
+
+        // 3. Construção da Query Principal com Eager Loading
+        $clientesQuery = Cliente::query();
+
+        // Filtra pelo cliente, se um foi selecionado
+        $clientesQuery->when($request->filled('cliente_id') && $request->cliente_id > 0, function ($q) use ($request) {
+            $q->where('id', $request->cliente_id);
+        });
+
+        // Eager Loading: Carrega todos os dados necessários em poucas consultas
+        $clientes = $clientesQuery->with([
+            // Carrega os departamentos que correspondem ao filtro
+            'departamentos' => function ($query) use ($request) {
+                $query->when($request->filled('departamento_id') && $request->departamento_id > 0, function ($q) use ($request) {
+                    $q->where('id', $request->departamento_id);
+                });
+            },
+            // Para cada departamento, carrega os veículos com seus modelos e marcas
+            'departamentos.veiculos' => function ($query) use ($vehicleFilters) {
+                $vehicleFilters($query); // Aplica os filtros reutilizáveis
+            },
+            'departamentos.veiculos.modelo_veiculo.marca_veiculo', // Carrega o modelo e a marca do veículo
+
+            // Carrega também os veículos que NÃO têm departamento
+            'veiculos' => function ($query) use ($vehicleFilters) {
+                $query->whereNull('departamento_id'); // Apenas veículos sem depto
+                $vehicleFilters($query); // Aplica os mesmos filtros reutilizáveis
+            },
+            'veiculos.modelo_veiculo.marca_veiculo', // Carrega o modelo e a marca para esses veículos também
+            
+        ])->orderBy('nome_razao')->get();
+
+        // 4. Se um departamento específico foi selecionado, removemos clientes que não o possuem
+        if ($request->filled('departamento_id') && $request->departamento_id > 0) {
+            $clientes = $clientes->filter(function ($cliente) {
+                // Mantém o cliente apenas se a coleção de departamentos dele não estiver vazia
+                return $cliente->departamentos->isNotEmpty();
+            });
+        }
+
+        // 5. Montagem dos parâmetros para exibição no cabeçalho do relatório
+        $parametros = $this->buildParametros($request);
+        //dd($clientes);
+        // 6. Retorna a view com todos os dados
+        return view('relatorios.veiculos.listagem_veiculos', [
+            'clientes' => $clientes,
+            'parametros' => $parametros,
+            'titulo' => 'Listagem de Veículos',
+            'parametro' => Parametro::first(),
+        ]);
+    }
+
 
 
 

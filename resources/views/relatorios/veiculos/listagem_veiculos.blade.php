@@ -2,10 +2,7 @@
 
 @section('relatorio')
 
-    {{-- 
-    Usa-se @forelse para iterar sobre os clientes. 
-    Se a coleção $clientes estiver vazia, a seção @empty será exibida.
---}}
+ 
     @forelse($clientes as $cliente)
         <div class="panel panel-default mb-4" style="page-break-inside: avoid;">
             <div class="card-header report-subtitle-1">
@@ -40,8 +37,8 @@
 
                                                 {{-- Acesso correto aos dados do relacionamento --}}
                                                 {{-- O '??' evita erros se o modelo ou a marca não existirem --}}
-                                                <td class="text-left">{{ $veiculo->modelo->modelo_veiculo ?? 'N/A' }}</td>
-                                                <td class="text-left">{{ $veiculo->modelo->marca->marca_veiculo ?? 'N/A' }}
+                                                <td class="text-left">{{ $veiculo->modelo_veiculo->modelo_veiculo ?? 'N/A' }}</td>
+                                                <td class="text-left">{{ $veiculo->modelo_veiculo->marca_veiculo->marca_veiculo ?? 'N/A' }}
                                                 </td>
 
                                                 <td class="text-left">{{ $veiculo->ano }}</td>
@@ -83,8 +80,8 @@
                                         <tr>
                                             <td>{{ $veiculo->id }}</td>
                                             <td class="text-left">{{ $veiculo->placa }}</td>
-                                            <td class="text-left">{{ $veiculo->modelo->modelo_veiculo ?? 'N/A' }}</td>
-                                            <td class="text-left">{{ $veiculo->modelo->marca->marca_veiculo ?? 'N/A' }}
+                                            <td class="text-left">{{ $veiculo->modelo_veiculo->modelo_veiculo ?? 'N/A' }}</td>
+                                            <td class="text-left">{{ $veiculo->modelo_veiculo->marca_veiculo->marca_veiculo ?? 'N/A' }}
                                             </td>
                                             <td class="text-left">{{ $veiculo->ano }}</td>
                                             <td class="text-left">{{ number_format($veiculo->media_minima, 2, ',', '.') }}
