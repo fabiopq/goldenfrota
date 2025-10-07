@@ -57,6 +57,16 @@
                             'inputSize' => 3
                         ],
                         [
+                            'type' => 'number',
+                            'field' => 'ppl',
+                            'label' => 'PPL / Preço Litro',
+                            'required' => true,
+                            'autofocus' => true,
+                            'inputSize' => 2,
+                            'inputValue' => 0,
+                            
+                        ],
+                        [
                             'type' => 'text',
                             'field' => 'endereco',
                             'label' => 'Endereço',
@@ -68,6 +78,15 @@
                             'type' => 'select',
                             'field' => 'permite_insercao',
                             'label' => 'Ins. Abast.',
+                            'required' => true,
+                            'items' => Array('Não', 'Sim'),
+                            'inputSize' => 1
+                        ]
+                        ,
+                        [
+                            'type' => 'select',
+                            'field' => 'com_defeito',
+                            'label' => 'Com Defeito',
                             'required' => true,
                             'items' => Array('Não', 'Sim'),
                             'inputSize' => 1

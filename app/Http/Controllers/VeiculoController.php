@@ -870,7 +870,8 @@ class VeiculoController extends Controller
     {
         return response()->json(
             Veiculo::with('modelo_veiculo.marca_veiculo')
-                ->Ativo()
+            ->where('veiculos.ativo', true)
+                //->Ativo()
                 ->get()
         );
     }
@@ -890,6 +891,7 @@ class VeiculoController extends Controller
             )
             ->join('modelo_veiculos', 'modelo_veiculos.id', 'veiculos.modelo_veiculo_id')
             ->join('marca_veiculos', 'marca_veiculos.id', 'modelo_veiculos.marca_veiculo_id')
+            ->where('veiculos.ativo', true)
             // ->where('veiculos.id', '>' ,' 62')
             ->orderBy('veiculos.placa', 'desc')
             //->orderBy('marca_veiculo', 'asc')

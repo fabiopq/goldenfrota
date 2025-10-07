@@ -140,7 +140,7 @@ class BicoController extends Controller
             ->where('tanques.ativo', true)
             ->get();
 
-        
+
         if (Auth::user()->canAlterarBico()) {
             return View('bico.edit')
                 ->withBico($bico)
@@ -171,9 +171,11 @@ class BicoController extends Controller
                 'encerrante' => 'required|numeric|min:0',
 
             ]);
-
+           
             try {
+
                 $bico->fill($request->all());
+              
                 /* $bico->num_bico = $request->num_bico;
                 $bico->tanque_id = $request->tanque_id;
                 $bico->bomba_id = $request->bomba_id;
@@ -244,21 +246,20 @@ class BicoController extends Controller
 
     public function apiBicosv2(Request $request)
     {
-       //posto_abastecimentos_id
-       
-       if(isset($request->id)){
+        //posto_abastecimentos_id
+
+        if (isset($request->id)) {
             return response()->json(DB::table('bicos')
-            ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao as combustivel')
-            ->join('tanques', 'tanques.id', 'bicos.tanque_id')
-            ->join('posto_abastecimentos', 'tanques.posto_abastecimento_id', 'posto_abastecimentos.id')
-            ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
-            ->join('bombas', 'bombas.id', 'bicos.bomba_id')
-            ->where('tanques.posto_abastecimento_id','=',$request->id)
-            ->whereRaw('bicos.ativo', true)
-            ->orderBy('bicos.id')
-            ->get());
+                ->select('bicos.*', 'bombas.descricao_bomba', 'combustiveis.descricao as combustivel','combustiveis.custo')
+                ->join('tanques', 'tanques.id', 'bicos.tanque_id')
+                ->join('posto_abastecimentos', 'tanques.posto_abastecimento_id', 'posto_abastecimentos.id')
+                ->join('combustiveis', 'combustiveis.id', 'tanques.combustivel_id')
+                ->join('bombas', 'bombas.id', 'bicos.bomba_id')
+                ->where('tanques.posto_abastecimento_id', '=', $request->id)
+                ->whereRaw('bicos.ativo', true)
+                ->orderBy('bicos.id')
+                ->get());
         }
-       
     }
 
     public function apiBicos()

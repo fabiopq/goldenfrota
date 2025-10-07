@@ -4,16 +4,16 @@
 @section('content')
 
     <div class="card m-0 border-0">
-       
+
         @component('components.form', [
-            'title' => 'Alterar Bico', 
-            'routeUrl' => route('bico.update', $bico->id), 
+            'title' => 'Alterar Bico',
+            'routeUrl' => route('bico.update', $bico->id),
             'method' => 'PUT',
             'formButtons' => [
                 ['type' => 'submit', 'label' => 'Salvar', 'icon' => 'check'],
-                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times']
-                ]
-            ])
+                ['type' => 'button', 'label' => 'Cancelar', 'icon' => 'times'],
+            ],
+        ])
             @section('formFields')
                 @component('components.form-group', [
                     'inputs' => [
@@ -24,7 +24,7 @@
                             'required' => true,
                             'autofocus' => true,
                             'inputValue' => $bico->num_bico,
-                            'inputSize' => 1
+                            'inputSize' => 1,
                         ],
                         [
                             'type' => 'select',
@@ -36,7 +36,7 @@
                             'displayField' => 'descricao_bomba',
                             'keyField' => 'id',
                             'liveSearch' => true,
-                            'indexSelected' => $bico->bomba_id
+                            'indexSelected' => $bico->bomba_id,
                         ],
                         [
                             'type' => 'select',
@@ -48,16 +48,25 @@
                             'displayField' => 'tanque',
                             'keyField' => 'id',
                             'liveSearch' => true,
-                            'indexSelected' => $bico->tanque_id
+                            'indexSelected' => $bico->tanque_id,
                         ],
-                        
+                
                         [
                             'type' => 'text',
                             'field' => 'encerrante',
                             'label' => 'Encerrante',
                             'required' => true,
                             'inputValue' => $bico->encerrante,
-                            'inputSize' => 3
+                            'inputSize' => 3,
+                        ],
+                        [
+                            'type' => 'number',
+                            'field' => 'ppl',
+                            'label' => 'PPL / Preço Litro',
+                            'required' => true,
+                            'autofocus' => true,
+                            'inputSize' => 2,
+                            'inputValue' => $bico->ppl,
                         ],
                         [
                             'type' => 'text',
@@ -65,7 +74,7 @@
                             'label' => 'Endereço',
                             'required' => true,
                             'inputValue' => $bico->endereco,
-                            'inputSize' => 2
+                            'inputSize' => 2,
                         ],
                         [
                             'type' => 'select',
@@ -73,8 +82,18 @@
                             'label' => 'Ins. Abast.',
                             'required' => true,
                             'indexSelected' => $bico->permite_insercao,
-                            'items' => Array('Não', 'Sim'),
-                            'inputSize' => 1
+                            'items' => ['Não', 'Sim'],
+                            'inputSize' => 1,
+                        ],
+                
+                        [
+                            'type' => 'select',
+                            'field' => 'com_defeito',
+                            'label' => 'Com Defeito',
+                            'required' => true,
+                            'items' => ['Não', 'Sim'],
+                            'inputSize' => 1,
+                            'indexSelected' => $bico->com_defeito,
                         ],
                         [
                             'type' => 'select',
@@ -82,9 +101,10 @@
                             'label' => 'Ativo',
                             'inputSize' => 1,
                             'indexSelected' => $bico->ativo,
-                            'items' => Array('Não', 'Sim'),
-                        ]
-                    ]
+                            'items' => ['Não', 'Sim'],
+                        ],
+                        
+                    ],
                 ])
                 @endcomponent
             @endsection
@@ -92,7 +112,9 @@
     </div>
     <script>
         $('document').ready(function() {
-            $(encerrante).mask('000000000000000.000', {reverse: true});
+            $(encerrante).mask('000000000000000.000', {
+                reverse: true
+            });
         });
     </script>
 
